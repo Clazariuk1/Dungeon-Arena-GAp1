@@ -1,5 +1,6 @@
 // Button Variables
 const startBtn = document.getElementById('start-button');
+const restartBtn = document.getElementById('restart-button');
 const pauseBtn = document.getElementById('pause-button');
 const pauseMenuBtn = document.getElementById('pause-menu-button');
 const instBtn = document.getElementById('instructions-button');
@@ -9,6 +10,7 @@ const muteSFXBtn = document.getElementById('mute-sfx');
 const instBox = document.getElementById('instructions-box')
 const pauseMenu = document.getElementById('pause-menu');
 const gameScreen = document.getElementById('game');
+const gameOverScreen = document.getElementById('game-over');
 
 // SOUND ELEMENTS BELOW
 const bossMusic = document.getElementById('boss-battle-music');
@@ -59,6 +61,15 @@ function startGameNoise() {
     currentSong = bossMusic;
     currentSong.play();
     newGameRender();
+}
+
+function gameOver() {
+    // if (player.health <= 0) {
+        currentSound = playerDeathSound;
+        playerDeathSound.play();
+        currentSong = endMusic;
+        endMusic.play;
+   // }
 }
 
 // musicVolumeRange.oninput = function () {
@@ -127,10 +138,10 @@ function hoverButtonNoise() {
 
 instBtn.addEventListener("mouseover", hoverButtonNoise);
 instBtn.addEventListener("click", instructions);
-instBox.addEventListener("click", instructionsOff);
 startBtn.addEventListener("mouseover", hoverButtonNoise);
 startBtn.addEventListener("click", startGameNoise);
 startBtn.addEventListener("click", pauseGame);
+restartBtn.addEventListener("click", restartNewGame);
 pauseBtn.addEventListener("click", pauseGame);
 pauseMenuBtn.addEventListener("click", pauseGame);
 
@@ -143,6 +154,9 @@ pauseMenuBtn.addEventListener("click", pauseGame);
 //     // additional element to unblur game and unpause elements --> HARD MODE
 // }
 
+function restartNewGame() {
+    gameOverScreen.classList.toggle('activate');
+}
 
 function pauseGame() {
     pauseMenu.classList.toggle('active');
@@ -162,9 +176,6 @@ function instructions() {
     instBox.classList.toggle('activated');
 }
 
-function instructionsOff() {
-    instBox.classList.toggle('activated');
-}
 
 // // BUILD THE BASICS BEFORE YOU BUILD THE BONUSES!!!
 

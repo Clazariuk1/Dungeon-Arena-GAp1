@@ -172,6 +172,17 @@ body {
     border: solid .25rem black;
 }
 
+#stat-display {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+    margin-top: 1rem;
+    border: solid .25rem black;
+}
+
 #menu-buttons {
     display: flex;
     flex-direction: column;
@@ -286,6 +297,32 @@ button:hover {
     text-align: center;
     border-radius: 5%;
 }
+
+#game-over-screen {
+    position: relative;
+    display: none;
+    opacity: 0;
+    flex-direction: column;
+    border-radius: 5%;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    height: fit-content;
+    background-color: gray;
+    color: black;
+    width: 40vw;
+    gap: 2rem;
+    padding: 1rem;
+    margin: 1rem;
+    border: solid 2px white;
+}
+
+.activate#game-over-screen {
+    /* animation: pause-menu-animation-reverse 2s linear ease-in-out; */
+    opacity: 1;
+    display: flex;
+}
+
 
 footer {
 
