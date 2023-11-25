@@ -1,3 +1,148 @@
+// Button Variables
+const startBtn = document.getElementById('start-button');
+const pauseBtn = document.getElementById('pause-button');
+const pauseMenuBtn = document.getElementById('pause-menu-button');
+const instBtn = document.getElementById('instructions-button');
+const muteMusicBtn = document.getElementById('mute-music');
+const muteSFXBtn = document.getElementById('mute-sfx');
+//Element Variables
+const instBox = document.getElementById('instructions-box')
+const pauseMenu = document.getElementById('pause-menu');
+const gameScreen = document.getElementById('game');
+
+// SOUND ELEMENTS BELOW
+const bossMusic = document.getElementById('boss-battle-music');
+const hoverButtonSound = document.getElementById('button-hover');
+const buttonBlipSound = document.getElementById('button-blip');
+const bossKillSound = document.getElementById('boss-kill');
+const buttonHoverSound = document.getElementById('button-hover');
+const criticalHitSound = document.getElementById('critical-hit');
+const dashSound = document.getElementById('dash-small');
+const endMusic = document.getElementById('end-music');
+const enemyDeathSound = document.getElementById('enemy-kill');
+const hardSlashSound = document.getElementById('hard-slash');
+const healSound = document.getElementById('heal');
+const levelUpSound = document.getElementById('level-up-blast');
+const newSkillSound = document.getElementById('new-skill-sound');
+const playerDeathSound = document.getElementById('player-death');
+const playerHitSound = document.getElementById('player-hit');
+let currentSong;
+let currentSound;
+
+// VOLUME ADJUSTING ELEMENTS BELOW
+const musicVolume = document.getElementById('music-volume');
+const musicVolumeRange = document.getElementById('music-volume-range');
+musicVolume.innerHTML = musicVolumeRange.value;
+
+const sfxVolume = document.getElementById('sfx-volume');
+const sfxVolumeRange = document.getElementById('sfx-volume-range');
+sfxVolume.innerHTML = sfxVolumeRange.value;
+
+// musicVolumeRange.oninput = function () {
+//     musicVolume.innerHTML = this.value;
+// }
+
+// allow music to be muted and volume adjustable!
+muteMusicBtn.addEventListener("click", muteMusic);
+
+function muteMusic() {
+    if (currentSong.paused) {
+        currentSong.play();
+        muteMusicBtn.innerHTML = 'mute';
+    } else {
+        currentSong.pause();
+        muteMusicBtn.innerHTML = 'unmute';
+    }
+}
+
+musicVolumeRange.addEventListener("change", adjustMusicVolume);
+
+function adjustMusicVolume() {
+    currentSong.volume= musicVolumeRange.value / 100;
+    musicVolume.innerHTML = this.value;
+}
+
+// allow sfx to be muted and volume adjustable!
+// NOTE : Mute button on SFX currently buggy.
+muteSFXBtn.addEventListener("click", muteSFX);
+ function muteSFX() {
+     if (sfxVolumeRange.value != 0) {
+        sfxVolumeRange.value = 0;
+        sfxVolume.value = 0;
+        sfxVolume.innerHTML = 0;
+        muteSFXBtn.innerHTML = 'unmute';
+      }
+      else {
+         sfxVolumeRange.value = 50;
+         sfxVolume.value = 50;
+         sfxVolume.innerHTML = 50;
+        muteSFXBtn.innerHTML = 'mute';
+     }
+ }
+
+muteSFXBtn.addEventListener("click", muteSFX);
+sfxVolumeRange.addEventListener("change", adjustSFXVolume);
+
+function adjustSFXVolume() {
+    currentSound.volume= sfxVolumeRange.value / 100;
+    sfxVolume.innerHTML = this.value;
+}
+
+gameScreen.addEventListener("click", initializeSound);
+
+function initializeSound() {
+    currentSound = newSkillSound;
+    currentSound.play();
+}
+
+function hoverButtonNoise() {
+    currentSound = hoverButtonSound;
+    currentSound.play();
+}
+
+function startGameNoise() {
+    currentSong = bossMusic;
+    currentSong.play();
+}
+
+
+instBtn.addEventListener("mouseover", hoverButtonNoise);
+instBtn.addEventListener("click", instructions);
+instBox.addEventListener("click", instructionsOff);
+startBtn.addEventListener("mouseover", hoverButtonNoise);
+startBtn.addEventListener("click", startGameNoise);
+startBtn.addEventListener("click", unpauseGame);
+pauseBtn.addEventListener("click", pauseGame);
+pauseMenuBtn.addEventListener("click", unpauseGame);
+
+function pauseMenuFly() {
+    // pauseMenu.style.display="none";
+    // pauseMenu.classList.add('.menuFly');
+    // additional element to unblur game and unpause elements
+}
+
+function pauseGame() {
+    pauseMenu.classList.toggle('active');
+    // pauseMenu.classList.replace('.menuFly', '.menuDrop');
+    // gameScreen.blur();
+}
+
+function unpauseGame() {
+    pauseMenu.classList.toggle('active');
+    // if (pauseMenu.style.display != "none") {
+    //     pauseMenu.style.display= "none";
+    // } else return;
+    // gameScreen.focus();
+}
+
+function instructions() {
+    instBox.classList.toggle('activated');
+}
+
+function instructionsOff() {
+    instBox.classList.toggle('activated');
+}
+
 // // BUILD THE BASICS BEFORE YOU BUILD THE BONUSES!!!
 
 // "Dungeon Arena."
