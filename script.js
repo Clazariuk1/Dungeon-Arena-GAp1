@@ -29,6 +29,14 @@ const playerHitSound = document.getElementById('player-hit');
 let currentSong;
 let currentSound;
 
+// HP / MP / XP Bar Elements Below
+const playerHealth = document.getElementById('hp-bar');
+const playerMagic = document.getElementById('mp-bar');
+const playerExp = document.getElementById('xp-bar');
+const playerHealthCount = document.getElementById('health-bar');
+const playerMagicCount = document.getElementById('magic-bar');
+const playerExpCount = document.getElementById('exp-bar');
+
 // VOLUME ADJUSTING ELEMENTS BELOW
 const musicVolume = document.getElementById('music-volume');
 const musicVolumeRange = document.getElementById('music-volume-range');
@@ -37,6 +45,21 @@ musicVolume.innerHTML = musicVolumeRange.value;
 const sfxVolume = document.getElementById('sfx-volume');
 const sfxVolumeRange = document.getElementById('sfx-volume-range');
 sfxVolume.innerHTML = sfxVolumeRange.value;
+
+function newGameRender() {
+    playerHealth.value = 100;
+    playerMagic.value = 100;
+    playerExp.value = 0;
+    playerExpCount.innerHTML = playerExp.value;
+    playerHealthCount.innerHTML = playerHealth.value;
+    playerMagicCount.innerHTML = playerMagic.value;
+    }
+
+function startGameNoise() {
+    currentSong = bossMusic;
+    currentSong.play();
+    newGameRender();
+}
 
 // musicVolumeRange.oninput = function () {
 //     musicVolume.innerHTML = this.value;
@@ -100,10 +123,6 @@ function hoverButtonNoise() {
     currentSound.play();
 }
 
-function startGameNoise() {
-    currentSong = bossMusic;
-    currentSong.play();
-}
 
 
 instBtn.addEventListener("mouseover", hoverButtonNoise);
@@ -111,29 +130,33 @@ instBtn.addEventListener("click", instructions);
 instBox.addEventListener("click", instructionsOff);
 startBtn.addEventListener("mouseover", hoverButtonNoise);
 startBtn.addEventListener("click", startGameNoise);
-startBtn.addEventListener("click", unpauseGame);
+startBtn.addEventListener("click", pauseGame);
 pauseBtn.addEventListener("click", pauseGame);
-pauseMenuBtn.addEventListener("click", unpauseGame);
+pauseMenuBtn.addEventListener("click", pauseGame);
 
-function pauseMenuFly() {
-    // pauseMenu.style.display="none";
-    // pauseMenu.classList.add('.menuFly');
-    // additional element to unblur game and unpause elements
-}
+// function pauseMenuFly() {
+//     if (pauseMenu.classList.includes('menuFly')) {
+//         pauseMenu.classList.remove('menuFly');
+//         pauseMenu.classList.add('menuCall')
+//     } else {
+//     pauseMenu.classList.add('menuFly');
+//     // additional element to unblur game and unpause elements --> HARD MODE
+// }
+
 
 function pauseGame() {
     pauseMenu.classList.toggle('active');
-    // pauseMenu.classList.replace('.menuFly', '.menuDrop');
-    // gameScreen.blur();
+    pauseMenu.classList.replace('.menuFly', '.menuDrop');
+    gameScreen.blur();
 }
 
-function unpauseGame() {
-    pauseMenu.classList.toggle('active');
-    // if (pauseMenu.style.display != "none") {
-    //     pauseMenu.style.display= "none";
-    // } else return;
-    // gameScreen.focus();
-}
+// // function unpauseGame() {
+// //     pauseMenu.classList.toggle('active');
+//     // if (pauseMenu.style.display != "none") {
+//     //     pauseMenu.style.display= "none";
+//     // } else return;
+//     // gameScreen.focus();
+// }
 
 function instructions() {
     instBox.classList.toggle('activated');

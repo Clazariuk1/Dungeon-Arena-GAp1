@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Dungeon Arena</title>
 
     <script src="script.js" defer></script>
     <link href="style.css" rel="stylesheet" type="text/CSS" />
@@ -35,30 +35,51 @@
     <div class="game__board" id="game-board">
         <header class="header" id="header">
             <div class="player__status" id="player-status">
-                <div class="HP">TEST FORMATTING DATA</div>
-                <div class="MP">TEST FORMATTING DATA</div>
-                <div class="level">TEST FORMATTING DATA</div>
-                <div class="XP">TEST FORMATTING DATA</div>
+                <div class="gauge__bundle">
+                    <progress class="gauge__bar" id="hp-bar" max="100" value="100"></progress>
+                    <label id="health-bar"></label>
+                </div>
+                <div class="gauge__bundle">
+                    <progress class="gauge__bar" id="mp-bar" max="100" value="100"></progress>
+                    <label id="magic-bar"></label>
+                </div>
+                <div class="gauge__bundle">
+                    <progress class="gauge__bar" id="xp-bar" max="10000000000" value="10"></progress>
+                    <label id="exp-bar"></label>
+                </div>
             </div>
             <div class="sound__controls" id="sound-controls">
                 <button class="button" id="mute-music">MUTE MUSIC</button>
                 <input type="range" min="1" max="100" value="50" class="music__volume__range" id="music-volume-range">
                 <label id="music-volume"></label>
                 <button class="button" id="mute-sfx">MUTE SFX</button>
-                <input type="range" min="1" max="100" value="100" class="sfx__volume__range" id="sfx-volume-range">
+                <input type="range" min="1" max="100" value="50" class="sfx__volume__range" id="sfx-volume-range">
                 <label id="sfx-volume"></label>
             </div>
             <button class="pause__button" id="pause-button">PAUSE</button>
         </header>
-        <div class="menuFly" id="pause-menu">
+        <div class="action__space" id="action-space">
+            STUFF HAPPENS HERE!!! GAMEPLAY ENEMY AND PLAYER OBJECT DATA. CONSIDER LINKING FIRST IMAGE TO GAME bg
+        </div>
+        <div id="pause-menu">
             <div class="text">
                 <h1>Dungeon Arena</h1>
                 <h2>by Christopher Lazariuk</h2>
             </div>
             <div class="stat__display" id="stat-display">
                 <div class="stats" id="current-score">Current Player Score: 0</div>
-                <div class="stats" id="player-hp">HP TEST DATA</div>
-                <div class="stats" id="player-mp">MP TEST DATA</div>
+                    <div class="gauge__bundle">
+                        <progress class="gauge__bar" id="hp-bar" max="100" value="65"></progress>
+                        <label id="health-bar"></label>
+                    </div>
+                    <div class="gauge__bundle">
+                        <progress class="gauge__bar" id="mp-bar" max="100" value="65"></progress>
+                        <label id="magic-bar"></label>
+                    </div>
+                    <div class="gauge__bundle">
+                        <progress class="gauge__bar" id="xp-bar" max="10000000000" value="10"></progress>
+                        <label id="exp-bar"></label>
+                    </div>
                 <div class="stats" id="player-level">Current Level: 1</div>
                 <div class="stats" id="player-xp-to-next-level">XP to next lvl: 9000</div>
             </div>

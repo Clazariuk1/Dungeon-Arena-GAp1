@@ -1,4 +1,4 @@
-/* @keyframes pause-menu-animation {
+@keyframes pause-menu-animation {
     0% {
         display: none;
         transform: translateY(2000px);
@@ -49,9 +49,19 @@
 
     100% {
         display: none;
-        transform: translateY(2000px);
+        transform: translateY(1000px);
     }
-} */
+}
+
+
+
+    .menuCall {
+        animation: pause-menu-animation 2s linear ease-in-out;
+    }
+
+    .menuFly {
+        animation: pause-menu-animation-reverse 2s linear ease-in-out;
+    }
 
 .active#pause-menu {
     /* animation: pause-menu-animation-reverse 2s linear ease-in-out; */
@@ -59,9 +69,6 @@
     display: none;
 }
 
-.menuDrop {
-    animation: pause-menu-animation 2s linear ease-in-out;
-}
 
 * {
     box-sizing: border-box;
@@ -76,6 +83,8 @@ html {
 body {
     width: 100vw;
     height: 100vh;
+    background-color: red;
+    z-index: -2;
 }
 
 #pause-menu {
@@ -103,7 +112,7 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
+    z-index: -1;
 }
 
 #game-board {
@@ -115,6 +124,7 @@ body {
     justify-content: center;
     align-items: center;
     background-color:antiquewhite;
+    z-index: 1;
 }
 
 #header {
@@ -146,6 +156,9 @@ body {
     display: flex;
     flex-direction: column;
     border: solid .25rem black;
+    text-align: center;
+    background-color: gray;
+    padding: .5rem;
 }
 
 #stat-display {
@@ -215,3 +228,80 @@ button:hover {
     opacity: 1;
     display: flex;
 }
+
+.gauge__bar {
+    height: 1rem;
+
+    padding: .5rem;
+    background-color: rgb(243, 5, 5);
+    color: black;
+}
+
+.gauge__bundle {
+    display: flex;
+    width: 80%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: .25rem;
+    margin-top: .5rem;
+    text-align: center;
+}
+
+#xp-bar {
+    background-color: greenyellow
+}
+
+#exp-bar {
+    background-color: greenyellow;
+    color: silver;
+    font-size: 16pt;
+    width: fit-content;
+    text-align: center;
+    border-radius: 5%;
+}
+
+#hp-bar {
+    background-color:red;
+}
+
+#health-bar {
+    background-color: red;
+    color: silver;
+    font-size: 16pt;
+    width: fit-content;
+    text-align: center;
+    border-radius: 5%;
+}
+
+#mp-bar {
+    background-color: blueviolet
+}
+
+#magic-bar {
+    background-color: blueviolet;
+    color: silver;
+    font-size: 16pt;
+    width: fit-content;
+    text-align: center;
+    border-radius: 5%;
+}
+
+footer {
+
+}
+
+/* footer>#stat-display {
+    background-color: black;
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: fit-content;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    margin-right: 1rem;
+    padding: 1rem;
+    justify-content: space-between;
+    align-items: top;
+    border: solid 1px black;
+} */
