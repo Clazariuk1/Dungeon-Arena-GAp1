@@ -12,6 +12,9 @@ const pauseMenu = document.getElementById('pause-menu');
 const gameScreen = document.getElementById('game');
 const gameOverScreen = document.getElementById('game-over');
 
+// Character Variables
+const playerBox = document.getElementById('player-box');
+
 // SOUND ELEMENTS BELOW
 const bossMusic = document.getElementById('boss-battle-music');
 const hoverButtonSound = document.getElementById('button-hover');

@@ -317,6 +317,33 @@ button:hover {
     border: solid 2px white;
 }
 
+/* #player-icon img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    z-index: 2;
+} */
+
+#player-box {
+    display: block;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    margin: .5rem;
+    width: 100px;
+    height: 100px;
+    background-color: black;
+    border: solid .25rem white;
+    object-fit: contain;
+    z-index: 2;
+    /* background-image:url('/Users/Chris/software_homework/Dungeon-Arena-GAp1/Images/player-thief.jpeg'); */
+}
+
+#action-space {
+    border: solid .5rem black;
+}
+
 .activate#game-over-screen {
     /* animation: pause-menu-animation-reverse 2s linear ease-in-out; */
     opacity: 1;
