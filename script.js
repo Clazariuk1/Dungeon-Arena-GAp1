@@ -11,6 +11,7 @@ const instBox = document.getElementById('instructions-box')
 const pauseMenu = document.getElementById('pause-menu');
 const gameScreen = document.getElementById('game');
 const gameOverScreen = document.getElementById('game-over');
+const currentScore = document.getElementById('current-score');
 
 // Character Variables
 const playerBox = document.getElementById('player-box');
@@ -58,6 +59,13 @@ function newGameRender() {
     playerExpCount.innerHTML = playerExp.value;
     playerHealthCount.innerHTML = playerHealth.value;
     playerMagicCount.innerHTML = playerMagic.value;
+    playerOne.hpCurrent = 100;
+    playerOne.hpMax = 100;
+    playerOne.mpCurrent = 100;
+    playerOne.mpMax = 100;
+    playerOne.movementSpeed = 20;
+    playerOne.XP = 0;
+    playerOne.level = 1;
     }
 
 function startGameNoise() {
@@ -74,6 +82,122 @@ function gameOver() {
         endMusic.play;
    // }
 }
+
+// Character / Character Movement Variables
+
+// window.onload = function() {
+//   const gameBorder = document.getElementById('action-space');
+
+//   // Get container boundaries
+//   const gameBorderRect = gameBorder.getBoundingClientRect();
+//   const gameBorderLeft = gameBorderRect.left;
+//   const gameBorderTop = gameBorderRect.top;
+//   const gameBorderRight = gameBorderRect.right;
+//   const gameBorderBottom = gameBorderRect.bottom;
+
+  // Function to handle player movement
+//   function movePlayer(event) {
+//     let newX = playerBox.offsetLeft;
+//     let newY = playerBox.offsetTop;
+
+//     // Move player based on key press
+//     switch (event.key) {
+//       case 'w':
+//         newY -= 10;
+//         break;
+//       case 'a':
+//         newX -= 10;
+//         break;
+//       case 's':
+//         newY += 10;
+//         break;
+//       case 'd':
+//         newX += 10;
+//         break;
+//       default:
+//         break;
+//     }
+
+//     // Prevent player from crossing container boundaries
+//     if (newX < gameBorderLeft) {
+//       newX = gameBorderLeft;
+//     }
+//     if (newX + playerBox.offsetWidth > gameBorderRight) {
+//       newX = gameBorderRight - playerBox.offsetWidth;
+//     }
+//     if (newY < gameBorderTop) {
+//       newY = gameBorderTop;
+//     }
+//     if (newY + playerBox.offsetHeight > gameBorderBottom) {
+//       newY = gameBorderBottom - playerBox.offsetHeight;
+//     }
+
+//     playerBox.style.left = newX + 'px';
+//     playerBox.style.top = newY + 'px';
+//   }
+
+//   // Event listener to handle key presses for player movement
+//   document.addEventListener('keydown', movePlayer);
+// };
+
+// let movementSpeed = 20;
+// document.addEventListener('keydown', (e) => {
+//     let leftpos = parseInt(window.getComputedStyle(playerBox).getPropertyValue("left"));
+//     let toppos = parseInt(window.getComputedStyle(playerBox).getPropertyValue("top"));
+//     switch(e.key) {
+//         case 'a':
+//             playerBox.style.left = leftpos - movePlayer + 'px';
+//             break;
+//         case 'd':
+//             playerBox.style.left = leftpos + movePlayer + 'px';
+//             break;
+//         case 'w':
+//             playerBox.style.top = toppos - movePlayer + 'px';
+//             break;
+//         case 's':
+//             playerBox.style.top = toppos + movePlayer+ 'px';
+//     }
+// function playerMovement(event) {
+//     const gameBorder = document.getElementById('action-space');
+//     const borderRect = gameBorder.getBoundingClientRect();
+//     const gameBorderLeft = borderRect.left;
+//     const gameBorderRight = borderRect.right;
+//     const gameBorderTop = borderRect.top;
+//     const gameBorderBottom = borderRect.bottom;
+//     gameBorder.addEventListener('mousemove', playerMovement);
+//     let newX = player.offsetLeft + event.movementX;
+//     let newY = player.offsetTop + event.movementY;
+//     if (newX + playerBox.offsetWidth > gameBorderRight) {
+//         newX = gameBorderRight - playerBox.offsetWidth;
+//     }
+//     if (newY + playerBox.offsetHeight > gameBorderBottom) {
+//         newY = gameBorderBottom - playerBox.offsetHeight;
+//     }
+//     playerBox.style.left = newX + 'px';
+//     playerBox.style.top = newY + 'px';
+//     }
+// })
+
+// Border Collision Detection Variables and Functions
+
+
+// gameBorder.addEventListener('keydown', (e) => {
+//     function borderCollide(e) {
+//         if (!keydown) {
+//             return;
+//         }
+//         let coords = e.gameBorder.getBoundingClientRect();
+//         let movX = e.movementX;
+//         let movY = e.movementY;
+//         if (!collision(movX, movY, e.))
+//     }
+// });
+
+
+// Enemy Collision Detection Variables and Functions
+// let enemyBox = document.getElementById('enemy-box');
+
+// --------------------- END TRASH COLLISION DETECTION SEGMENT ---------------------------
 
 // musicVolumeRange.oninput = function () {
 //     musicVolume.innerHTML = this.value;
@@ -179,6 +303,136 @@ function instructions() {
     instBox.classList.toggle('activated');
 }
 
+// CHARACTER Classes
+
+class Character {
+  constructor(name, hpMax, hpCurrent, movementSpeed) {
+    this.name = name;
+    this.hpMax = hpMax;
+    this.hpCurrent = hpCurrent;
+    this.movementSpeed = movementSpeed;
+  }
+}
+
+class Player extends Character {
+  constructor(name, hpMax, hpCurrent, mpMax, mpCurrent, movementSpeed, XP, level) {
+    super(name, hpMax, hpCurrent, movementSpeed);
+    this.name = name;
+    this.hpMax = hpMax;
+    this.hpCurrent = hpCurrent;
+    this.mpMax = mpMax;
+    this.mpCurrent = mpCurrent;
+    this.movementSpeed = movementSpeed;
+    this.XP = XP;
+    this.level = level;
+  }
+  //e key for heal
+  heal(e) {
+    if (e.code === 101) {
+      if (this.hpCurrent === this.hpMax || this.mpCurrent <= 30) {
+        return;
+      } else if (this.mpCurrent >= 30 (this.hpCurrent + 30 > this.hpMax)) {
+        this.hpCurrent = this.hpMax;
+        this.mpCurrent -= 30;
+      } else if (this.mpCurrent >= 30) {
+        this.hpCurrent += 30;
+        this.mpCurrent -= 30;
+      }
+    }
+  }
+  //f key for attack. Keep it simple, AoE circle around object Only.
+  attack(e) {
+    // must render direction based attack that spans a set of pixels. deplete MP bar.
+  }
+  //spacebar for evade
+  evade(e) {
+    document.addEventListener('keydown', function(e) {
+      if (e.code === 32) {
+        this.movementSpeed += 20;
+        this.mpCurrent -= 20;
+        playerMagic.value = this.mpCurrent;
+        playerMagicCount.innerHTML = this.mpCurrent;
+      }
+      return speedDash;
+    })
+  }
+  //q key for slipstream
+  slipStream(e) {
+    document.addEventListener('keydown', function(e) {
+      if (e.code === 113) {
+        return;
+      } else if (this.mpCurrent === this.mpMax) {
+        this.mpCurrent = 0;
+      }
+    })
+    return cooldown;
+    // expend full MP bar to become translucent and prevent damage
+  }
+
+  levelUp() {
+    if (this.XP >= 100) {
+      this.XP = 0;
+      this.level++;
+      this.hpMax += 10;
+      this.hpCurrent = this.hpMax;
+      this.mpMax += 10;
+      this.mpCurrent = this.mpMax;
+      this.movementSpeed += 5;
+    } if (this.level % 3 === 0) {
+      return levelBossWave, levelWave;
+    } else return levelWave;
+  }
+  // must code a means by which player movement and enemy kill determines level up.
+}
+
+class Enemy extends Character {
+  constructor(name, hpMax, hpCurrent, movementSpeed) {
+    super(name, hpMax, hpCurrent, movementSpeed);
+  }
+  advance() {
+    // this is where you need to code the enemy constantly advancing toward character.
+    // add conditional knock-back if they are not destroyed on advance.
+    // add destroy on collision if enemy health higher than basic
+  }
+}
+// CHARACTER OBJECTS
+const playerOne = new Player('Hero', 100, 100, 100, 100, 20, 0, 1);
+
+// build enemy array. Spawn new wave of them based off of current player level after time delay
+
+let enemies = [];
+
+function generateEnemies(num) {
+  for (let i = 1; i <= num; i++) {
+    const enemyPlayer = new Enemy(`Enemy ${i}`, 1, 1, 10);
+    enemies.push(enemyPlayer);
+  }
+  return enemies;
+}
+
+function generateBossEnemies(num) {
+  for (let i = 1; i <= num; i++) {
+    const enemyBoss = new Enemy(`Boss ${i}`, 3, 3, 5);
+    enemies.push(enemyBoss);
+  }
+  return enemies;
+}
+
+// create a 5s cooldown condition on special abilities
+function revert() {
+  this.movementSpeed -= 20;
+}
+function recharge() {
+  this.mpCurrent === this.mpMax;
+}
+
+
+const levelBossWave = setTimeout(generateBossEnemies((this.level/3)), 3000);
+const levelWave = setTimeout(generateEnemies(this.level), 5000);
+const speedDash = setTimeout(revert, 5000);
+const cooldown = setTimeout(recharge, 5000);
+
+
 
 // // BUILD THE BASICS BEFORE YOU BUILD THE BONUSES!!!
 
@@ -254,4 +508,3 @@ function instructions() {
 // 5. Build basic pixel-grid based attack for characters and enemies.
 //     -Specify the space being affected, the on success effects. Enemies instead must on-collision conditional.
 // 6. Build score system and display. Small Enemies killed * Big Enemies killed Level ?
-// 7.
