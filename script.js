@@ -1,3 +1,28 @@
+// KEY COMMITMENTS FOR PLAYER ACTIONS ..
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'e') {
+    playerOne.heal();
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === ' ') {
+    playerOne.evade();
+  }
+});
+
+// document.addEventListener('keydown', function(event) {
+//   if (event.key === 'e') {
+//     playerOne.heal();
+//   }
+// });
+
+// document.addEventListener('keydown', function(event) {
+//   if (event.key === 'e') {
+//     playerOne.heal();
+//   }
+// });
+
 // Button Variables
 const startBtn = document.getElementById('start-button');
 const restartBtn = document.getElementById('restart-button');
@@ -42,6 +67,7 @@ const playerExp = document.getElementById('xp-bar');
 const playerHealthCount = document.getElementById('health-bar');
 const playerMagicCount = document.getElementById('magic-bar');
 const playerExpCount = document.getElementById('exp-bar');
+const gaugeBG = document.getElementById('player-status');
 
 // VOLUME ADJUSTING ELEMENTS BELOW
 const musicVolume = document.getElementById('music-volume');
@@ -53,19 +79,14 @@ const sfxVolumeRange = document.getElementById('sfx-volume-range');
 sfxVolume.innerHTML = sfxVolumeRange.value;
 
 function newGameRender() {
-    playerHealth.value = 100;
-    playerMagic.value = 100;
-    playerExp.value = 0;
-    playerExpCount.innerHTML = playerExp.value;
-    playerHealthCount.innerHTML = playerHealth.value;
-    playerMagicCount.innerHTML = playerMagic.value;
     playerOne.hpCurrent = 100;
     playerOne.hpMax = 100;
     playerOne.mpCurrent = 100;
     playerOne.mpMax = 100;
     playerOne.movementSpeed = 20;
-    playerOne.XP = 0;
+    playerOne.XP = 1;
     playerOne.level = 1;
+    return gaugeBarRender();
     }
 
 function startGameNoise() {
@@ -327,42 +348,39 @@ class Player extends Character {
     this.level = level;
   }
   //e key for heal
-  heal(e) {
-    if (e.code === 101) {
-      if (this.hpCurrent === this.hpMax || this.mpCurrent <= 30) {
+  heal() {
+      if (this.hpCurrent === this.hpMax || this.mpCurrent < 30) {
         return;
-      } else if (this.mpCurrent >= 30 (this.hpCurrent + 30 > this.hpMax)) {
-        this.hpCurrent = this.hpMax;
-        this.mpCurrent -= 30;
-      } else if (this.mpCurrent >= 30) {
-        this.hpCurrent += 30;
-        this.mpCurrent -= 30;
-      }
+    } else if (this.hpCurrent + 30 > this.hpMax) {
+      this.hpCurrent = this.hpMax;
+      this.mpCurrent -= 30;
+    } else {
+      this.hpCurrent += 30;
+      this.mpCurrent -= 30;
     }
+    gaugeBarRender();
   }
   //f key for attack. Keep it simple, AoE circle around object Only.
-  attack(e) {
+  attack() {
     // must render direction based attack that spans a set of pixels. deplete MP bar.
   }
   //spacebar for evade
-  evade(e) {
-    document.addEventListener('keydown', function(e) {
-      if (e.code === 32) {
+  evade() {
+    alert(`current speed is${playerOne.movementSpeed}`);
         this.movementSpeed += 20;
         this.mpCurrent -= 20;
-        playerMagic.value = this.mpCurrent;
-        playerMagicCount.innerHTML = this.mpCurrent;
+        return speedDash, gaugeBarRender();
       }
-      return speedDash;
-    })
-  }
+
   //q key for slipstream
-  slipStream(e) {
-    document.addEventListener('keydown', function(e) {
-      if (e.code === 113) {
+  slipStream() {
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'q' && this.mpCurrent === this.mpMax) {
+      this.mpCurrent = 0;
+      return gaugeBarRender();
+        console.log('skill is working!');
+      } else {
         return;
-      } else if (this.mpCurrent === this.mpMax) {
-        this.mpCurrent = 0;
       }
     })
     return cooldown;
@@ -378,13 +396,13 @@ class Player extends Character {
       this.mpMax += 10;
       this.mpCurrent = this.mpMax;
       this.movementSpeed += 5;
-    } if (this.level % 3 === 0) {
-      return levelBossWave, levelWave;
-    } else return levelWave;
+      if (this.level % 3 === 0) {
+      return levelBossWave, levelWave, gaugeBarRender();
+    } else return levelWave, gaugeBarRender();
   }
   // must code a means by which player movement and enemy kill determines level up.
 }
-
+}
 class Enemy extends Character {
   constructor(name, hpMax, hpCurrent, movementSpeed) {
     super(name, hpMax, hpCurrent, movementSpeed);
@@ -393,6 +411,7 @@ class Enemy extends Character {
     // this is where you need to code the enemy constantly advancing toward character.
     // add conditional knock-back if they are not destroyed on advance.
     // add destroy on collision if enemy health higher than basic
+
   }
 }
 // CHARACTER OBJECTS
@@ -420,18 +439,37 @@ function generateBossEnemies(num) {
 
 // create a 5s cooldown condition on special abilities
 function revert() {
-  this.movementSpeed -= 20;
+  playerOne.movementSpeed -= 20;
 }
 function recharge() {
-  this.mpCurrent === this.mpMax;
+  playerOne.mpCurrent === playerOne.mpMax;
+  return gaugeBarRender();
 }
 
 
+// level up checker on instance of XP gain. incorporate for successful enemy kills and movement.
+function levelCheck() {
+  if (this.XP >= 100) {
+    levelUp();
+  } else return;
+}
+
+// create a stock gauge bar render to streamline the update process for interactive character bars
+function gaugeBarRender() {
+  playerHealth.value = playerOne.hpCurrent;
+  playerMagic.value = playerOne.mpCurrent;
+  playerExp.value = playerOne.XP;
+  playerExpCount.innerHTML = playerOne.XP;
+  playerHealthCount.innerHTML = playerHealth.value;
+  playerMagicCount.innerHTML = playerMagic.value;
+  return;
+}
+
+// set Time Out Variables
 const levelBossWave = setTimeout(generateBossEnemies((this.level/3)), 3000);
 const levelWave = setTimeout(generateEnemies(this.level), 5000);
 const speedDash = setTimeout(revert, 5000);
 const cooldown = setTimeout(recharge, 5000);
-
 
 
 // // BUILD THE BASICS BEFORE YOU BUILD THE BONUSES!!!

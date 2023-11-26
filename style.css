@@ -8,18 +8,18 @@
         display: flex;
     }
 
-    80% {translateY(0px)
+    80% {translateY: 0px;
     }
 
     85% {
-        translateY(100px);
+        translateY: 100px;
     }
     90% {
         transform: translateY(0px);
     }
 
     95% {
-        translateY(100px);
+        translateY: 100px;
     }
     100% {
         transform: translateY(0px);
