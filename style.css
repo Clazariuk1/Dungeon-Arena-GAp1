@@ -10,7 +10,7 @@
 
     80% {translateY: 0px;
     }
-
+`
     85% {
         translateY: 100px;
     }
@@ -297,6 +297,11 @@ button:hover {
     text-align: center;
     border-radius: 5%;
 }
+
+/* .killed {
+    display: block;
+    opacity: 1;
+} */
 
 #game-over-screen {
     position: relative;

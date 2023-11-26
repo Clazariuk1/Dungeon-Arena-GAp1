@@ -1,3 +1,11 @@
+// Major lingering bugs:
+// SFX volume mute not working, not silencing sound.
+// Set Timeouts not working correctly - powers not resetting after cooldown, gauge bars not updating as necessary
+// cannot successfully add border collision detection without wonky things happening to playerBox
+//
+
+
+
 // KEY COMMITMENTS FOR PLAYER ACTIONS ..
 document.addEventListener('keydown', function(event) {
   if (event.key === 'e') {
@@ -11,15 +19,16 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// document.addEventListener('keydown', function(event) {
-//   if (event.key === 'e') {
-//     playerOne.heal();
-//   }
-// });
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'q') {
+    playerOne.slipStream();
+  }
+});
+
 
 // document.addEventListener('keydown', function(event) {
 //   if (event.key === 'e') {
-//     playerOne.heal();
+//     playerOne.attack();
 //   }
 // });
 
@@ -35,11 +44,11 @@ const muteSFXBtn = document.getElementById('mute-sfx');
 const instBox = document.getElementById('instructions-box')
 const pauseMenu = document.getElementById('pause-menu');
 const gameScreen = document.getElementById('game');
-const gameOverScreen = document.getElementById('game-over');
+const gameOverScreen = document.getElementById('game-over-screen');
 const currentScore = document.getElementById('current-score');
 
 // Character Variables
-const playerBox = document.getElementById('player-box');
+// const playerBox = document.getElementById('player-box');
 
 // SOUND ELEMENTS BELOW
 const bossMusic = document.getElementById('boss-battle-music');
@@ -96,13 +105,17 @@ function startGameNoise() {
 }
 
 function gameOver() {
-    // if (player.health <= 0) {
+    // must add score tally render and create death checks on every player health loss
+
+    // if (playerOne.health <= 0) {
         currentSound = playerDeathSound;
         playerDeathSound.play();
         currentSong = endMusic;
-        endMusic.play;
-   // }
-}
+        endMusic.play();
+        gameOverScreen.classList.toggle('activate');
+    }
+//      else return;
+// }
 
 // Character / Character Movement Variables
 
@@ -116,7 +129,7 @@ function gameOver() {
 //   const gameBorderRight = gameBorderRect.right;
 //   const gameBorderBottom = gameBorderRect.bottom;
 
-  // Function to handle player movement
+//  // Function to handle player movement
 //   function movePlayer(event) {
 //     let newX = playerBox.offsetLeft;
 //     let newY = playerBox.offsetTop;
@@ -124,16 +137,16 @@ function gameOver() {
 //     // Move player based on key press
 //     switch (event.key) {
 //       case 'w':
-//         newY -= 10;
+//         newY -= playerOne.movementSpeed;
 //         break;
 //       case 'a':
-//         newX -= 10;
+//         newX -= playerOne.movementSpeed;
 //         break;
 //       case 's':
-//         newY += 10;
+//         newY += playerOne.movementSpeed;
 //         break;
 //       case 'd':
-//         newX += 10;
+//         newX += playerOne.movementSpeed;
 //         break;
 //       default:
 //         break;
@@ -160,6 +173,29 @@ function gameOver() {
 //   // Event listener to handle key presses for player movement
 //   document.addEventListener('keydown', movePlayer);
 // };
+
+
+let playerBox = document.getElementById('player-box');
+
+document.addEventListener('keydown', (e) => {
+  let leftpos = parseInt(window.getComputedStyle(playerBox).getPropertyValue("left"));
+  let toppos = parseInt(window.getComputedStyle(playerBox).getPropertyValue("top"));
+  switch (e.key) {
+    case 'a':
+      playerBox.style.left = leftpos - playerOne.movementSpeed + 'px';
+      break;
+    case 'd':
+      playerBox.style.left = leftpos + playerOne.movementSpeed + 'px';
+      break;
+    case 'w':
+      playerBox.style.top = toppos - playerOne.movementSpeed + 'px';
+      break;
+    case 's':
+      playerBox.style.top = toppos + playerOne.movementSpeed + 'px';
+  }
+
+})
+
 
 // let movementSpeed = 20;
 // document.addEventListener('keydown', (e) => {
@@ -373,19 +409,15 @@ class Player extends Character {
       }
 
   //q key for slipstream
+  //expend full MP bar to become translucent and prevent damage
   slipStream() {
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'q' && this.mpCurrent === this.mpMax) {
+    if (this.mpCurrent === this.mpMax) {
+      alert('skill is working!');
       this.mpCurrent = 0;
-      return gaugeBarRender();
-        console.log('skill is working!');
-      } else {
-        return;
-      }
-    })
-    return cooldown;
-    // expend full MP bar to become translucent and prevent damage
-  }
+      return gaugeBarRender(), cooldown;
+    } else return;
+    }
+
 
   levelUp() {
     if (this.XP >= 100) {
