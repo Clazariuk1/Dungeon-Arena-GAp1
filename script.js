@@ -4,6 +4,89 @@
 // cannot successfully add border collision detection without wonky things happening to playerBox
 //
 
+// Character / Character Movement Variables . BELOW IS GOSPEL. IT TOOK YOU A DAY TO FIGURE OUT PRESERVE AT ALL COSTS
+
+document.addEventListener('keydown', (e) => {
+  let playerBox = document.getElementById('player-box');
+  let movePlayer = 20;
+  let leftpos = parseInt(window.getComputedStyle(playerBox).getPropertyValue("left"));
+  let toppos = parseInt(window.getComputedStyle(playerBox).getPropertyValue("top"));
+  switch (e.key) {
+    case 'a':
+      playerBox.style.left = leftpos - movePlayer + 'px';
+        break;
+        case 'd':
+        playerBox.style.left = leftpos + movePlayer + 'px';
+          break;
+          case 'w':
+            playerBox.style.top = toppos - movePlayer + 'px';
+              break;
+              case 's':
+                playerBox.style.top = toppos + movePlayer + 'px';
+                break;
+
+  }
+})
+
+document.addEventListener('DOMContentLoaded', function() {
+   const gameBorder = document.getElementById('action-space');
+   let playerBox = document.getElementById('player-box');
+
+//   // Get container boundaries
+  //  const gameBorderRect = gameBorder.getBoundingClientRect();
+  //  const playerBoxRect = playerBox.getBoundingClientRect();
+  //  const gameBorderLeft = gameBorderRect.left;
+  //  const gameBorderTop = gameBorderRect.top;
+  //  const gameBorderRight = gameBorderRect.right;
+  //  const gameBorderBottom = gameBorderRect.bottom;
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const gameBorder = document.getElementById('action-space');
+    const playerBox = document.getElementById('player-box');
+    let playerBoxTop = 0;
+    let playerBoxLeft = 0;
+    const stepSize = 10;
+
+    document.addEventListener('keydown', function(event) {
+      switch(event.key) {
+        case 'w':
+          movePlayer(0, -stepSize);
+          break;
+        case 'a':
+          movePlayer(-stepSize, 0);
+          break;
+        case 's':
+          movePlayer(0, stepSize);
+          break;
+        case 'd':
+          movePlayer(stepSize, 0);
+          break;
+      }
+    });
+
+    function movePlayer(deltaX, deltaY) {
+      const gameBorderRect = gameBorder.getBoundingClientRect();
+      const playerBoxRect = playerBox.getBoundingClientRect();
+
+      const newTop = playerBoxTop + deltaY;
+      const newLeft = playerBoxLeft + deltaX;
+
+      if (newTop >= 0 && newTop <= gameBorderRect.height - playerBoxRect.height) {
+        playerBoxTop = newTop;
+      }
+
+      if (newLeft >= 0 && newLeft <= gameBorderRect.width - playerBoxRect.width) {
+        playerBoxLeft = newLeft;
+      }
+
+      playerBox.style.top = playerBoxTop + 'px';
+      playerBox.style.left = playerBoxLeft + 'px';
+    }
+  });
+
+//   // Event listener to handle key presses for player movement
+  // document.addEventListener('keydown', movePlayer);
+});
 
 
 // KEY COMMITMENTS FOR PLAYER ACTIONS ..
@@ -116,140 +199,6 @@ function gameOver() {
     }
 //      else return;
 // }
-
-// Character / Character Movement Variables
-
-// window.onload = function() {
-//   const gameBorder = document.getElementById('action-space');
-
-//   // Get container boundaries
-//   const gameBorderRect = gameBorder.getBoundingClientRect();
-//   const gameBorderLeft = gameBorderRect.left;
-//   const gameBorderTop = gameBorderRect.top;
-//   const gameBorderRight = gameBorderRect.right;
-//   const gameBorderBottom = gameBorderRect.bottom;
-
-//  // Function to handle player movement
-//   function movePlayer(event) {
-//     let newX = playerBox.offsetLeft;
-//     let newY = playerBox.offsetTop;
-
-//     // Move player based on key press
-//     switch (event.key) {
-//       case 'w':
-//         newY -= playerOne.movementSpeed;
-//         break;
-//       case 'a':
-//         newX -= playerOne.movementSpeed;
-//         break;
-//       case 's':
-//         newY += playerOne.movementSpeed;
-//         break;
-//       case 'd':
-//         newX += playerOne.movementSpeed;
-//         break;
-//       default:
-//         break;
-//     }
-
-//     // Prevent player from crossing container boundaries
-//     if (newX < gameBorderLeft) {
-//       newX = gameBorderLeft;
-//     }
-//     if (newX + playerBox.offsetWidth > gameBorderRight) {
-//       newX = gameBorderRight - playerBox.offsetWidth;
-//     }
-//     if (newY < gameBorderTop) {
-//       newY = gameBorderTop;
-//     }
-//     if (newY + playerBox.offsetHeight > gameBorderBottom) {
-//       newY = gameBorderBottom - playerBox.offsetHeight;
-//     }
-
-//     playerBox.style.left = newX + 'px';
-//     playerBox.style.top = newY + 'px';
-//   }
-
-//   // Event listener to handle key presses for player movement
-//   document.addEventListener('keydown', movePlayer);
-// };
-
-
-let playerBox = document.getElementById('player-box');
-
-document.addEventListener('keydown', (e) => {
-  let leftpos = parseInt(window.getComputedStyle(playerBox).getPropertyValue("left"));
-  let toppos = parseInt(window.getComputedStyle(playerBox).getPropertyValue("top"));
-  switch (e.key) {
-    case 'a':
-      playerBox.style.left = leftpos - playerOne.movementSpeed + 'px';
-      break;
-    case 'd':
-      playerBox.style.left = leftpos + playerOne.movementSpeed + 'px';
-      break;
-    case 'w':
-      playerBox.style.top = toppos - playerOne.movementSpeed + 'px';
-      break;
-    case 's':
-      playerBox.style.top = toppos + playerOne.movementSpeed + 'px';
-  }
-
-})
-
-
-// let movementSpeed = 20;
-// document.addEventListener('keydown', (e) => {
-//     let leftpos = parseInt(window.getComputedStyle(playerBox).getPropertyValue("left"));
-//     let toppos = parseInt(window.getComputedStyle(playerBox).getPropertyValue("top"));
-//     switch(e.key) {
-//         case 'a':
-//             playerBox.style.left = leftpos - movePlayer + 'px';
-//             break;
-//         case 'd':
-//             playerBox.style.left = leftpos + movePlayer + 'px';
-//             break;
-//         case 'w':
-//             playerBox.style.top = toppos - movePlayer + 'px';
-//             break;
-//         case 's':
-//             playerBox.style.top = toppos + movePlayer+ 'px';
-//     }
-// function playerMovement(event) {
-//     const gameBorder = document.getElementById('action-space');
-//     const borderRect = gameBorder.getBoundingClientRect();
-//     const gameBorderLeft = borderRect.left;
-//     const gameBorderRight = borderRect.right;
-//     const gameBorderTop = borderRect.top;
-//     const gameBorderBottom = borderRect.bottom;
-//     gameBorder.addEventListener('mousemove', playerMovement);
-//     let newX = player.offsetLeft + event.movementX;
-//     let newY = player.offsetTop + event.movementY;
-//     if (newX + playerBox.offsetWidth > gameBorderRight) {
-//         newX = gameBorderRight - playerBox.offsetWidth;
-//     }
-//     if (newY + playerBox.offsetHeight > gameBorderBottom) {
-//         newY = gameBorderBottom - playerBox.offsetHeight;
-//     }
-//     playerBox.style.left = newX + 'px';
-//     playerBox.style.top = newY + 'px';
-//     }
-// })
-
-// Border Collision Detection Variables and Functions
-
-
-// gameBorder.addEventListener('keydown', (e) => {
-//     function borderCollide(e) {
-//         if (!keydown) {
-//             return;
-//         }
-//         let coords = e.gameBorder.getBoundingClientRect();
-//         let movX = e.movementX;
-//         let movY = e.movementY;
-//         if (!collision(movX, movY, e.))
-//     }
-// });
-
 
 // Enemy Collision Detection Variables and Functions
 // let enemyBox = document.getElementById('enemy-box');

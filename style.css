@@ -332,6 +332,7 @@ button:hover {
 
 #player-box {
     display: block;
+    position: absolute;
     justify-content: center;
     align-items: center;
     padding: 1rem;
