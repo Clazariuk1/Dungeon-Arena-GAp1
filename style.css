@@ -331,7 +331,7 @@ button:hover {
 } */
 
 #player-box {
-    display: block;
+    /* display: block; */
     position: absolute;
     justify-content: center;
     align-items: center;
@@ -348,6 +348,7 @@ button:hover {
 
 /* #current-enemy {
     display: block;
+    position: absolute;
     justify-content: center;
     align-items: center;
     padding: 1rem;
@@ -363,8 +364,8 @@ button:hover {
 #action-space {
     border: solid .5rem blue;
     position: relative;
-    width: 100%;
-    height: 100%;
+    width: 800px;
+    height: 600px;
 }
 
 .activate#game-over-screen {

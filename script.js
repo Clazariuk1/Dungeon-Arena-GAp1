@@ -2,75 +2,111 @@
 // SFX volume mute not working, not silencing sound.
 // Set Timeouts not working correctly - powers not resetting after cooldown, gauge bars not updating as necessary
 // cannot successfully add border collision detection without wonky things happening to playerBox
-//
+// Couldn't get up key to function, had to eliminate collision check and somehow paradoxically it works now. be wary of future issues.
+// player box was clipping on down and right, had to make an offsetb y multiplying box 1.1 offset to keep within bounds.
 
-// Character / Character Movement Variables . BELOW IS GOSPEL. IT TOOK YOU A DAY TO FIGURE OUT PRESERVE AT ALL COSTS
+    // MOVEMENT VARIABLES
 
-document.addEventListener('keydown', (e) => {
-  let playerBox = document.getElementById('player-box');
-  let movePlayer = 20;
-  let leftpos = parseInt(window.getComputedStyle(playerBox).getPropertyValue("left"));
-  let toppos = parseInt(window.getComputedStyle(playerBox).getPropertyValue("top"));
-  switch (e.key) {
-    case 'a':
-      playerBox.style.left = leftpos - movePlayer + 'px';
-        break;
-        case 'd':
-        playerBox.style.left = leftpos + movePlayer + 'px';
-          break;
-          case 'w':
-            playerBox.style.top = toppos - movePlayer + 'px';
-              break;
-              case 's':
-                playerBox.style.top = toppos + movePlayer + 'px';
-                break;
+const gameBorder = document.getElementById('action-space');
+//child collision lines???
+const playerBox = document.getElementById('player-box'); //charDiv
+const gameBorderRect = gameBorder.getBoundingClientRect(); //collision lines
+const playerBoxRect = playerBox.getBoundingClientRect();
+// const scrollTop = document.documentElement.scrollTop;
+// const scrollLeft = document.documentElement.scrollLet;
+// const playerBoxTop = playerBoxRect.top + scrollTop;
+// const enemyCollisionRects = [];
+// const enemyBox = document.getElementById('enemy-box');
+// const enemyBoxRect = enemyBox.getBoundingClientRect();
 
+let charLeftPosition = 0;
+let charTopPosition = 0;
+
+// MOVEMENT KEYS CHECK
+
+document.addEventListener("keydown", handleKeys);
+document.addEventListener("keyup", handleKeys);
+
+// MOVEMENT KEYS AND BOUNDARY CHECK FUNCTION
+
+function handleKeys(e) {
+  e.preventDefault();
+  let keydown = e.code;
+
+  if (keydown === "KeyD") {
+    // console.log(wallCollision(0, 0, 10, 0));
+    if (!wallCollision(0, 0, 10, 0)) {
+      charLeftPosition += 10;
+    }
+    if (charLeftPosition + Math.ceil(playerBox.offsetWidth * 1.1) <= gameBorder.offsetWidth) {
+      playerBox.style.left = charLeftPosition + "px";
+    } else {
+      charLeftPosition = gameBorder.offsetWidth - playerBox.offsetWidth;
+    }
   }
-})
 
-// attempt to make an isolated code function for border movement collision on walls. Currently draft. not gospel.
-function moveBox(e) {
-  const gameBorder = document.getElementById('action-space');
-  let playerBox = document.getElementById('player-box');
+  if (keydown === "KeyA") {
+    // console.log(wallCollision(0, -10, 0, 0));
+    if (!wallCollision(0, -10, 0, 0)) {
+      charLeftPosition -= 10;
+    }
+    if (charLeftPosition >= 0) {
+      playerBox.style.left = charLeftPosition + "px";
+    } else {
+      charLeftPosition = 0;
+    }
+  }
 
-  const gameBorderRect = gameBorder.getBoundingClientRect();
-  const playerBoxRect = playerBox.getBoundingClientRect();
+  if (keydown === "KeyS") {
+    // console.log(wallCollision(0, 0, 0, 10));
+    if (!wallCollision(0, 0, 0, 10)) {
+      charTopPosition += 10;
+    }
+    if (charTopPosition + Math.ceil(playerBox.offsetHeight * 1.1) <= gameBorder.offsetHeight) {
+      playerBox.style.top = charTopPosition + "px";
+    } else {
+      charTopPosition = gameBorder.offsetHeight - playerBox.offsetHeight;
+    }
+  }
 
-  // const gameBorderLeft = gameBorderRect.left;
-  // const gameBorderTop = gameBorderRect.top;
-  // const gameBorderRight = gameBorderRect.right;
-  // const gameBorderBottom = gameBorderRect.bottom;
+  if (keydown === "KeyW") {
+    // note to self and devs : in debugging I'd fixed my 'up' key not working by eliminating the wallCollision check. I have no idea why it works now but this has enabled my wall collision, potentially based off pixel count vs collision boundary.
+    // console.log(
+    //   wallCollision(-10, 0, 0, 0));
+    // if (!wallCollision(-10, 0, 0, 0)) {
+      charTopPosition -= 10;
+    // }
+    if (charTopPosition >= 0) {
+      playerBox.style.top = charTopPosition + "px";
+    } else {
+      charTopPosition = 0;
+    }
+  }
+
+function wallCollision(top, left, right, bottom) {
+  // don't need below constants because I've declared them in global space.
+  // const playerBoxRect = playerBox.getBoundingClientRect();
+  // const gameBorderRect = gameBorder.getBoundingClientRect();
+  const scrollTop = document.documentElement.scrollTop;
+  const scrollLeft = document.documentElement.scrollLeft;
+  const playerBoxTop = playerBoxRect.top + scrollTop;
+  const playerBoxLeft = playerBoxRect.left + scrollLeft;
+  // const enemyCollisionRects = []; likely incorrect, must more closely examine. I'm under impression i only need gameborderRect for this.
 
 
-  const minX = gameBorderRect.left;
-  const minY = gameBorderRect.top;
-  const maxX = gameBorderRect.right - playerBoxRect.width;
-  const maxY = gameBorderRect.bottom - playerBoxRect.height;
+    const overlapX =
+      playerBoxLeft + left < gameBorderRect.right &&
+      playerBoxLeft + playerBox.offsetWidth + right > gameBorderRect.left;
+    const overlapY =
+      playerBoxTop + top < gameBorderRect.bottom &&
+      playerBoxTop + playerBox.offsetHeight + bottom > playerBoxRect.top;
 
-  let newX = e.clientX - gameBorderRect.left - playerBoxRect.width / 2;
-  let newY = e.clientY - gameBorderRect.top - playerBoxRect.height / 2;
-
-  newX = Math.max(minX, Math.min(newX, maxX));
-  newY = Math.max(minY, math.min(newY, maxY));
-
-  playerBox.style.left = newX + 'px';
-  playerBox.style.top = newY + 'px';
+    if (overlapX && overlapY) {
+      return true;
+    }
+  }
+  return false;
 }
-
-
-
-// document.addEventListener('DOMContentLoaded', function() {
-//    const gameBorder = document.getElementById('action-space');
-//    let playerBox = document.getElementById('player-box');
-
-//   // Get container boundaries
-  //  const gameBorderRect = gameBorder.getBoundingClientRect();
-  //  const playerBoxRect = playerBox.getBoundingClientRect();
-  //  const gameBorderLeft = gameBorderRect.left;
-  //  const gameBorderTop = gameBorderRect.top;
-  //  const gameBorderRight = gameBorderRect.right;
-  //  const gameBorderBottom = gameBorderRect.bottom;
-
 
 // KEY COMMITMENTS FOR PLAYER ACTIONS ..
 document.addEventListener('keydown', function(event) {
@@ -91,12 +127,6 @@ document.addEventListener('keydown', function(event) {
   }
 });
 
-
-// document.addEventListener('keydown', function(event) {
-//   if (event.key === 'e') {
-//     playerOne.attack();
-//   }
-// });
 
 // Button Variables
 const startBtn = document.getElementById('start-button');
@@ -176,8 +206,8 @@ function gameOver() {
     // if (playerOne.health <= 0) {
         currentSound = playerDeathSound;
         playerDeathSound.play();
-        currentSong = endMusic;
         endMusic.play();
+        currentSong = endMusic;
         gameOverScreen.classList.toggle('activate');
     }
 //      else return;
@@ -185,6 +215,9 @@ function gameOver() {
 
 // Enemy Collision Detection Variables and Functions
 // let enemyBox = document.getElementById('enemy-box');
+
+
+
 
 // --------------------- END TRASH COLLISION DETECTION SEGMENT ---------------------------
 
@@ -334,7 +367,7 @@ class Player extends Character {
   }
   //spacebar for evade
   evade() {
-    alert(`current speed is${playerOne.movementSpeed}`);
+    alert(`current speed is ${playerOne.movementSpeed}`);
         this.movementSpeed += 20;
         this.mpCurrent -= 20;
         return speedDash, gaugeBarRender();
@@ -411,7 +444,7 @@ function recharge() {
 }
 
 
-// level up checker on instance of XP gain. incorporate for successful enemy kills and movement.
+// level up checker on instance of XP gain. incorporate for successful enemy kills and movement. Think of the step() render from tutorial exercise.
 function levelCheck() {
   if (this.XP >= 100) {
     levelUp();
