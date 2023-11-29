@@ -1,0 +1,66 @@
+BUILD THE BASICS BEFORE YOU BUILD THE BONUSES!!!
+"Dungeon Arena."
+a top down action-rpg survival arcade game.
+premise: you're an adventurer/explorer surviving endless waves of enemies within a single space in which you are trapped.
+
+All characters:
+Attack
+Evade - mp
+heal - mp
+Special attack - mp
+WASD character icon movement
+Enemies are randomly generated within game space Arena
+Once generated, enemies constantly converge on the player. (alternative: enemies move constantly in random directions, apply border collision damage.)
+Enemies continually pour in from random parts of the screen edge to attack/converge on the player.
+BONUS: All objects contain ‘image’ constructor that has image file location.
+Start screen / Game Screen / Death screen. Consider game screen with start / death pop ups.
+audio work. On special, on attack hear slash, bite noise on collision damage for player and death moan for zero hp.  Song on throughout. Adjustable volume slider for music and SFX separately.
+Volume music slider! Accomplished.
+BONUS: Game drop down menu that contains stuff -> PAUSE MID-GAME menu. add whatever down the line
+Collision detection an absolute must.
+Kill three things unleash a boss thing/ level conditional
+
+constants: game screen. Player box. audio variables (because they're always present especially). Pause button. Stats Gauges.
+
+state variables:
+player;
+score;
+enemies;
+
+0. Make a base layout with volume sliders top right, hp/mana bars top left. FINISHED.
+0.05 initialize game by MAKING the playerBox on game start using document.createElement('div') and add classes, id, etc.
+0.1 Player shape start at edge of space.
+0.2 Give it the ability to move on keydown WASD or arrow keys. FINISHED.
+0.3 make an 'enemy' array into which enemies will be 'birthed' on level up using he document.createElement system used like with player One
+0.35 Make a render Enemy function that will periodically generate the new enemies in the arena.
+0.38 Ensure border collision detection is functioning for enemy blocks as well.
+0.4 Build an on collision detection event between the player and enemies. Ensure damage results.
+0.5 make the enemies continually chase after the player to touch and do damage. CONSIDER: enemies moving at random, damage on player collision AND border collision.
+0.6 build level up system to increase the player's HP and MP.
+0.65 with each level up, movement speed and HP of enemies is increased. stats up too. Make it some kind of multiplier. this.hp = hp * player.level
+0.7 Implement XP gain and MP recharge from movement to incite activity on player's part.
+0.8 make a PAUSE GAME SCREEN - half-finished, does not 'pause'
+
+1. Build player class. HP / MP / Movement Speed / Level
+2. Build enemy class. HP / Movement Speed
+3. For every three normal enemies, generate one hard enemy.
+4. Build click-based attack system on enemy blocks. One click, 1 HP. Hard enemies more clicks. BONUS: Consider higher enemy HP for higher levels.
+5. Build score system and display. Small Enemies killed = 10pts, Big enemies killed is a 50pt. 1 HP lost is -1 to score?
+
+PRE GAME CODING TO FIGURE OUT :
+
+As it fleshes out : you move a box that is bound within the borders of a container.
+1: ENABLE BOX MOVEMENT
+2: ENABLE BORDER COLLISION DETECTION / BOUNCE-OFF WALL
+3: ENABLE enemy box / player Box collision detection
+4: delete enemy box, subtract 1 playerBox health after collision detection
+4.5 delete enemy box, add XP / score points on successful enemy defeat
+5: propagate enemy boxes at random throughout container space. All must gravitate toward player . OR, if this is too difficult, all must move at random directions. Points lost and block deleted for border walls or player box hit.
+6: Game progresses until player death. On player death, birth the end game screen by using document.elementCreate data.
+
+
+ONE DAY:
+1. Add images to player box and enemy boxes.
+2. Add variety to enemies in size, speed, HP, etc.
+3. Add levels and BG screens
+4. Add player Box size that changes / shrinks depending on level or power
