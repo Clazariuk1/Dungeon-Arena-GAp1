@@ -1,4 +1,5 @@
 // Major lingering bugs:
+// Gauge bars not correctly increasing on player level up. must examine.
 // SFX volume mute not working, not silencing sound.
 // Set Timeouts not working correctly - powers not resetting after cooldown, gauge bars not updating as necessary
 // cannot successfully add border collision detection without wonky things happening to playerBox
@@ -6,6 +7,7 @@
 // player box was clipping on down and right, had to make an offsetb y multiplying box 1.1 offset to keep within bounds.
 // must edit game initialization to include enemy box creation within game space.
 // MOVEMENT VARIABLES
+
 
 const gameBorder = document.getElementById('action-space');
 //child collision lines???
@@ -435,7 +437,7 @@ class Player extends Character {
 
 
   levelUp() {
-    if (this.XP >= 100) {
+    // Must make sure gauge bars correctly update player stats. currently having issues.
       this.XP = 0;
       this.level++;
       this.hpMax += 10;
@@ -443,12 +445,12 @@ class Player extends Character {
       this.mpMax += 10;
       this.mpCurrent = this.mpMax;
       this.movementSpeed += 5;
-      if (this.level % 3 === 0) {
-        return levelBossWave, levelWave, gaugeBarRender();
-      } else return levelWave, gaugeBarRender();
-    }
-    // must code a means by which player movement and enemy kill determines level up.
-  }
+      // if (this.level % 3 === 0) {
+  //       return levelBossWave, levelWave, gaugeBarRender();
+  //     } else return levelWave, gaugeBarRender();
+
+  //   // must code a means by which player movement and enemy kill determines level up.
+   }
 }
 class Enemy extends Character {
   constructor(name, hpMax, hpCurrent, movementSpeed) {
@@ -502,15 +504,15 @@ function recharge() {
 
 // level up checker on instance of XP gain. incorporate for successful enemy kills and movement. Think of the step() render from tutorial exercise.
 function levelCheck() {
-  if (this.XP >= 100) {
-    levelUp();
+  if (playerOne.XP >= 100) {
+    playerOne.levelUp();
   } else return;
 }
 
 // Base destroy enemy function for any successful kill.
 function destroyEnemy() {
   enemies.shift();
-  playerOne.mp += 20;
+  playerOne.mpCurrent += 20;
   playerOne.XP += 60;
   levelCheck();
   gaugeBarRender();
