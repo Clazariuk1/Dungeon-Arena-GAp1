@@ -17,6 +17,7 @@ const playerBoxRect = playerBox.getBoundingClientRect();
 // const playerBoxTop = playerBoxRect.top + scrollTop;
 // const enemyCollisionRects = [];
 const enemyBox = document.getElementById('enemy-box');
+const enemyBoxes = document.querySelectorAll('.enemy__box');
 const enemyBoxRect = enemyBox.getBoundingClientRect();
 
 let charLeftPosition = 0;
@@ -26,6 +27,20 @@ let charTopPosition = 0;
 
 document.addEventListener("keydown", handleKeys);
 document.addEventListener("keyup", handleKeys);
+
+// attack click listener on enemies.
+enemyBoxes.forEach((enemyBox) => enemyBox.addEventListener("click", (e) => {
+  e.target.remove();
+  destroyEnemy();
+}));
+// {
+  // enemyBox.addEventListener("click", (e) => {
+    // e.target.remove();
+    // console.log("destroy!");
+    // playerOne.attack();
+    // destroyEnemy();
+//   })
+// }
 
 // MOVEMENT KEYS AND BOUNDARY CHECK FUNCTION
 
@@ -399,10 +414,7 @@ class Player extends Character {
     }
     gaugeBarRender();
   }
-  //f key for attack. Keep it simple, AoE circle around object Only.
-  attack() {
-    // must render direction based attack that spans a set of pixels. deplete MP bar.
-  }
+
   //spacebar for evade
   evade() {
     alert(`current speed is ${playerOne.movementSpeed}`);
@@ -454,7 +466,7 @@ const playerOne = new Player('Hero', 100, 100, 100, 100, 20, 0, 1);
 
 // build enemy array. Spawn new wave of them based off of current player level after time delay
 
-// const enemies = [];
+ const enemies = [];
 
 // function generateEnemies(num) {
 //   for (let i = 1; i <= num; i++) {
@@ -493,6 +505,15 @@ function levelCheck() {
   if (this.XP >= 100) {
     levelUp();
   } else return;
+}
+
+// Base destroy enemy function for any successful kill.
+function destroyEnemy() {
+  enemies.shift();
+  playerOne.mp += 20;
+  playerOne.XP += 60;
+  levelCheck();
+  gaugeBarRender();
 }
 
 // create a stock gauge bar render to streamline the update process for interactive character bars
