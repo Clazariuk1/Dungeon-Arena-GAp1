@@ -81,6 +81,7 @@ html {
 }
 
 body {
+  margin: 0;
     width: 100vw;
     height: 100vh;
     background-color: red;
@@ -346,20 +347,20 @@ button:hover {
     /* background-image:url('/Users/Chris/software_homework/Dungeon-Arena-GAp1/Images/player-thief.jpeg'); */
 }
 
-/* #current-enemy {
+#enemy-box {
     display: block;
     position: absolute;
     justify-content: center;
     align-items: center;
     padding: 1rem;
-    margin: .5rem;
+    margin: 15rem;
     width: 100px;
     height: 100px;
-    background-color: black;
-    border: solid .25rem red;
+    background-color: red;
+    border: solid .25rem black;
     object-fit: contain;
     z-index: 2;
-} */
+}
 
 #action-space {
     border: solid .5rem blue;

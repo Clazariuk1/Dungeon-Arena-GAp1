@@ -4,8 +4,8 @@
 // cannot successfully add border collision detection without wonky things happening to playerBox
 // Couldn't get up key to function, had to eliminate collision check and somehow paradoxically it works now. be wary of future issues.
 // player box was clipping on down and right, had to make an offsetb y multiplying box 1.1 offset to keep within bounds.
-
-    // MOVEMENT VARIABLES
+// must edit game initialization to include enemy box creation within game space.
+// MOVEMENT VARIABLES
 
 const gameBorder = document.getElementById('action-space');
 //child collision lines???
@@ -16,8 +16,8 @@ const playerBoxRect = playerBox.getBoundingClientRect();
 // const scrollLeft = document.documentElement.scrollLet;
 // const playerBoxTop = playerBoxRect.top + scrollTop;
 // const enemyCollisionRects = [];
-// const enemyBox = document.getElementById('enemy-box');
-// const enemyBoxRect = enemyBox.getBoundingClientRect();
+const enemyBox = document.getElementById('enemy-box');
+const enemyBoxRect = enemyBox.getBoundingClientRect();
 
 let charLeftPosition = 0;
 let charTopPosition = 0;
@@ -42,6 +42,8 @@ function handleKeys(e) {
       playerBox.style.left = charLeftPosition + "px";
     } else {
       charLeftPosition = gameBorder.offsetWidth - playerBox.offsetWidth;
+    } if (enemyCollision(0, 0, 0, 0)) {
+      takeDamage();
     }
   }
 
@@ -54,6 +56,8 @@ function handleKeys(e) {
       playerBox.style.left = charLeftPosition + "px";
     } else {
       charLeftPosition = 0;
+    } if (enemyCollision(0, 0, 0, 0)) {
+      takeDamage();
     }
   }
 
@@ -66,6 +70,8 @@ function handleKeys(e) {
       playerBox.style.top = charTopPosition + "px";
     } else {
       charTopPosition = gameBorder.offsetHeight - playerBox.offsetHeight;
+    } if (enemyCollision(0, 0, 0, 0)) {
+      takeDamage();
     }
   }
 
@@ -74,25 +80,26 @@ function handleKeys(e) {
     // console.log(
     //   wallCollision(-10, 0, 0, 0));
     // if (!wallCollision(-10, 0, 0, 0)) {
-      charTopPosition -= 10;
+    charTopPosition -= 10;
     // }
     if (charTopPosition >= 0) {
       playerBox.style.top = charTopPosition + "px";
     } else {
       charTopPosition = 0;
+    } if (enemyCollision(0, 0, 0, 0)) {
+      takeDamage();
     }
   }
 
-function wallCollision(top, left, right, bottom) {
-  // don't need below constants because I've declared them in global space.
-  // const playerBoxRect = playerBox.getBoundingClientRect();
-  // const gameBorderRect = gameBorder.getBoundingClientRect();
-  const scrollTop = document.documentElement.scrollTop;
-  const scrollLeft = document.documentElement.scrollLeft;
-  const playerBoxTop = playerBoxRect.top + scrollTop;
-  const playerBoxLeft = playerBoxRect.left + scrollLeft;
-  // const enemyCollisionRects = []; likely incorrect, must more closely examine. I'm under impression i only need gameborderRect for this.
-
+  function wallCollision(top, left, right, bottom) {
+    // don't need below constants because I've declared them in global space.
+    // const playerBoxRect = playerBox.getBoundingClientRect();
+    // const gameBorderRect = gameBorder.getBoundingClientRect();
+    const scrollTop = document.documentElement.scrollTop;
+    const scrollLeft = document.documentElement.scrollLeft;
+    const playerBoxTop = playerBoxRect.top + scrollTop;
+    const playerBoxLeft = playerBoxRect.left + scrollLeft;
+    // const enemyCollisionRects = []; likely incorrect, must more closely examine. I'm under impression i only need gameborderRect for this.
 
     const overlapX =
       playerBoxLeft + left < gameBorderRect.right &&
@@ -108,24 +115,33 @@ function wallCollision(top, left, right, bottom) {
   return false;
 }
 
-// ENEMY COLLISION DETECTION BELOW. Currently must refactor for my script.
+// ENEMY COLLISION DETECTION BELOW. Currently must refactor for my script. THIS IS READY TO UPDATE .
 function enemyCollision(top, left, right, bottom) {
-  const charRect = charDiv.getBoundingClientRect();
-  const enemyRect = enemy.getBoundingClientRect();
+  const playerBoxRect = playerBox.getBoundingClientRect();
+  const enemyBoxRect = enemyBox.getBoundingClientRect();
   const scrollTop = document.documentElement.scrollLeft;
   const scrollLeft = document.documentElement.scrollTop;
-  const charTop = charRect.top + scrollTop;
-  const charLeft = charRect.left + scrollLeft;
-  const enemyTop = enemyRect.top + scrollTop;
-  const enemyLeft = enemyRect.left + scrollLeft;
+  const playerBoxTop = playerBoxRect.top + scrollTop;
+  const playerBoxLeft = playerBoxRect.left + scrollLeft;
+  const enemyBoxTop = enemyBoxRect.top + scrollTop;
+  const enemyBoxLeft = enemyBoxRect.left + scrollLeft;
 
   const overlapEnemyX =
-    charLeft + left < enemyRect.right &&
-    charLeft + charDiv.offsetWidth + right > enemyRect.left;
+    playerBoxLeft + left < enemyBoxRect.right &&
+    playerBoxLeft + playerBox.offsetWidth + right > enemyBoxLeft;
   const overlapEnemyY =
-    charTop + top < enemyRect.bottom &&
-    charTop + charDiv.offsetHeight + bottom > enemyRect.top;
-  return overlapEnemyX && overlapEnemyY && hasSword;
+    playerBoxTop + top < enemyBoxRect.bottom &&
+    playerBoxTop + playerBox.offsetHeight + bottom > enemyBoxTop;
+  return overlapEnemyX && overlapEnemyY;
+}
+
+function takeDamage() {
+  console.log('damage!');
+  playerOne.hpCurrent -= 10;
+  // enemies.shift(); must continue experimenting with how to effectively add / remove enemies while removing boxes as well
+  enemyBox.remove();
+  enemyDeathSound.play();
+  gaugeBarRender();
 }
 
 
@@ -206,32 +222,32 @@ const sfxVolumeRange = document.getElementById('sfx-volume-range');
 sfxVolume.innerHTML = sfxVolumeRange.value;
 
 function newGameRender() {
-    playerOne.hpCurrent = 100;
-    playerOne.hpMax = 100;
-    playerOne.mpCurrent = 100;
-    playerOne.mpMax = 100;
-    playerOne.movementSpeed = 20;
-    playerOne.XP = 1;
-    playerOne.level = 1;
-    return gaugeBarRender();
-    }
+  playerOne.hpCurrent = 100;
+  playerOne.hpMax = 100;
+  playerOne.mpCurrent = 100;
+  playerOne.mpMax = 100;
+  playerOne.movementSpeed = 20;
+  playerOne.XP = 1;
+  playerOne.level = 1;
+  return gaugeBarRender();
+}
 
 function startGameNoise() {
-    currentSong = bossMusic;
-    currentSong.play();
-    newGameRender();
+  currentSong = bossMusic;
+  currentSong.play();
+  newGameRender();
 }
 
 function gameOver() {
-    // must add score tally render and create death checks on every player health loss
+  // must add score tally render and create death checks on every player health loss
 
-    // if (playerOne.health <= 0) {
-        currentSound = playerDeathSound;
-        playerDeathSound.play();
-        endMusic.play();
-        currentSong = endMusic;
-        gameOverScreen.classList.toggle('activate');
-    }
+  // if (playerOne.health <= 0) {
+  currentSound = playerDeathSound;
+  playerDeathSound.play();
+  endMusic.play();
+  currentSong = endMusic;
+  gameOverScreen.classList.toggle('activate');
+}
 //      else return;
 // }
 
@@ -251,58 +267,58 @@ function gameOver() {
 muteMusicBtn.addEventListener("click", muteMusic);
 
 function muteMusic() {
-    if (currentSong.paused) {
-        currentSong.play();
-        muteMusicBtn.innerHTML = 'mute';
-    } else {
-        currentSong.pause();
-        muteMusicBtn.innerHTML = 'unmute';
-    }
+  if (currentSong.paused) {
+    currentSong.play();
+    muteMusicBtn.innerHTML = 'mute';
+  } else {
+    currentSong.pause();
+    muteMusicBtn.innerHTML = 'unmute';
+  }
 }
 
 musicVolumeRange.addEventListener("change", adjustMusicVolume);
 
 function adjustMusicVolume() {
-    currentSong.volume= musicVolumeRange.value / 100;
-    musicVolume.innerHTML = this.value;
+  currentSong.volume = musicVolumeRange.value / 100;
+  musicVolume.innerHTML = this.value;
 }
 
 // allow sfx to be muted and volume adjustable!
 // NOTE : Mute button on SFX currently buggy.
 muteSFXBtn.addEventListener("click", muteSFX);
- function muteSFX() {
-     if (sfxVolumeRange.value != 0) {
-        sfxVolumeRange.value = 0;
-        sfxVolume.value = 0;
-        sfxVolume.innerHTML = 0;
-        muteSFXBtn.innerHTML = 'unmute';
-      }
-      else {
-         sfxVolumeRange.value = 50;
-         sfxVolume.value = 50;
-         sfxVolume.innerHTML = 50;
-        muteSFXBtn.innerHTML = 'mute';
-     }
- }
+function muteSFX() {
+  if (sfxVolumeRange.value != 0) {
+    sfxVolumeRange.value = 0;
+    sfxVolume.value = 0;
+    sfxVolume.innerHTML = 0;
+    muteSFXBtn.innerHTML = 'unmute';
+  }
+  else {
+    sfxVolumeRange.value = 50;
+    sfxVolume.value = 50;
+    sfxVolume.innerHTML = 50;
+    muteSFXBtn.innerHTML = 'mute';
+  }
+}
 
 muteSFXBtn.addEventListener("click", muteSFX);
 sfxVolumeRange.addEventListener("change", adjustSFXVolume);
 
 function adjustSFXVolume() {
-    currentSound.volume= sfxVolumeRange.value / 100;
-    sfxVolume.innerHTML = this.value;
+  currentSound.volume = sfxVolumeRange.value / 100;
+  sfxVolume.innerHTML = this.value;
 }
 
 gameScreen.addEventListener("click", initializeSound);
 
 function initializeSound() {
-    currentSound = newSkillSound;
-    currentSound.play();
+  currentSound = newSkillSound;
+  currentSound.play();
 }
 
 function hoverButtonNoise() {
-    currentSound = hoverButtonSound;
-    currentSound.play();
+  currentSound = hoverButtonSound;
+  currentSound.play();
 }
 
 
@@ -326,13 +342,13 @@ pauseMenuBtn.addEventListener("click", pauseGame);
 // }
 
 function restartNewGame() {
-    gameOverScreen.classList.toggle('activate');
+  gameOverScreen.classList.toggle('activate');
 }
 
 function pauseGame() {
-    pauseMenu.classList.toggle('active');
-    pauseMenu.classList.replace('.menuFly', '.menuDrop');
-    gameScreen.blur();
+  pauseMenu.classList.toggle('active');
+  pauseMenu.classList.replace('.menuFly', '.menuDrop');
+  gameScreen.blur();
 }
 
 // // function unpauseGame() {
@@ -344,7 +360,7 @@ function pauseGame() {
 // }
 
 function instructions() {
-    instBox.classList.toggle('activated');
+  instBox.classList.toggle('activated');
 }
 
 // CHARACTER Classes
@@ -372,8 +388,8 @@ class Player extends Character {
   }
   //e key for heal
   heal() {
-      if (this.hpCurrent === this.hpMax || this.mpCurrent < 30) {
-        return;
+    if (this.hpCurrent === this.hpMax || this.mpCurrent < 30) {
+      return;
     } else if (this.hpCurrent + 30 > this.hpMax) {
       this.hpCurrent = this.hpMax;
       this.mpCurrent -= 30;
@@ -390,10 +406,10 @@ class Player extends Character {
   //spacebar for evade
   evade() {
     alert(`current speed is ${playerOne.movementSpeed}`);
-        this.movementSpeed += 20;
-        this.mpCurrent -= 20;
-        return speedDash, gaugeBarRender();
-      }
+    this.movementSpeed += 20;
+    this.mpCurrent -= 20;
+    return speedDash, gaugeBarRender();
+  }
 
   //q key for slipstream
   //expend full MP bar to become translucent and prevent damage
@@ -403,7 +419,7 @@ class Player extends Character {
       this.mpCurrent = 0;
       return gaugeBarRender(), cooldown;
     } else return;
-    }
+  }
 
 
   levelUp() {
@@ -416,11 +432,11 @@ class Player extends Character {
       this.mpCurrent = this.mpMax;
       this.movementSpeed += 5;
       if (this.level % 3 === 0) {
-      return levelBossWave, levelWave, gaugeBarRender();
-    } else return levelWave, gaugeBarRender();
+        return levelBossWave, levelWave, gaugeBarRender();
+      } else return levelWave, gaugeBarRender();
+    }
+    // must code a means by which player movement and enemy kill determines level up.
   }
-  // must code a means by which player movement and enemy kill determines level up.
-}
 }
 class Enemy extends Character {
   constructor(name, hpMax, hpCurrent, movementSpeed) {
@@ -438,23 +454,29 @@ const playerOne = new Player('Hero', 100, 100, 100, 100, 20, 0, 1);
 
 // build enemy array. Spawn new wave of them based off of current player level after time delay
 
-let enemies = [];
+// const enemies = [];
 
-function generateEnemies(num) {
-  for (let i = 1; i <= num; i++) {
-    const enemyPlayer = new Enemy(`Enemy ${i}`, 1, 1, 10);
-    enemies.push(enemyPlayer);
-  }
-  return enemies;
-}
+// function generateEnemies(num) {
+//   for (let i = 1; i <= num; i++) {
+//     const enemyPlayer = new Enemy(`Enemy ${i}`, 1, 1, 10);
+//     enemies.push(enemyPlayer);
+//   }
+//   enemies.forEach('enemyPlayer') {
+//     const enemyBox = document.createElement('div');
+//     enemyBox.setAttribute('id', enemy-box);
+//     enemyBox.className = "enemy__box";
+//     gameBorder.appendChild(enemyBox);
+//   }
+//   return enemies;
+// }
 
-function generateBossEnemies(num) {
-  for (let i = 1; i <= num; i++) {
-    const enemyBoss = new Enemy(`Boss ${i}`, 3, 3, 5);
-    enemies.push(enemyBoss);
-  }
-  return enemies;
-}
+// function generateBossEnemies(num) {
+//   for (let i = 1; i <= num; i++) {
+//     const enemyBoss = new Enemy(`Boss ${i}`, 3, 3, 5);
+//     enemies.push(enemyBoss);
+//   }
+//   return enemies;
+// }
 
 // create a 5s cooldown condition on special abilities
 function revert() {
@@ -485,7 +507,7 @@ function gaugeBarRender() {
 }
 
 // set Time Out Variables
-const levelBossWave = setTimeout(generateBossEnemies((this.level/3)), 3000);
-const levelWave = setTimeout(generateEnemies(this.level), 5000);
+// const levelBossWave = setTimeout(generateBossEnemies((this.level / 3)), 3000);
+// const levelWave = setTimeout(generateEnemies(this.level), 5000);
 const speedDash = setTimeout(revert, 5000);
 const cooldown = setTimeout(recharge, 5000);
