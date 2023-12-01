@@ -1,5 +1,6 @@
 // Major lingering bugs:
-// Gauge bars not correctly increasing on player level up. must examine.
+// IMPORTANT : for some reason the enemy-box divs included in HTML began preventing player box from moving after multiples were added. must examine deeper. UPDATE : it's now doing it for ALL html divs. what's going on? ANSWER: IT WAS BECAUSE OF THE LINE BREAK TAG I'D USED FOR PLACE HOLDING. WE'RE GOOD.
+// Gauge bars not correctly increasing on player level up. must examine further.
 // SFX volume mute not working, not silencing sound.
 // Set Timeouts not working correctly - powers not resetting after cooldown, gauge bars not updating as necessary
 // cannot successfully add border collision detection without wonky things happening to playerBox
@@ -31,18 +32,6 @@ document.addEventListener("keydown", handleKeys);
 document.addEventListener("keyup", handleKeys);
 
 // attack click listener on enemies.
-enemyBoxes.forEach((enemyBox) => enemyBox.addEventListener("click", (e) => {
-  e.target.remove();
-  destroyEnemy();
-}));
-// {
-  // enemyBox.addEventListener("click", (e) => {
-    // e.target.remove();
-    // console.log("destroy!");
-    // playerOne.attack();
-    // destroyEnemy();
-//   })
-// }
 
 // MOVEMENT KEYS AND BOUNDARY CHECK FUNCTION
 
@@ -54,6 +43,9 @@ function handleKeys(e) {
     // console.log(wallCollision(0, 0, 10, 0));
     if (!wallCollision(0, 0, 10, 0)) {
       charLeftPosition += 10;
+      playerOne.XP += 1;
+      levelCheck();
+      gaugeBarRender();
     }
     if (charLeftPosition + Math.ceil(playerBox.offsetWidth * 1.1) <= gameBorder.offsetWidth) {
       playerBox.style.left = charLeftPosition + "px";
@@ -68,6 +60,9 @@ function handleKeys(e) {
     // console.log(wallCollision(0, -10, 0, 0));
     if (!wallCollision(0, -10, 0, 0)) {
       charLeftPosition -= 10;
+      playerOne.XP += 1;
+      levelCheck();
+      gaugeBarRender();
     }
     if (charLeftPosition >= 0) {
       playerBox.style.left = charLeftPosition + "px";
@@ -82,6 +77,9 @@ function handleKeys(e) {
     // console.log(wallCollision(0, 0, 0, 10));
     if (!wallCollision(0, 0, 0, 10)) {
       charTopPosition += 10;
+      playerOne.XP += 1;
+      levelCheck();
+      gaugeBarRender();
     }
     if (charTopPosition + Math.ceil(playerBox.offsetHeight * 1.1) <= gameBorder.offsetHeight) {
       playerBox.style.top = charTopPosition + "px";
@@ -98,6 +96,9 @@ function handleKeys(e) {
     //   wallCollision(-10, 0, 0, 0));
     // if (!wallCollision(-10, 0, 0, 0)) {
     charTopPosition -= 10;
+    playerOne.XP += 1;
+    levelCheck();
+    gaugeBarRender();
     // }
     if (charTopPosition >= 0) {
       playerBox.style.top = charTopPosition + "px";
@@ -161,6 +162,10 @@ function takeDamage() {
   gaugeBarRender();
 }
 
+enemyBoxes.forEach((enemyBox) => enemyBox.addEventListener("click", (e) => {
+  e.target.remove();
+  destroyEnemy();
+}));
 
 // KEY COMMITMENTS FOR PLAYER ACTIONS ..
 document.addEventListener('keydown', function(event) {
@@ -445,6 +450,7 @@ class Player extends Character {
       this.mpMax += 10;
       this.mpCurrent = this.mpMax;
       this.movementSpeed += 5;
+      gaugeBarRender();
       // if (this.level % 3 === 0) {
   //       return levelBossWave, levelWave, gaugeBarRender();
   //     } else return levelWave, gaugeBarRender();
@@ -524,8 +530,8 @@ function gaugeBarRender() {
   playerMagic.value = playerOne.mpCurrent;
   playerExp.value = playerOne.XP;
   playerExpCount.innerHTML = playerOne.XP;
-  playerHealthCount.innerHTML = playerHealth.value;
-  playerMagicCount.innerHTML = playerMagic.value;
+  playerHealthCount.innerHTML = playerOne.hpCurrent;
+  playerMagicCount.innerHTML = playerOne.mpCurrent;
   return;
 }
 
