@@ -476,19 +476,26 @@ const playerOne = new Player('Hero', 100, 100, 100, 100, 20, 0, 1);
 
  const enemies = [];
 
-// function generateEnemies(num) {
-//   for (let i = 1; i <= num; i++) {
-//     const enemyPlayer = new Enemy(`Enemy ${i}`, 1, 1, 10);
-//     enemies.push(enemyPlayer);
-//   }
-//   enemies.forEach('enemyPlayer') {
-//     const enemyBox = document.createElement('div');
-//     enemyBox.setAttribute('id', enemy-box);
-//     enemyBox.className = "enemy__box";
-//     gameBorder.appendChild(enemyBox);
-//   }
-//   return enemies;
-// }
+ // below: generate enemies and place randomly throughout game space
+function generateEnemies(num) {
+  const gameBorder = document.getElementById('action-space');
+  for (let i = 1; i <= num; i++) {
+    const enemyBox = document.createElement('div');
+    enemyBox.className = "enemy__box";
+    enemyBox.setAttribute('id', 'enemy-box');
+    gameBorder.appendChild(enemyBox);
+    enemies.push(enemyBox);
+    enemyBox.addEventListener("click", (e) => {
+      e.target.remove();
+      destroyEnemy();
+    });
+
+    const maxX = gameBorder.width - 40;
+    const maxY = gameBorder.height - 40;
+    enemyBox.style.left = Math.floor(Math.random() * maxX)  + "px";
+    enemyBox.style.top = Math.floor(Math.random() * maxY) + "px";
+  }
+}
 
 // function generateBossEnemies(num) {
 //   for (let i = 1; i <= num; i++) {
