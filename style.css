@@ -1,111 +1,45 @@
-@keyframes pause-menu-animation {
-    0% {
-        display: none;
-        transform: translateY(2000px);
-    }
-
-    10% {
-        display: flex;
-    }
-
-    80% {translateY: 0px;
-    }
-
-    85% {
-        translateY: 100px;
-    }
-    90% {
-        transform: translateY(0px);
-    }
-
-    95% {
-        translateY: 100px;
-    }
-    100% {
-        transform: translateY(0px);
-    }
-}
-
-@keyframes pause-menu-animation-reverse {
-    0% {
-        transform: translateY(0px);
-    }
-
-    10% {
-        transform: translateY (100px);
-    }
-
-    15% {
-        transform: translateY (0px);
-    }
-
-    20% {
-        transform: translateY (100px);
-    }
-
-    25% {
-        transform: translateY (0px);
-    }
-
-    100% {
-        display: none;
-        transform: translateY(1000px);
-    }
-}
-
-
-
-    .menuCall {
-        animation: pause-menu-animation 2s linear ease-in-out;
-    }
-
-    .menuFly {
-        animation: pause-menu-animation-reverse 2s linear ease-in-out;
-    }
-
-.active#pause-menu {
-    /* animation: pause-menu-animation-reverse 2s linear ease-in-out; */
-    opacity: 0;
-    display: none;
-}
-
-
 * {
     box-sizing: border-box;
-}
+  }
 
-html {
+  html {
     font-size: 10pt;
     width: 100%;
     font-family: 'Play', sans-serif;
-}
+  }
 
-body {
-  margin: 0;
+  body {
+    margin: 0;
     width: 100vw;
     height: 100vh;
     background-color: red;
     z-index: -2;
-}
+  }
 
-#pause-menu {
+
+  .active#pause-menu {
+    opacity: 0;
+    display: none;
+  }
+
+  #pause-menu {
+    height: fit-content;
     position: relative;
     display: flex;
     flex-direction: column;
     border-radius: 5%;
     justify-content: center;
     align-items: center;
-    height: fit-content;
     background-color: gray;
     color: black;
-    width: 40vw;
-    gap: 2rem;
+    gap: 1rem;
     padding: 1rem;
     margin: 1rem;
     border: solid 2px white;
-}
+    z-index: 3;
+  }
 
-#game {
+  #game {
     width: 100vw;
     height: 100vh;
     background-color: gray;
@@ -114,9 +48,9 @@ body {
     justify-content: center;
     align-items: center;
     z-index: -1;
-}
+  }
 
-#game-board {
+  #game-board {
     display: flex;
     flex-direction: column;
     border: .5rem solid black;
@@ -124,35 +58,32 @@ body {
     height: 90%;
     justify-content: center;
     align-items: center;
-    background-color:antiquewhite;
+    background-color: antiquewhite;
     z-index: 1;
-}
+  }
 
-#header {
+  #header {
     position: relative;
     display: flex;
     width: 100%;
     height: fit-content;
     margin-top: 1rem;
     margin-bottom: 1rem;
-    margin-right: 1rem;
     padding: 1rem;
     justify-content: space-between;
-    align-items: top;
-    border: solid 1px black;
-}
+  }
 
-#pause-button {
+  #pause-button {
     border: solid .25rem black;
     justify-content: center;
     align-items: center;
     text-align: center;
     background-color: gray;
     border-radius: 5%;
-}
+  }
 
-#player-status {
-    align-items: left;
+  #player-status {
+    align-items: center;
     text-align: left;
     display: flex;
     flex-direction: column;
@@ -160,9 +91,9 @@ body {
     text-align: center;
     background-color: gray;
     padding: .5rem;
-}
+  }
 
-#stat-display {
+  #stat-display {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -171,20 +102,9 @@ body {
     padding: 2rem;
     margin-top: 1rem;
     border: solid .25rem black;
-}
+  }
 
-#stat-display {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 2rem;
-    margin-top: 1rem;
-    border: solid .25rem black;
-}
-
-#menu-buttons {
+  #menu-buttons {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -192,18 +112,18 @@ body {
     justify-content: center;
     gap: .5rem;
     width: 50%;
-    border: solid .25rem black;
-}
+    /* border: solid .25rem black; */
+  }
 
-.text {
-    border: solid .25rem black;
+  .text {
+    /* border: solid .25rem black; */
     text-align: center;
     justify-content: center;
     display: flex;
     flex-direction: column;
-}
+  }
 
-.stats {
+  .stats {
     border: solid .25rem black;
     font-size: 18pt;
     border-radius: 5%;
@@ -212,21 +132,23 @@ body {
     background-color: tan;
     width: 70%;
     margin-top: 2rem;
-}
+  }
 
-button {
+  button {
     font-family: 'Play', sans-serif;
-    background-color: whitesmoke;
     color: black;
     width: fit-content;
-}
+    border-radius: 10%;
+    background-color: greenyellow;
+  }
 
-button:hover {
+  button:hover {
     cursor: pointer;
-    transform: scale(1.25);
-}
+    transform: scale(1.5);
+    transition: .5s;
+  }
 
-#instructions-box {
+  #instructions-box {
     border: solid 1rem black;
     background-color: whitesmoke;
     text-align: center;
@@ -234,22 +156,21 @@ button:hover {
     border-radius: 5%;
     opacity: 0;
     display: none;
-}
+  }
 
-.activated#instructions-box {
+  .activated#instructions-box {
     opacity: 1;
     display: flex;
-}
+  }
 
-.gauge__bar {
+  .gauge__bar {
     height: 1rem;
-
+    border: solid .25px whitesmoke;
     padding: .5rem;
-    background-color: rgb(243, 5, 5);
     color: black;
-}
+  }
 
-.gauge__bundle {
+  .gauge__bundle {
     display: flex;
     width: 80%;
     flex-direction: row;
@@ -258,53 +179,51 @@ button:hover {
     gap: .25rem;
     margin-top: .5rem;
     text-align: center;
-}
+  }
 
-#xp-bar {
+  #xp-bar {
     background-color: greenyellow
-}
+  }
 
-#exp-bar {
+  #exp-bar {
+    border: solid 1px whitesmoke;
     background-color: greenyellow;
     color: silver;
     font-size: 16pt;
     width: fit-content;
     text-align: center;
     border-radius: 5%;
-}
+  }
 
-#hp-bar {
-    background-color:red;
-}
+  #hp-bar {
+    background-color: red;
+  }
 
-#health-bar {
+  #health-bar {
+    border: solid 1px whitesmoke;
     background-color: red;
     color: silver;
     font-size: 16pt;
     width: fit-content;
     text-align: center;
     border-radius: 5%;
-}
+  }
 
-#mp-bar {
+  #mp-bar {
     background-color: blueviolet
-}
+  }
 
-#magic-bar {
+  #magic-bar {
+    border: solid 1px whitesmoke;
     background-color: blueviolet;
     color: silver;
     font-size: 16pt;
     width: fit-content;
     text-align: center;
     border-radius: 5%;
-}
+  }
 
-/* .killed {
-    display: block;
-    opacity: 1;
-} */
-
-#game-over-screen {
+  #game-over-screen {
     position: relative;
     display: none;
     opacity: 0;
@@ -321,72 +240,51 @@ button:hover {
     padding: 1rem;
     margin: 1rem;
     border: solid 2px white;
-}
+  }
 
-/* #player-icon img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    z-index: 2;
-} */
+  .player__box {
+    display: none;
+    opacity: 0;
+  }
 
-#player-box {
-    /* display: block; */
+  #player-box {
     position: absolute;
     justify-content: center;
     align-items: center;
     padding: 1rem;
     margin: .5rem;
-    width: 100px;
-    height: 100px;
+    width: 10px;
+    height: 10px;
     background-color: black;
     border: solid .25rem red;
     object-fit: contain;
     z-index: 2;
-    /* background-image:url('/Users/Chris/software_homework/Dungeon-Arena-GAp1/Images/player-thief.jpeg'); */
-}
+  }
 
-#enemy-box {
+  #enemy-box {
     display: block;
     position: absolute;
     justify-content: center;
     align-items: center;
     padding: 1rem;
     margin: 15rem;
-    width: 100px;
-    height: 100px;
+    width: 10px;
+    height: 10px;
     background-color: red;
     border: solid .25rem black;
     object-fit: contain;
     z-index: 2;
-}
+  }
 
-#action-space {
+  #action-space {
     border: solid .5rem blue;
     position: relative;
-    width: 800px;
-    height: 600px;
-}
+    width: 1000px;
+    height: 800px;
+    margin: 2rem;
+  }
 
-.activate#game-over-screen {
-    /* animation: pause-menu-animation-reverse 2s linear ease-in-out; */
+  .activate#game-over-screen {
     opacity: 1;
     display: flex;
-}
-
-
-/* footer>#stat-display {
-    background-color: black;
-    position: relative;
-    display: flex;
-    width: 100%;
-    height: fit-content;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    margin-right: 1rem;
-    padding: 1rem;
-    justify-content: space-between;
-    align-items: top;
-    border: solid 1px black;
-} */
+  }

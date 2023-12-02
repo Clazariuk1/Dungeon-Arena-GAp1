@@ -1,39 +1,96 @@
 // Major lingering bugs:
-// IMPORTANT : for some reason the enemy-box divs included in HTML began preventing player box from moving after multiples were added. must examine deeper. UPDATE : it's now doing it for ALL html divs. what's going on? ANSWER: IT WAS BECAUSE OF THE LINE BREAK TAG I'D USED FOR PLACE HOLDING. WE'RE GOOD.
-// Gauge bars not correctly increasing on player level up. must examine further.
+// Cannot successfully apply border collision to post-initialization rendered enemies. Missing something.
+// Gauge progress bars not increasing / decreasing based on player stats. must examine further.
 // SFX volume mute not working, not silencing sound.
-// Set Timeouts not working correctly - powers not resetting after cooldown, gauge bars not updating as necessary
-// cannot successfully add border collision detection without wonky things happening to playerBox
-// Couldn't get up key to function, had to eliminate collision check and somehow paradoxically it works now. be wary of future issues.
-// player box was clipping on down and right, had to make an offsetb y multiplying box 1.1 offset to keep within bounds.
 // must edit game initialization to include enemy box creation within game space.
-// MOVEMENT VARIABLES
+// 1. Must successfully enable enemy collision on enemies generated on level up
+// 2. Must successfully enable enemy movement in random directions.
+// 3. Must successfully enable border collision with player damage on enemy blocks
+// 4. Must successfully reverse direction of enemy blocks upon border collision
+// 5. BONUS. Must successfully enable enemy on enemy collision prevention. Reverse direction effect.
+// BONUS: Must begin working on the 'extra feature' powers
+// BONUS 2: For some reason the code is breaking when I attempt to migrate my audio materials from script.js to audio.js. Cannot figure out why.
 
 
+// ElEMENTS.
+
+// PLAYER AND GAME SPACE CONSTANTS. (may need to move enemy constants)
+const gameScreen = document.getElementById('game');
 const gameBorder = document.getElementById('action-space');
-//child collision lines???
-const playerBox = document.getElementById('player-box'); //charDiv
-const gameBorderRect = gameBorder.getBoundingClientRect(); //collision lines
+const gameBorderRect = gameBorder.getBoundingClientRect();
+
+// HP / MP / XP Bar Elements. "Gauge Bars."
+const playerHealth = document.getElementById('hp-bar');
+const playerMagic = document.getElementById('mp-bar');
+const playerExp = document.getElementById('xp-bar');
+const playerHealthCount = document.getElementById('health-bar');
+const playerMagicCount = document.getElementById('magic-bar');
+const playerExpCount = document.getElementById('exp-bar');
+const pauseBtn = document.getElementById('pause-button');
+
+// CACHE ELEMENTS
+const playerBox = document.getElementById('player-box');
 const playerBoxRect = playerBox.getBoundingClientRect();
-// const scrollTop = document.documentElement.scrollTop;
-// const scrollLeft = document.documentElement.scrollLet;
-// const playerBoxTop = playerBoxRect.top + scrollTop;
-// const enemyCollisionRects = [];
 const enemyBox = document.getElementById('enemy-box');
 const enemyBoxes = document.querySelectorAll('.enemy__box');
 const enemyBoxRect = enemyBox.getBoundingClientRect();
+const startBtn = document.getElementById('start-button');
+const restartBtn = document.getElementById('restart-button');
+const resumeBtn = document.getElementById('pause-menu-button');
+const instBtn = document.getElementById('instructions-button');
+const instBox = document.getElementById('instructions-box')
+const pauseMenu = document.getElementById('pause-menu');
+const gameOverScreen = document.getElementById('game-over-screen');
+const currentScore = document.getElementById('current-score');
+const finalScore = document.getElementById('final-score');
+const playerLevel = document.getElementById('player-level');
 
-let charLeftPosition = 0;
-let charTopPosition = 0;
+// STATE Variables
+let playerScore;
+let charLeftPosition;
+let charTopPosition;
+let currentSong;
+let currentSound;
 
-// MOVEMENT KEYS CHECK
+// EVENT LISTENERS
 
-document.addEventListener("keydown", handleKeys);
-document.addEventListener("keyup", handleKeys);
+// ATTACK CLICK LISTENER ON ENEMIES.
+// NOTE : This must be removed during final drafting. This affects global space and incorrectly, as it does not add this factor for enemies newly rendered while in global space.
+enemyBoxes.forEach((enemyBox) => enemyBox.addEventListener("click", (e) => {
+  e.target.remove();
+  destroyEnemy();
+}));
 
-// attack click listener on enemies.
+// BUTTON EVENT LISTENERS
+instBtn.addEventListener("mouseover", hoverButtonNoise);
+instBtn.addEventListener("click", instructions);
+startBtn.addEventListener("mouseover", hoverButtonNoise);
+startBtn.addEventListener("click", newGameRender);
+startBtn.addEventListener("click", pauseGame);
+restartBtn.addEventListener("click", restartNewGame);
+pauseBtn.addEventListener("click", pauseGame);
+resumeBtn.addEventListener("click", pauseGame);
 
-// MOVEMENT KEYS AND BOUNDARY CHECK FUNCTION
+
+// FUNCTION LIST!!!!!!!!
+
+// MOVEMENT KEYS AND BOUNDARY CHECK FUNCTIONS
+
+// ENEMY COLLISION DETECTION BELOW. Currently must refactor for my script. THIS IS READY TO UPDATE .
+function enemyCollision(top, left, right, bottom) {
+  const playerBoxRect = playerBox.getBoundingClientRect();
+  const enemyBoxRect = enemyBox.getBoundingClientRect();
+  const scrollTop = document.documentElement.scrollLeft;
+  const scrollLeft = document.documentElement.scrollTop;
+  const playerBoxTop = playerBoxRect.top + scrollTop;
+  const playerBoxLeft = playerBoxRect.left + scrollLeft;
+  const enemyBoxTop = enemyBoxRect.top + scrollTop;
+  const enemyBoxLeft = enemyBoxRect.left + scrollLeft;
+
+  const overlapEnemyX = playerBoxLeft + left < enemyBoxRect.right && playerBoxLeft + playerBox.offsetWidth + right > enemyBoxLeft;
+  const overlapEnemyY = playerBoxTop + top < enemyBoxRect.bottom && playerBoxTop + playerBox.offsetHeight + bottom > enemyBoxTop;
+  return overlapEnemyX && overlapEnemyY;
+}
 
 function handleKeys(e) {
   e.preventDefault();
@@ -110,21 +167,13 @@ function handleKeys(e) {
   }
 
   function wallCollision(top, left, right, bottom) {
-    // don't need below constants because I've declared them in global space.
-    // const playerBoxRect = playerBox.getBoundingClientRect();
-    // const gameBorderRect = gameBorder.getBoundingClientRect();
     const scrollTop = document.documentElement.scrollTop;
     const scrollLeft = document.documentElement.scrollLeft;
     const playerBoxTop = playerBoxRect.top + scrollTop;
     const playerBoxLeft = playerBoxRect.left + scrollLeft;
-    // const enemyCollisionRects = []; likely incorrect, must more closely examine. I'm under impression i only need gameborderRect for this.
 
-    const overlapX =
-      playerBoxLeft + left < gameBorderRect.right &&
-      playerBoxLeft + playerBox.offsetWidth + right > gameBorderRect.left;
-    const overlapY =
-      playerBoxTop + top < gameBorderRect.bottom &&
-      playerBoxTop + playerBox.offsetHeight + bottom > playerBoxRect.top;
+    const overlapX = playerBoxLeft + left < gameBorderRect.right && playerBoxLeft + playerBox.offsetWidth + right > gameBorderRect.left;
+    const overlapY = playerBoxTop + top < gameBorderRect.bottom && playerBoxTop + playerBox.offsetHeight + bottom > playerBoxRect.top;
 
     if (overlapX && overlapY) {
       return true;
@@ -133,117 +182,13 @@ function handleKeys(e) {
   return false;
 }
 
-// ENEMY COLLISION DETECTION BELOW. Currently must refactor for my script. THIS IS READY TO UPDATE .
-function enemyCollision(top, left, right, bottom) {
-  const playerBoxRect = playerBox.getBoundingClientRect();
-  const enemyBoxRect = enemyBox.getBoundingClientRect();
-  const scrollTop = document.documentElement.scrollLeft;
-  const scrollLeft = document.documentElement.scrollTop;
-  const playerBoxTop = playerBoxRect.top + scrollTop;
-  const playerBoxLeft = playerBoxRect.left + scrollLeft;
-  const enemyBoxTop = enemyBoxRect.top + scrollTop;
-  const enemyBoxLeft = enemyBoxRect.left + scrollLeft;
-
-  const overlapEnemyX =
-    playerBoxLeft + left < enemyBoxRect.right &&
-    playerBoxLeft + playerBox.offsetWidth + right > enemyBoxLeft;
-  const overlapEnemyY =
-    playerBoxTop + top < enemyBoxRect.bottom &&
-    playerBoxTop + playerBox.offsetHeight + bottom > enemyBoxTop;
-  return overlapEnemyX && overlapEnemyY;
-}
-
-function takeDamage() {
-  console.log('damage!');
-  playerOne.hpCurrent -= 10;
-  // enemies.shift(); must continue experimenting with how to effectively add / remove enemies while removing boxes as well
-  enemyBox.remove();
-  enemyDeathSound.play();
-  gaugeBarRender();
-}
-
-enemyBoxes.forEach((enemyBox) => enemyBox.addEventListener("click", (e) => {
-  e.target.remove();
-  destroyEnemy();
-}));
-
-// KEY COMMITMENTS FOR PLAYER ACTIONS ..
-document.addEventListener('keydown', function(event) {
-  if (event.key === 'e') {
-    playerOne.heal();
-  }
-});
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === ' ') {
-    playerOne.evade();
-  }
-});
-
-document.addEventListener('keydown', function(event) {
-  if (event.key === 'q') {
-    playerOne.slipStream();
-  }
-});
-
-
-// Button Variables
-const startBtn = document.getElementById('start-button');
-const restartBtn = document.getElementById('restart-button');
-const pauseBtn = document.getElementById('pause-button');
-const pauseMenuBtn = document.getElementById('pause-menu-button');
-const instBtn = document.getElementById('instructions-button');
-const muteMusicBtn = document.getElementById('mute-music');
-const muteSFXBtn = document.getElementById('mute-sfx');
-
-//Element Variables
-const instBox = document.getElementById('instructions-box')
-const pauseMenu = document.getElementById('pause-menu');
-const gameScreen = document.getElementById('game');
-const gameOverScreen = document.getElementById('game-over-screen');
-const currentScore = document.getElementById('current-score');
-
-// Character Variables
-// const playerBox = document.getElementById('player-box');
-
-// SOUND ELEMENTS BELOW
-const bossMusic = document.getElementById('boss-battle-music');
-const hoverButtonSound = document.getElementById('button-hover');
-const buttonBlipSound = document.getElementById('button-blip');
-const bossKillSound = document.getElementById('boss-kill');
-const buttonHoverSound = document.getElementById('button-hover');
-const criticalHitSound = document.getElementById('critical-hit');
-const dashSound = document.getElementById('dash-small');
-const endMusic = document.getElementById('end-music');
-const enemyDeathSound = document.getElementById('enemy-kill');
-const hardSlashSound = document.getElementById('hard-slash');
-const healSound = document.getElementById('heal');
-const levelUpSound = document.getElementById('level-up-blast');
-const newSkillSound = document.getElementById('new-skill-sound');
-const playerDeathSound = document.getElementById('player-death');
-const playerHitSound = document.getElementById('player-hit');
-let currentSong;
-let currentSound;
-
-// HP / MP / XP Bar Elements Below
-const playerHealth = document.getElementById('hp-bar');
-const playerMagic = document.getElementById('mp-bar');
-const playerExp = document.getElementById('xp-bar');
-const playerHealthCount = document.getElementById('health-bar');
-const playerMagicCount = document.getElementById('magic-bar');
-const playerExpCount = document.getElementById('exp-bar');
-const gaugeBG = document.getElementById('player-status');
-
-// VOLUME ADJUSTING ELEMENTS BELOW
-const musicVolume = document.getElementById('music-volume');
-const musicVolumeRange = document.getElementById('music-volume-range');
-musicVolume.innerHTML = musicVolumeRange.value;
-
-const sfxVolume = document.getElementById('sfx-volume');
-const sfxVolumeRange = document.getElementById('sfx-volume-range');
-sfxVolume.innerHTML = sfxVolumeRange.value;
-
 function newGameRender() {
+  charLeftPosition = 0;
+  charTopPosition = 0;
+
+  currentSong = bossMusic;
+  currentSong.play();
+  playerScore = 0;
   playerOne.hpCurrent = 100;
   playerOne.hpMax = 100;
   playerOne.mpCurrent = 100;
@@ -251,141 +196,123 @@ function newGameRender() {
   playerOne.movementSpeed = 20;
   playerOne.XP = 1;
   playerOne.level = 1;
+  playerBox.classList.remove('player__box');
+  document.addEventListener("keydown", handleKeys);
+  document.addEventListener("keyup", handleKeys);
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'e') {
+      playerOne.heal();
+      // Below: Bonus skill. Not correctly done, difficult concept to approach.
+      // document.addEventListener('keydown', (e) => {
+      //   if (e.key === ' ') {
+      //     playerOne.evade();
+      //   }
+      // });
+
+      // Below: Bonus skill. Not correctly done, difficult concept to approach.
+      // document.addEventListener('keydown', function(event) {
+      //   if (event.key === 'q') {
+      //     playerOne.slipStream();
+      //   }
+      // });
+    }
+  });
   return gaugeBarRender();
 }
 
-function startGameNoise() {
-  currentSong = bossMusic;
-  currentSong.play();
-  newGameRender();
-}
-
 function gameOver() {
-  // must add score tally render and create death checks on every player health loss
-
-  // if (playerOne.health <= 0) {
+  currentSong.pause();
   currentSound = playerDeathSound;
   playerDeathSound.play();
   endMusic.play();
-  currentSong = endMusic;
+  playerBox.classList.add('player__box');
   gameOverScreen.classList.toggle('activate');
+  updateScore();
 }
-//      else return;
-// }
-
-// Enemy Collision Detection Variables and Functions
-// let enemyBox = document.getElementById('enemy-box');
-
-
-
-
-// --------------------- END TRASH COLLISION DETECTION SEGMENT ---------------------------
-
-// musicVolumeRange.oninput = function () {
-//     musicVolume.innerHTML = this.value;
-// }
-
-// allow music to be muted and volume adjustable!
-muteMusicBtn.addEventListener("click", muteMusic);
-
-function muteMusic() {
-  if (currentSong.paused) {
-    currentSong.play();
-    muteMusicBtn.innerHTML = 'mute';
-  } else {
-    currentSong.pause();
-    muteMusicBtn.innerHTML = 'unmute';
-  }
-}
-
-musicVolumeRange.addEventListener("change", adjustMusicVolume);
-
-function adjustMusicVolume() {
-  currentSong.volume = musicVolumeRange.value / 100;
-  musicVolume.innerHTML = this.value;
-}
-
-// allow sfx to be muted and volume adjustable!
-// NOTE : Mute button on SFX currently buggy.
-muteSFXBtn.addEventListener("click", muteSFX);
-function muteSFX() {
-  if (sfxVolumeRange.value != 0) {
-    sfxVolumeRange.value = 0;
-    sfxVolume.value = 0;
-    sfxVolume.innerHTML = 0;
-    muteSFXBtn.innerHTML = 'unmute';
-  }
-  else {
-    sfxVolumeRange.value = 50;
-    sfxVolume.value = 50;
-    sfxVolume.innerHTML = 50;
-    muteSFXBtn.innerHTML = 'mute';
-  }
-}
-
-muteSFXBtn.addEventListener("click", muteSFX);
-sfxVolumeRange.addEventListener("change", adjustSFXVolume);
-
-function adjustSFXVolume() {
-  currentSound.volume = sfxVolumeRange.value / 100;
-  sfxVolume.innerHTML = this.value;
-}
-
-gameScreen.addEventListener("click", initializeSound);
-
-function initializeSound() {
-  currentSound = newSkillSound;
-  currentSound.play();
-}
-
-function hoverButtonNoise() {
-  currentSound = hoverButtonSound;
-  currentSound.play();
-}
-
-
-
-instBtn.addEventListener("mouseover", hoverButtonNoise);
-instBtn.addEventListener("click", instructions);
-startBtn.addEventListener("mouseover", hoverButtonNoise);
-startBtn.addEventListener("click", startGameNoise);
-startBtn.addEventListener("click", pauseGame);
-restartBtn.addEventListener("click", restartNewGame);
-pauseBtn.addEventListener("click", pauseGame);
-pauseMenuBtn.addEventListener("click", pauseGame);
-
-// function pauseMenuFly() {
-//     if (pauseMenu.classList.includes('menuFly')) {
-//         pauseMenu.classList.remove('menuFly');
-//         pauseMenu.classList.add('menuCall')
-//     } else {
-//     pauseMenu.classList.add('menuFly');
-//     // additional element to unblur game and unpause elements --> HARD MODE
-// }
 
 function restartNewGame() {
   gameOverScreen.classList.toggle('activate');
+  newGameRender();
 }
 
 function pauseGame() {
   pauseMenu.classList.toggle('active');
-  pauseMenu.classList.replace('.menuFly', '.menuDrop');
-  gameScreen.blur();
 }
-
-// // function unpauseGame() {
-// //     pauseMenu.classList.toggle('active');
-//     // if (pauseMenu.style.display != "none") {
-//     //     pauseMenu.style.display= "none";
-//     // } else return;
-//     // gameScreen.focus();
-// }
 
 function instructions() {
   instBox.classList.toggle('activated');
 }
 
-// CHARACTER Classes
+// below: generate enemies and place randomly throughout game space. Draft. not working. may need relocation.
+function generateEnemies(num) {
+  const gameBorder = document.getElementById('action-space');
+  for (let i = 1; i <= num; i++) {
+    const enemyBox = document.createElement('div');
+    enemyBox.className = "enemy__box";
+    enemyBox.setAttribute('id', 'enemy-box');
+    gameBorder.appendChild(enemyBox);
+    enemies.push(enemyBox);
+    enemyBox.addEventListener("click", (e) => {
+      e.target.remove();
+      destroyEnemy();
+    });
+
+    const maxX = gameBorder.width - 40;
+    const maxY = gameBorder.height - 40;
+    enemyBox.style.left = Math.floor(Math.random() * maxX) + "px";
+    enemyBox.style.top = Math.floor(Math.random() * maxY) + "px";
+  }
+}
+
+function takeDamage() {
+  console.log('damage!');
+  playerOne.hpCurrent -= 10;
+  enemyBox.remove();
+  enemyDeathSound.play();
+  if (playerOne.hpCurrent <= 0) {
+    playerOne.hpCurrent = 0;
+    gameOver();
+  }
+  gaugeBarRender();
+}
+
+// level up checker on instance of XP gain. incorporate for successful enemy kills and movement. Think of the step() render from tutorial exercise.
+function levelCheck() {
+  if (playerOne.XP >= 100) {
+    playerOne.levelUp();
+  } else return;
+}
+
+// Base destroy enemy function for any successful kill.
+function destroyEnemy() {
+  enemies.shift();
+  playerOne.mpCurrent += 20;
+  playerOne.XP += 60;
+  playerScore += 20;
+  levelCheck();
+  updateScore();
+  gaugeBarRender();
+}
+
+// create a stock gauge bar render to streamline the update process for interactive character bars
+function gaugeBarRender() {
+  playerHealth.value = playerOne.hpCurrent;
+  playerMagic.value = playerOne.mpCurrent;
+  playerExp.value = playerOne.XP;
+  playerExpCount.innerHTML = playerOne.XP;
+  playerHealthCount.innerHTML = playerOne.hpCurrent;
+  playerMagicCount.innerHTML = playerOne.mpCurrent;
+  return;
+}
+
+function updateScore() {
+  currentScore.innerHTML = `Current Score: ${playerScore}`;
+  finalScore.innerHTML = `Final Score: ${playerScore}`;
+  playerLevel.innerHTML = `Final Player Level: ${playerOne.level}`;
+
+}
+
+// CHARACTER Classes. Movement speed currently irrelevant. Would like to examine later for additional potential powers.
 
 class Character {
   constructor(name, hpMax, hpCurrent, movementSpeed) {
@@ -408,7 +335,7 @@ class Player extends Character {
     this.XP = XP;
     this.level = level;
   }
-  //e key for heal
+  //pro tip: e key for heal
   heal() {
     if (this.hpCurrent === this.hpMax || this.mpCurrent < 30) {
       return;
@@ -422,42 +349,47 @@ class Player extends Character {
     gaugeBarRender();
   }
 
-  //spacebar for evade
-  evade() {
-    alert(`current speed is ${playerOne.movementSpeed}`);
-    this.movementSpeed += 20;
-    this.mpCurrent -= 20;
-    return speedDash, gaugeBarRender();
-  }
+  //spacebar for evade. TBD.
+  // evade() {
+  //   alert(`current speed is ${playerOne.movementSpeed}`);
+  //   this.movementSpeed += 20;
+  //   this.mpCurrent -= 20;
+  //   return speedDash, gaugeBarRender();
+  // }
 
-  //q key for slipstream
+  //q key for slipstream. TBD.
   //expend full MP bar to become translucent and prevent damage
-  slipStream() {
-    if (this.mpCurrent === this.mpMax) {
-      alert('skill is working!');
-      this.mpCurrent = 0;
-      return gaugeBarRender(), cooldown;
-    } else return;
-  }
-
+  // slipStream() {
+  //   if (this.mpCurrent === this.mpMax) {
+  //     alert('skill is working!');
+  //     this.mpCurrent = 0;
+  //     return gaugeBarRender(), cooldown;
+  //   } else return;
+  // }
 
   levelUp() {
     // Must make sure gauge bars correctly update player stats. currently having issues.
-      this.XP = 0;
-      this.level++;
-      this.hpMax += 10;
-      this.hpCurrent = this.hpMax;
-      this.mpMax += 10;
-      this.mpCurrent = this.mpMax;
-      this.movementSpeed += 5;
-      gaugeBarRender();
-      // if (this.level % 3 === 0) {
-  //       return levelBossWave, levelWave, gaugeBarRender();
-  //     } else return levelWave, gaugeBarRender();
+    this.XP = 0;
+    this.level++;
+    this.hpMax += 10;
+    this.hpCurrent = this.hpMax;
+    this.mpMax += 10;
+    this.mpCurrent = this.mpMax;
+    this.movementSpeed += 5;
+    playerScore += 50;
+    updateScore();
+    gaugeBarRender();
+    generateEnemies(`${playerOne.level}`)
+    // if (this.level % 3 === 0) {
+    //       return levelBossWave, levelWave, gaugeBarRender();
+    //     } else return levelWave, gaugeBarRender();
 
-  //   // must code a means by which player movement and enemy kill determines level up.
-   }
+    //   // must code a means by which player movement and enemy kill determines level up.
+  }
 }
+const playerOne = new Player('Hero', 100, 100, 100, 100, 20, 0, 1);
+
+// NOTE : Enemy class currently useless. Must either cut or find way to make relevant.
 class Enemy extends Character {
   constructor(name, hpMax, hpCurrent, movementSpeed) {
     super(name, hpMax, hpCurrent, movementSpeed);
@@ -465,85 +397,102 @@ class Enemy extends Character {
   advance() {
     // this is where you need to code the enemy constantly advancing toward character.
     // add conditional knock-back if they are not destroyed on advance.
-    // add destroy on collision if enemy health higher than basic
 
   }
 }
 // CHARACTER OBJECTS
-const playerOne = new Player('Hero', 100, 100, 100, 100, 20, 0, 1);
 
 // build enemy array. Spawn new wave of them based off of current player level after time delay
+const enemies = [];
 
- const enemies = [];
+// RELOCATE BELOW TO AUDIO.JS!!!!
 
- // below: generate enemies and place randomly throughout game space
-function generateEnemies(num) {
-  const gameBorder = document.getElementById('action-space');
-  for (let i = 1; i <= num; i++) {
-    const enemyBox = document.createElement('div');
-    enemyBox.className = "enemy__box";
-    enemyBox.setAttribute('id', 'enemy-box');
-    gameBorder.appendChild(enemyBox);
-    enemies.push(enemyBox);
-    enemyBox.addEventListener("click", (e) => {
-      e.target.remove();
-      destroyEnemy();
-    });
+// SOUND ELEMENTS BELOW
+const muteMusicBtn = document.getElementById('mute-music');
+const muteSFXBtn = document.getElementById('mute-sfx');
 
-    const maxX = gameBorder.width - 40;
-    const maxY = gameBorder.height - 40;
-    enemyBox.style.left = Math.floor(Math.random() * maxX)  + "px";
-    enemyBox.style.top = Math.floor(Math.random() * maxY) + "px";
+const bossMusic = document.getElementById('boss-battle-music');
+const hoverButtonSound = document.getElementById('button-hover');
+const buttonBlipSound = document.getElementById('button-blip');
+const bossKillSound = document.getElementById('boss-kill');
+const buttonHoverSound = document.getElementById('button-hover');
+const criticalHitSound = document.getElementById('critical-hit');
+const dashSound = document.getElementById('dash-small');
+const endMusic = document.getElementById('end-music');
+const enemyDeathSound = document.getElementById('enemy-kill');
+const hardSlashSound = document.getElementById('hard-slash');
+const healSound = document.getElementById('heal');
+const levelUpSound = document.getElementById('level-up-blast');
+const newSkillSound = document.getElementById('new-skill-sound');
+const playerDeathSound = document.getElementById('player-death');
+const playerHitSound = document.getElementById('player-hit');
+
+// VOLUME ADJUSTING ELEMENTS BELOW
+const musicVolume = document.getElementById('music-volume');
+const musicVolumeRange = document.getElementById('music-volume-range');
+musicVolume.innerHTML = musicVolumeRange.value;
+
+const sfxVolume = document.getElementById('sfx-volume');
+const sfxVolumeRange = document.getElementById('sfx-volume-range');
+sfxVolume.innerHTML = sfxVolumeRange.value;
+
+
+// MUSIC MUTE AND ADJUST FUNCTIONS
+
+function muteMusic() {
+  if (currentSong.paused) {
+    currentSong.play();
+    muteMusicBtn.innerHTML = 'mute';
+  } else {
+    currentSong.pause();
+    muteMusicBtn.innerHTML = 'unmute';
   }
 }
 
-// function generateBossEnemies(num) {
-//   for (let i = 1; i <= num; i++) {
-//     const enemyBoss = new Enemy(`Boss ${i}`, 3, 3, 5);
-//     enemies.push(enemyBoss);
-//   }
-//   return enemies;
-// }
+muteMusicBtn.addEventListener("click", muteMusic);
 
-// create a 5s cooldown condition on special abilities
-function revert() {
-  playerOne.movementSpeed -= 20;
-}
-function recharge() {
-  playerOne.mpCurrent === playerOne.mpMax;
-  return gaugeBarRender();
+function adjustMusicVolume() {
+  currentSong.volume = musicVolumeRange.value / 100;
+  musicVolume.innerHTML = this.value;
 }
 
+musicVolumeRange.addEventListener("change", adjustMusicVolume);
 
-// level up checker on instance of XP gain. incorporate for successful enemy kills and movement. Think of the step() render from tutorial exercise.
-function levelCheck() {
-  if (playerOne.XP >= 100) {
-    playerOne.levelUp();
-  } else return;
+// SFX MUTE AND ADJUST FUNCTIONS
+// NOTE : Mute button on SFX currently buggy.
+
+function muteSFX() {
+  if (sfxVolumeRange.value != 0) {
+    sfxVolumeRange.value = 0;
+    sfxVolume.value = 0;
+    sfxVolume.innerHTML = 0;
+    muteSFXBtn.innerHTML = 'unmute';
+  }
+  else {
+    sfxVolumeRange.value = 50;
+    sfxVolume.value = 50;
+    sfxVolume.innerHTML = 50;
+    muteSFXBtn.innerHTML = 'mute';
+  }
 }
 
-// Base destroy enemy function for any successful kill.
-function destroyEnemy() {
-  enemies.shift();
-  playerOne.mpCurrent += 20;
-  playerOne.XP += 60;
-  levelCheck();
-  gaugeBarRender();
+muteSFXBtn.addEventListener("click", muteSFX);
+
+function adjustSFXVolume() {
+  currentSound.volume = sfxVolumeRange.value / 100;
+  sfxVolume.innerHTML = this.value;
 }
 
-// create a stock gauge bar render to streamline the update process for interactive character bars
-function gaugeBarRender() {
-  playerHealth.value = playerOne.hpCurrent;
-  playerMagic.value = playerOne.mpCurrent;
-  playerExp.value = playerOne.XP;
-  playerExpCount.innerHTML = playerOne.XP;
-  playerHealthCount.innerHTML = playerOne.hpCurrent;
-  playerMagicCount.innerHTML = playerOne.mpCurrent;
-  return;
+sfxVolumeRange.addEventListener("change", adjustSFXVolume);
+
+gameScreen.addEventListener("click", initializeSound);
+
+function initializeSound() {
+  currentSound = newSkillSound;
+  currentSound.play();
 }
 
-// set Time Out Variables
-// const levelBossWave = setTimeout(generateBossEnemies((this.level / 3)), 3000);
-// const levelWave = setTimeout(generateEnemies(this.level), 5000);
-const speedDash = setTimeout(revert, 5000);
-const cooldown = setTimeout(recharge, 5000);
+function hoverButtonNoise() {
+  currentSound = hoverButtonSound;
+  currentSound.play();
+}

@@ -1,131 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dungeon Arena</title>
 
-    <script src="script.js" defer></script>
-    <link href="style.css" rel="stylesheet" type="text/CSS" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fira+Sans&family=Orbitron&family=Play:wght@400;700&family=Roboto&family=Roboto+Slab&family=Trispace&family=VT323&display=swap" rel="stylesheet">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dungeon Arena</title>
+
+  <!-- <script src="audio.js" defer></script> -->
+  <script src="script.js" defer></script>
+  <link href="style.css" rel="stylesheet" type="text/CSS" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fira+Sans&family=Orbitron&family=Play:wght@400;700&family=Roboto&family=Roboto+Slab&family=Trispace&family=VT323&display=swap"
+    rel="stylesheet">
 </head>
+
 <body>
-    <div class="audio__elements">
-    <audio id="boss-battle-music" loop="loop" src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/BossBattleMusic.wav"></audio>
-    <audio id="button-hover" src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/button-hover.wav" volume="70"></audio>
-    <audio id="button-blip" src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/button-blip.wav" volume="80"></audio>
-    <audio id="critical-hit" volume="80" src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/critical-hit.wav"></audio>
-    <audio id="boss-kill" volume="80" src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/boss-kill.wav"></audio>
-    <audio id="dash-small" volume="80" src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/dash-small.wav"></audio>
-    <audio id="end-music" volume="80" src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/end-screen-music.wav"></audio>
-    <audio id="enemy-kill" volume="80" src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/enemy-kill.wav"></audio>
-    <audio id="hard-slash" volume="80" src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/hard-slash.wav"></audio>
+  <div class="audio__elements">
+    <audio id="boss-battle-music" loop="loop"
+      src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/BossBattleMusic.wav"></audio>
+    <audio id="button-hover" src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/button-hover.wav"
+      volume="70"></audio>
+    <audio id="button-blip" src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/button-blip.wav"
+      volume="80"></audio>
+    <audio id="critical-hit" volume="80"
+      src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/critical-hit.wav"></audio>
+    <audio id="boss-kill" volume="80"
+      src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/boss-kill.wav"></audio>
+    <audio id="dash-small" volume="80"
+      src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/dash-small.wav"></audio>
+    <audio id="end-music" volume="80"
+      src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/end-screen-music.wav"></audio>
+    <audio id="enemy-kill" volume="80"
+      src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/enemy-kill.wav"></audio>
+    <audio id="hard-slash" volume="80"
+      src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/hard-slash.wav"></audio>
     <audio id="heal" volume="80" src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/heal.wav"></audio>
-    <audio id="level-up-blast" volume="80" src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/levelupblast.wav"></audio>
-    <audio id="new-skill-sound" volume="100" src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/new-skill-sound.wav"></audio>
-    <audio id="player-get-hit" volume="80" src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/player-get-hit..wav"></audio>
-    <audio id="player-death" volume="80" src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/player-death-moan.wav"></audio>
+    <audio id="level-up-blast" volume="80"
+      src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/levelupblast.wav"></audio>
+    <audio id="new-skill-sound" volume="100"
+      src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/new-skill-sound.wav"></audio>
+    <audio id="player-get-hit" volume="80"
+      src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/player-get-hit..wav"></audio>
+    <audio id="player-death" volume="80"
+      src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/player-death-moan.wav"></audio>
     <audio id="slash" volume="80" src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/Slash.wav"></audio>
 
-    </div>
-    <div class="game" id="game">
-        <h1>DUNGEON ARENA</h1>
+  </div>
+  <div class="game" id="game">
+    <h1>DUNGEON ARENA</h1>
     <div class="game__board" id="game-board">
-        <header class="header" id="header">
-            <div class="player__status" id="player-status">
-                <div class="gauge__bundle">
-                    <progress class="gauge__bar" id="hp-bar" max="100" value="55"></progress>
-                    <label id="health-bar"></label>
-                </div>
-                <div class="gauge__bundle">
-                    <progress class="gauge__bar" id="mp-bar" max="100" value="55"></progress>
-                    <label id="magic-bar"></label>
-                </div>
-                <div class="gauge__bundle">
-                    <progress class="gauge__bar" id="xp-bar" max="10000000000" value="10"></progress>
-                    <label id="exp-bar"></label>
-                </div>
-            </div>
-            <div class="sound__controls" id="sound-controls">
-                <button class="button" id="mute-music">MUTE MUSIC</button>
-                <input type="range" min="1" max="100" value="50" class="music__volume__range" id="music-volume-range">
-                <label id="music-volume"></label>
-                <button class="button" id="mute-sfx">MUTE SFX</button>
-                <input type="range" min="1" max="100" value="50" class="sfx__volume__range" id="sfx-volume-range">
-                <label id="sfx-volume"></label>
-            </div>
-            <button class="pause__button" id="pause-button">PAUSE</button>
-        </header>
+      <header class="header" id="header">
+        <div class="player__status" id="player-status">
+          <div class="gauge__bundle">
+            <progress class="gauge__bar" id="hp-bar" max="100" value="1"></progress>
+            <label id="health-bar"></label>
+          </div>
+          <div class="gauge__bundle">
+            <progress class="gauge__bar" id="mp-bar" max="100" value="1"></progress>
+            <label id="magic-bar"></label>
+          </div>
+          <div class="gauge__bundle">
+            <progress class="gauge__bar" id="xp-bar" max="101" value="1"></progress>
+            <label id="exp-bar"></label>
+          </div>
+          <div class="stats" id="current-score">Current Player Score: 0</div>
+        </div>
+        <div class="sound__controls" id="sound-controls">
+          <button class="button" id="mute-music">MUTE MUSIC</button>
+          <input type="range" min="1" max="100" value="50" class="music__volume__range" id="music-volume-range">
+          <label id="music-volume"></label>
+          <button class="button" id="mute-sfx">MUTE SFX</button>
+          <input type="range" min="1" max="100" value="50" class="sfx__volume__range" id="sfx-volume-range">
+          <label id="sfx-volume"></label>
+        </div>
+        <button class="pause__button" id="pause-button">PAUSE</button>
+      </header>
 
 
-        <div class="action__space" id="action-space">
-            <div class="player__box" id="player-box">
-                <!-- <img id="player-icon" alt="our-hero" src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/Images/player-thief.jpeg" /> -->
-            </div>
-            <div class="enemy__box" id="enemy-box">
+      <div class="action__space" id="action-space">
+        <div class="player__box" id="player-box">
         </div>
-        <!-- <div class="enemy__box" id="enemy-box">
-        </div> -->
+        <div class="enemy__box" id="enemy-box">
         </div>
-        <div id="game-over-screen">
-            <div class="text">
-                <h1>Dungeon Arena</h1>
-                <h2>GAME OVER.</h2>
-            </div>
-            <div id="game-over-stats">
-                <div class="stat__display" id="stat-display game-over">
-                    <div class="stats" id="current-score game-over">Final Player Score: 0</div>
-                    <div class="stats" id="player-level game-over">Final Player Level: 1</div>
-                    <div class="stats" id="enemies-killed game-over">Enemies Vanquished: 0</div>
-                    <button class="start__button" id="restart-button">NEW GAME</button>
-                </div>
-            </div>
+      </div>
+      <div id="game-over-screen">
+        <div class="text">
+          <h1>Dungeon Arena</h1>
+          <h2>GAME OVER.</h2>
         </div>
-        <div id="pause-menu">
-            <div class="text">
-                <h1>Dungeon Arena</h1>
-                <h2>by Christopher Lazariuk</h2>
-            </div>
-            <div class="stat__display" id="stat-display">
-                <div class="stats" id="current-score">Current Player Score: 0</div>
-                    <div class="gauge__bundle">
-                        <progress class="gauge__bar" id="hp-bar" max="100" value="65"></progress>
-                        <label id="health-bar"></label>
-                    </div>
-                    <div class="gauge__bundle">
-                        <progress class="gauge__bar" id="mp-bar" max="100" value="65"></progress>
-                        <label id="magic-bar"></label>
-                    </div>
-                    <div class="gauge__bundle">
-                        <progress class="gauge__bar" id="xp-bar" max="10000000000" value="10"></progress>
-                        <label id="exp-bar"></label>
-                    </div>
-                <div class="stats" id="player-level">Current Level: 1</div>
-                <div class="stats" id="player-xp-to-next-level">XP to next lvl: 9000</div>
-            </div>
-            <div class="menu__buttons" id="menu-buttons">
-                <button class="instructions-button" id="instructions-button">Instructions for Playing</button>
-                <button class="menu__pause__button" id="pause-menu-button">RESUME GAME</button>
-                <button class="start__button" id="start-button">NEW GAME</button>
-            </div>
-            </div>
-            <div class="instructions-box" id="instructions-box">
-                <div class="instructions-list" id="instructions-list">
-                    <p>You're an adventurer and bad guys are coming at you. Survive their continuous onslaught, levelling up along the way. Unlock new moves every five levels!</p>
-                    <ul>
-                        <li>Avoid contact with enemies using the WASD keys</li>
-                        <li>Attack with basic attacks using spacebar</li>
-                        <li>Use your level 5 move with 'Q' key</li>
-                        <li>Use your level 10 move with 'E' key</li>
-                        <li>Use your level 15 move with 'R' key</li>
-                        <li>Use your level 20 move with 'F' key</li>
-                    </ul>
-                </div>
+        <div id="game-over-stats">
+          <div class="stat__display" id="stat-display game-over">
+            <div class="stats" id="final-score">Final Player Score: 0</div>
+            <div class="stats" id="player-level">Final Player Level: 1</div>
+            <button class="start__button" id="restart-button">NEW GAME</button>
+          </div>
         </div>
+      </div>
+      <div id="pause-menu">
+        <div class="text">
+          <h1>Dungeon Arena</h1>
+          <h2>by Christopher Lazariuk</h2>
         </div>
+        <div class="menu__buttons" id="menu-buttons">
+          <button class="instructions-button" id="instructions-button">Instructions for Playing</button>
+          <button class="menu__pause__button" id="pause-menu-button">RESUME GAME</button>
+          <button class="start__button" id="start-button">NEW GAME</button>
+        </div>
+      </div>
+      <div class="instructions-box" id="instructions-box">
+        <div class="instructions-list" id="instructions-list">
+          <p>You're an adventurer trapped in a nightmarish dungeon from which there is no escape. Survive the continuous
+            onslaught of enemies. Be warned! Colliding with enemies will damage you, and enemies colliding with the
+            border walls will also damage you!</p>
+          <ul>
+            <li>Avoid contact with enemies using the WASD keys</li>
+            <li>Attack by clicking on the enemy boxes</li>
+            <li>Heal yourself with the 'e' key</li>
+            <li>Use your special attack with the 'q' key. (COMING SOON!)</li>
+          </ul>
+        </div>
+      </div>
     </div>
+  </div>
 
 </body>
+
 </html>
