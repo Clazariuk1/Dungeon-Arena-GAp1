@@ -260,18 +260,23 @@ function generateEnemies(num) {
     const enemyBox = document.createElement('div')
     enemyBox.className = 'enemy__box'
     enemyBox.setAttribute('id', 'enemy-box')
+    const maxX = gameBorder.clientWidth
+    const maxY = gameBorder.clientHeight
+    const randomX = Math.floor(Math.random() * (maxX - 10))
+    const randomY = Math.floor(Math.random() * (maxY - 10))
+    enemyBox.style.left = randomX + 'px'
+    enemyBox.style.top = randomY + 'px'
     gameBorder.appendChild(enemyBox)
-    enemies.push(enemyBox)
+
     enemyBox.addEventListener('click', (e) => {
       e.target.remove()
       destroyEnemy()
     })
-
-    const maxX = gameBorder.width - 40
-    const maxY = gameBorder.height - 40
-    enemyBox.style.left = Math.floor(Math.random() * maxX) + 'px'
-    enemyBox.style.top = Math.floor(Math.random() * maxY) + 'px'
   }
+  // const enemyBoxes = document.querySelectorAll('.enemy__box')
+  // enemyBoxes.forEach((enemyBox) => {
+
+  // })
 }
 
 function takeDamage() {
