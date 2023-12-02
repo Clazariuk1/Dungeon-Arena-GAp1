@@ -108,9 +108,11 @@ function handleKeys(e) {
     }
     if (charLeftPosition + Math.ceil(playerBox.offsetWidth * 1.1) <= gameBorder.offsetWidth) {
       playerBox.style.left = charLeftPosition + 'px'
-    } else {
+    }
+    else {
       charLeftPosition = gameBorder.offsetWidth - playerBox.offsetWidth
-    } if (enemyCollision(0, 0, 0, 0)) {
+    }
+    if (enemyCollision(0, 0, 0, 0)) {
       takeDamage()
     }
   }
@@ -125,9 +127,11 @@ function handleKeys(e) {
     }
     if (charLeftPosition >= 0) {
       playerBox.style.left = charLeftPosition + 'px'
-    } else {
+    }
+    else {
       charLeftPosition = 0
-    } if (enemyCollision(0, 0, 0, 0)) {
+    }
+    if (enemyCollision(0, 0, 0, 0)) {
       takeDamage()
     }
   }
@@ -142,9 +146,11 @@ function handleKeys(e) {
     }
     if (charTopPosition + Math.ceil(playerBox.offsetHeight * 1.1) <= gameBorder.offsetHeight) {
       playerBox.style.top = charTopPosition + 'px'
-    } else {
+    }
+    else {
       charTopPosition = gameBorder.offsetHeight - playerBox.offsetHeight
-    } if (enemyCollision(0, 0, 0, 0)) {
+    }
+    if (enemyCollision(0, 0, 0, 0)) {
       takeDamage()
     }
   }
@@ -161,9 +167,11 @@ function handleKeys(e) {
     // }
     if (charTopPosition >= 0) {
       playerBox.style.top = charTopPosition + 'px'
-    } else {
+    }
+    else {
       charTopPosition = 0
-    } if (enemyCollision(0, 0, 0, 0)) {
+    }
+    if (enemyCollision(0, 0, 0, 0)) {
       takeDamage()
     }
   }
@@ -282,7 +290,8 @@ function takeDamage() {
 function levelCheck() {
   if (playerOne.XP >= 100) {
     playerOne.levelUp()
-  } else return
+  }
+  else return
 }
 
 // Base destroy enemy function for any successful kill.
@@ -341,10 +350,12 @@ class Player extends Character {
   heal() {
     if (this.hpCurrent === this.hpMax || this.mpCurrent < 30) {
       return
-    } else if (this.hpCurrent + 30 > this.hpMax) {
+    }
+    else if (this.hpCurrent + 30 > this.hpMax) {
       this.hpCurrent = this.hpMax
       this.mpCurrent -= 30
-    } else {
+    }
+    else {
       this.hpCurrent += 30
       this.mpCurrent -= 30
     }
@@ -445,7 +456,8 @@ function muteMusic() {
   if (currentSong.paused) {
     currentSong.play()
     muteMusicBtn.innerHTML = 'mute'
-  } else {
+  }
+  else {
     currentSong.pause()
     muteMusicBtn.innerHTML = 'unmute'
   }

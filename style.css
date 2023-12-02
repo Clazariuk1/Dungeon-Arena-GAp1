@@ -12,7 +12,6 @@
     margin: 0;
     width: 100vw;
     height: 100vh;
-    background-color: red;
     z-index: -2;
   }
 
@@ -112,11 +111,9 @@
     justify-content: center;
     gap: .5rem;
     width: 50%;
-    /* border: solid .25rem black; */
   }
 
   .text {
-    /* border: solid .25rem black; */
     text-align: center;
     justify-content: center;
     display: flex;
@@ -282,6 +279,7 @@
     width: 1000px;
     height: 800px;
     margin: 2rem;
+    background-image: url('/Users/Chris/software_homework/Dungeon-Arena-GAp1/Images/dungeon-floor-background.jpeg');
   }
 
   .activate#game-over-screen {
