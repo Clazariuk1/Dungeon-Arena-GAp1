@@ -1,10 +1,7 @@
 // Major lingering bugs:
 // NOTE : Music and SFX are OFF due to annoyance. turn them on for final program.
-// Cannot successfully apply border collision to post-initialization rendered enemies. Missing something.
 // Gauge progress bars not increasing / decreasing based on player stats. must examine further.
 // SFX volume mute not working, not silencing sound.
-// must edit game initialization to include enemy box creation within game space.
-// 0. Enemy Generation is occuring OUTSIDE the gamespace boundary and I cannot understand why.
 // 1. Must successfully enable enemy collision on enemies generated on level up
 // 2. Must successfully enable enemy movement in random directions.
 // 3. Must successfully enable border collision with player damage on enemy blocks
@@ -54,6 +51,7 @@ const playerLevel = document.getElementById('player-level')
 let playerScore
 let charLeftPosition
 let charTopPosition
+let enemyBoxes
 let currentSong
 let currentSound
 
@@ -79,7 +77,14 @@ resumeBtn.addEventListener('click', pauseGame)
 
 // FUNCTION LIST!!!!!!!!
 
-// MOVEMENT KEYS AND BOUNDARY CHECK FUNCTIONS
+// function findCollision(x, y) {
+//   // would we need to return a range? does it have to be exact within a single pixel? The boxes are 10 by 10, would this cause an issue if it's only slightly clipping the corner?
+//   const currentEnemy = enemies.find((enemy) => {
+//     return enemy.x === playerBox.style.left && enemy.y === playerBox.style.top
+//   })
+//   return currentEnemy
+// }
+// findCollision
 
 // ENEMY COLLISION DETECTION BELOW. Currently must refactor for my script. THIS IS READY TO UPDATE .
 function enemyCollision(top, left, right, bottom, enemyBox) {
@@ -207,6 +212,13 @@ function handleKeys(e) {
 }
 
 function newGameRender() {
+  enemies.splice(0, enemies.length) // remove all elements in existing array for game restart. Lingering issue: must delete all boxes to start fresh.
+  enemyBoxes = document.querySelectorAll('.enemy__box')
+  const boxArray = [...enemyBoxes]
+  boxArray.forEach((enemyBox) => enemyBox.remove());
+  // enemyBoxes.forEach(gameBorder.removeChild('.enemy__box'))
+  // while (gameBorder.hasChildNodes())
+  // gameBorder.innerHTML = '' // eliminates all existing enemy boxes to start game fresh.
   charLeftPosition = 0
   charTopPosition = 0
   generateEnemies(2)
@@ -245,10 +257,17 @@ function newGameRender() {
 }
 
 function gameOver() {
-  currentSong.pause()
-  currentSound = playerDeathSound
-  playerDeathSound.play()
-  endMusic.play()
+  enemies.splice(0, enemies.length) // remove all elements in existing array for game restart. Lingering issue: must delete all boxes to start fresh.
+  enemyBoxes = document.querySelectorAll('.enemy__box')
+  const boxArray = [...enemyBoxes]
+  boxArray.forEach((enemyBox) => enemyBox.remove());
+  playerBox.style.left = 0 + 'px'
+  playerBox.style.top = 0 + 'px'
+  // MUST ADD MUSIC BACK IN ON FINAL DRAFT
+  // currentSong.pause()
+  // currentSound = playerDeathSound
+  // playerDeathSound.play()
+  // endMusic.play()
   playerBox.classList.add('player__box')
   gameOverScreen.classList.toggle('activate')
   updateScore()
@@ -267,21 +286,20 @@ function instructions() {
   instBox.classList.toggle('activated')
 }
 
-// below: generate enemies and place randomly throughout game space. Draft. not working correctly. may need relocation.
 function generateEnemies(num) {
   const gameBorder = document.getElementById('action-space')
   for (let i = 1; i <= num; i++) {
     const enemyBox = document.createElement('div')
     enemyBox.classList.add('enemy__box')
-    enemyBox.setAttribute('id', 'enemy-box') // id must be altered to reflect x and y coordinates
-    gameBorder.appendChild(enemyBox)
-    const maxX = gameBorder.clientWidth // return to this issue, may be clientwidth is wrong method
-    const maxY = gameBorder.clientHeight
-    // const randomX = Math.floor(Math.random() * (maxX - enemyBox.offsetWidth))
-    // const randomY = Math.floor(Math.random() * (maxY - enemyBox.offsetHeight)) // this is proven wrong, won't keep outside box. you're not putting in box
-    enemyBox.style.left = Math.floor(Math.random() * (maxX - enemyBox.offsetWidth)) + 'px' // you need to pick a number and ensure it never goes ABOVE the max X or Y
-    enemyBox.style.top = Math.floor(Math.random() * (maxY - enemyBox.offsetHeight)) + 'px'
 
+    const maxX = gameBorder.clientWidth
+    const maxY = gameBorder.clientHeight
+    enemyBox.style.left = Math.floor(Math.random() * (maxX - enemyBox.offsetWidth)) + 'px'
+    enemyBox.style.top = Math.floor(Math.random() * (maxY - enemyBox.offsetHeight)) + 'px'
+    const enemy = {name: `${playerOne.level}${i}`, x: `${enemyBox.style.left}`, y: `${enemyBox.style.top}`}
+
+    enemies.push(enemy)
+    gameBorder.appendChild(enemyBox)
     // setInterval(randomEnemyDirection, 200)
     enemyBox.addEventListener('click', (e) => {
       e.target.remove()
@@ -313,7 +331,7 @@ function generateEnemies(num) {
 
     //   }
     }
-
+    enemyBoxes = document.querySelectorAll('.enemy__box') // update enemyBoxes node list for current enemy boxes list each generation. MUST UPDATE REMOVAL AS WELL. Examine take damage function.
   }
 
 
@@ -339,8 +357,6 @@ function takeDamage() {
   }
   gaugeBarRender()
 }
-
-// level up checker on instance of XP gain. incorporate for successful enemy kills and movement. Think of the step() render from tutorial exercise.
 function levelCheck() {
   if (playerOne.XP >= 100) {
     playerOne.levelUp()
@@ -350,7 +366,9 @@ function levelCheck() {
 
 // Base destroy enemy function for any successful kill.
 function destroyEnemy() {
+  // enemies.shift() must be replaces with an enemies.splice that specifically targets the selected enemy.
   enemies.shift()
+  enemyBoxes = document.querySelectorAll('.enemy__box') // remove selected enemy box from node list. THIS MUST BE POLISHED.
   playerOne.mpCurrent += 20
   playerOne.XP += 60
   playerScore += 20
