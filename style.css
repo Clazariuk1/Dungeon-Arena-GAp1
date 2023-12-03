@@ -39,8 +39,8 @@
   }
 
   #game {
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     background-color: gray;
     display: flex;
     flex-direction: column;
@@ -258,7 +258,21 @@
     z-index: 2;
   }
 
-  #enemy-box {
+.enemy__box {
+  display: block;
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border: solid .25rem black;
+  object-fit: contain;
+  z-index: 2;
+}
+
+  /* #enemy-box {
     display: block;
     position: absolute;
     justify-content: center;
@@ -271,7 +285,7 @@
     border: solid .25rem black;
     object-fit: contain;
     z-index: 2;
-  }
+  } */
 
   #action-space {
     border: solid .5rem blue;

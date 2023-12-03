@@ -1,8 +1,10 @@
 // Major lingering bugs:
+// NOTE : Music and SFX are OFF due to annoyance. turn them on for final program.
 // Cannot successfully apply border collision to post-initialization rendered enemies. Missing something.
 // Gauge progress bars not increasing / decreasing based on player stats. must examine further.
 // SFX volume mute not working, not silencing sound.
 // must edit game initialization to include enemy box creation within game space.
+// 0. Enemy Generation is occuring OUTSIDE the gamespace boundary and I cannot understand why.
 // 1. Must successfully enable enemy collision on enemies generated on level up
 // 2. Must successfully enable enemy movement in random directions.
 // 3. Must successfully enable border collision with player damage on enemy blocks
@@ -20,6 +22,7 @@
 const gameScreen = document.getElementById('game')
 const gameBorder = document.getElementById('action-space')
 const gameBorderRect = gameBorder.getBoundingClientRect()
+const enemies = []
 
 // HP / MP / XP Bar Elements. 'Gauge Bars.'
 const playerHealth = document.getElementById('hp-bar')
@@ -33,9 +36,9 @@ const pauseBtn = document.getElementById('pause-button')
 // CACHE ELEMENTS
 const playerBox = document.getElementById('player-box')
 const playerBoxRect = playerBox.getBoundingClientRect()
-const enemyBox = document.getElementById('enemy-box')
-const enemyBoxes = document.querySelectorAll('.enemy__box')
-const enemyBoxRect = enemyBox.getBoundingClientRect()
+// const enemyBox = document.getElementById('enemy-box')
+// const enemyBoxes = document.querySelectorAll('.enemy__box')
+// const enemyBoxRect = enemyBox.getBoundingClientRect()
 const startBtn = document.getElementById('start-button')
 const restartBtn = document.getElementById('restart-button')
 const resumeBtn = document.getElementById('pause-menu-button')
@@ -58,10 +61,10 @@ let currentSound
 
 // ATTACK CLICK LISTENER ON ENEMIES.
 // NOTE : This must be removed during final drafting. This affects global space and incorrectly, as it does not add this factor for enemies newly rendered while in global space.
-enemyBoxes.forEach((enemyBox) => enemyBox.addEventListener('click', (e) => {
-  e.target.remove()
-  destroyEnemy()
-}))
+// enemyBoxes.forEach((enemyBox) => enemyBox.addEventListener('click', (e) => {
+//   e.target.remove()
+//   destroyEnemy()
+// }))
 
 // BUTTON EVENT LISTENERS
 instBtn.addEventListener('mouseover', hoverButtonNoise)
@@ -79,7 +82,7 @@ resumeBtn.addEventListener('click', pauseGame)
 // MOVEMENT KEYS AND BOUNDARY CHECK FUNCTIONS
 
 // ENEMY COLLISION DETECTION BELOW. Currently must refactor for my script. THIS IS READY TO UPDATE .
-function enemyCollision(top, left, right, bottom) {
+function enemyCollision(top, left, right, bottom, enemyBox) {
   const playerBoxRect = playerBox.getBoundingClientRect()
   const enemyBoxRect = enemyBox.getBoundingClientRect()
   const scrollTop = document.documentElement.scrollLeft
@@ -94,6 +97,17 @@ function enemyCollision(top, left, right, bottom) {
   return overlapEnemyX && overlapEnemyY
 }
 
+//below: scratch codee for potential generated enemy collision fix
+// document.addEventListener('keydown', () => {
+// e.preventDefault()
+// let keydown = e.code
+// if (keydown === 'KeyD' || keydown === 'KeyA' || keydown === 'KeyS' || keydown === 'KeyW') {
+//   if (enemyCollision(0, 0, 0, 0)) {
+//     takeDamage()
+//   }
+// }
+// })
+
 function handleKeys(e) {
   e.preventDefault()
   let keydown = e.code
@@ -102,7 +116,7 @@ function handleKeys(e) {
     // console.log(wallCollision(0, 0, 10, 0))
     if (!wallCollision(0, 0, 10, 0)) {
       charLeftPosition += 10
-      playerOne.XP += 1
+      playerOne.XP += 10
       levelCheck()
       gaugeBarRender()
     }
@@ -112,7 +126,7 @@ function handleKeys(e) {
     else {
       charLeftPosition = gameBorder.offsetWidth - playerBox.offsetWidth
     }
-    if (enemyCollision(0, 0, 0, 0)) {
+    if (enemyCollision(0, 0, 0, 0, enemyBox)) {
       takeDamage()
     }
   }
@@ -121,7 +135,7 @@ function handleKeys(e) {
     // console.log(wallCollision(0, -10, 0, 0))
     if (!wallCollision(0, -10, 0, 0)) {
       charLeftPosition -= 10
-      playerOne.XP += 1
+      playerOne.XP += 10
       levelCheck()
       gaugeBarRender()
     }
@@ -131,7 +145,7 @@ function handleKeys(e) {
     else {
       charLeftPosition = 0
     }
-    if (enemyCollision(0, 0, 0, 0)) {
+    if (enemyCollision(0, 0, 0, 0, enemyBox)) {
       takeDamage()
     }
   }
@@ -140,7 +154,7 @@ function handleKeys(e) {
     // console.log(wallCollision(0, 0, 0, 10))
     if (!wallCollision(0, 0, 0, 10)) {
       charTopPosition += 10
-      playerOne.XP += 1
+      playerOne.XP += 10
       levelCheck()
       gaugeBarRender()
     }
@@ -150,7 +164,7 @@ function handleKeys(e) {
     else {
       charTopPosition = gameBorder.offsetHeight - playerBox.offsetHeight
     }
-    if (enemyCollision(0, 0, 0, 0)) {
+    if (enemyCollision(0, 0, 0, 0, enemyBox)) {
       takeDamage()
     }
   }
@@ -161,7 +175,7 @@ function handleKeys(e) {
     //   wallCollision(-10, 0, 0, 0))
     // if (!wallCollision(-10, 0, 0, 0)) {
     charTopPosition -= 10
-    playerOne.XP += 1
+    playerOne.XP += 10
     levelCheck()
     gaugeBarRender()
     // }
@@ -171,7 +185,7 @@ function handleKeys(e) {
     else {
       charTopPosition = 0
     }
-    if (enemyCollision(0, 0, 0, 0)) {
+    if (enemyCollision(0, 0, 0, 0, enemyBox)) {
       takeDamage()
     }
   }
@@ -195,9 +209,9 @@ function handleKeys(e) {
 function newGameRender() {
   charLeftPosition = 0
   charTopPosition = 0
-
-  currentSong = bossMusic
-  currentSong.play()
+  generateEnemies(2)
+  // currentSong = bossMusic
+  // currentSong.play()
   playerScore = 0
   playerOne.hpCurrent = 100
   playerOne.hpMax = 100
@@ -253,30 +267,65 @@ function instructions() {
   instBox.classList.toggle('activated')
 }
 
-// below: generate enemies and place randomly throughout game space. Draft. not working. may need relocation.
+// below: generate enemies and place randomly throughout game space. Draft. not working correctly. may need relocation.
 function generateEnemies(num) {
   const gameBorder = document.getElementById('action-space')
   for (let i = 1; i <= num; i++) {
     const enemyBox = document.createElement('div')
-    enemyBox.className = 'enemy__box'
-    enemyBox.setAttribute('id', 'enemy-box')
-    const maxX = gameBorder.clientWidth
-    const maxY = gameBorder.clientHeight
-    const randomX = Math.floor(Math.random() * (maxX - 10))
-    const randomY = Math.floor(Math.random() * (maxY - 10))
-    enemyBox.style.left = randomX + 'px'
-    enemyBox.style.top = randomY + 'px'
+    enemyBox.classList.add('enemy__box')
+    enemyBox.setAttribute('id', 'enemy-box') // id must be altered to reflect x and y coordinates
     gameBorder.appendChild(enemyBox)
+    const maxX = gameBorder.clientWidth // return to this issue, may be clientwidth is wrong method
+    const maxY = gameBorder.clientHeight
+    // const randomX = Math.floor(Math.random() * (maxX - enemyBox.offsetWidth))
+    // const randomY = Math.floor(Math.random() * (maxY - enemyBox.offsetHeight)) // this is proven wrong, won't keep outside box. you're not putting in box
+    enemyBox.style.left = Math.floor(Math.random() * (maxX - enemyBox.offsetWidth)) + 'px' // you need to pick a number and ensure it never goes ABOVE the max X or Y
+    enemyBox.style.top = Math.floor(Math.random() * (maxY - enemyBox.offsetHeight)) + 'px'
 
+    // setInterval(randomEnemyDirection, 200)
     enemyBox.addEventListener('click', (e) => {
       e.target.remove()
       destroyEnemy()
     })
-  }
-  // const enemyBoxes = document.querySelectorAll('.enemy__box')
-  // enemyBoxes.forEach((enemyBox) => {
 
-  // })
+
+    // function randomEnemyDirection() {
+    //   const gameBorderWidth = gameBorder.clientWidth
+    //   const gameBorderHeight = gameBorder.clientHeight
+
+    //   const maxX = gameBorderWidth - enemyBox.clientWidth
+    //   const maxY = gameBorderHeight - enemyBox.clientHeight
+
+    //   const directions = [
+    //     {x: 0, y: -enemyBox.clientWidth},
+    //     {x: 0, y: enemyBox.clientWidth},
+    //     {x: -enemyBox.clientWidth, y: 0},
+    //     {x: enemyBox.clientWidth, y: 0}
+    //   ]
+
+    //   const trajectory = Math.floor(Math.random() * directions.length)
+
+    //   let positionX = parseInt(enemyBox.style.left) || 0
+    //   let positionY = parseInt(enemyBox.style.top) || 0
+
+    //     enemyBox.style.left = positionX + 'px'
+    //     enemyBox.style.top = positionY + 'px'
+
+    //   }
+    }
+
+  }
+
+
+function takeBorderDamage() {
+  console.log('BORDER damage!')
+  playerOne.hpCurrent -= 2
+  playerHitSound.play()
+  if (playerOne.hpCurrent <= 0) {
+    playerOne.hpCurrent = 0
+    gameOver()
+  }
+  gaugeBarRender()
 }
 
 function takeDamage() {
@@ -331,11 +380,10 @@ function updateScore() {
 // CHARACTER Classes. Movement speed currently irrelevant. Would like to examine later for additional potential powers.
 
 class Character {
-  constructor(name, hpMax, hpCurrent, movementSpeed) {
+  constructor(name, hpMax, hpCurrent) {
     this.name = name
     this.hpMax = hpMax
     this.hpCurrent = hpCurrent
-    this.movementSpeed = movementSpeed
   }
 }
 
@@ -347,7 +395,6 @@ class Player extends Character {
     this.hpCurrent = hpCurrent
     this.mpMax = mpMax
     this.mpCurrent = mpCurrent
-    this.movementSpeed = movementSpeed
     this.XP = XP
     this.level = level
   }
@@ -393,7 +440,6 @@ class Player extends Character {
     this.hpCurrent = this.hpMax
     this.mpMax += 10
     this.mpCurrent = this.mpMax
-    this.movementSpeed += 5
     playerScore += 50
     updateScore()
     gaugeBarRender()
@@ -405,23 +451,7 @@ class Player extends Character {
     //   // must code a means by which player movement and enemy kill determines level up.
   }
 }
-const playerOne = new Player('Hero', 100, 100, 100, 100, 20, 0, 1)
-
-// NOTE : Enemy class currently useless. Must either cut or find way to make relevant.
-class Enemy extends Character {
-  constructor(name, hpMax, hpCurrent, movementSpeed) {
-    super(name, hpMax, hpCurrent, movementSpeed)
-  }
-  advance() {
-    // this is where you need to code the enemy constantly advancing toward character.
-    // add conditional knock-back if they are not destroyed on advance.
-
-  }
-}
-// CHARACTER OBJECTS
-
-// build enemy array. Spawn new wave of them based off of current player level after time delay
-const enemies = []
+const playerOne = new Player('Hero', 100, 100, 100, 100, 0, 1)
 
 // RELOCATE BELOW TO AUDIO.JS!!!!
 
@@ -443,7 +473,7 @@ const healSound = document.getElementById('heal')
 const levelUpSound = document.getElementById('level-up-blast')
 const newSkillSound = document.getElementById('new-skill-sound')
 const playerDeathSound = document.getElementById('player-death')
-const playerHitSound = document.getElementById('player-hit')
+const playerHitSound = document.getElementById('player-get-hit')
 
 // VOLUME ADJUSTING ELEMENTS BELOW
 const musicVolume = document.getElementById('music-volume')
@@ -504,7 +534,7 @@ function adjustSFXVolume() {
 
 sfxVolumeRange.addEventListener('change', adjustSFXVolume)
 
-gameScreen.addEventListener('click', initializeSound)
+// gameScreen.addEventListener('click', initializeSound)
 
 function initializeSound() {
   currentSound = newSkillSound
