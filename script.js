@@ -57,13 +57,6 @@ let currentSound
 
 // EVENT LISTENERS
 
-// ATTACK CLICK LISTENER ON ENEMIES.
-// NOTE : This must be removed during final drafting. This affects global space and incorrectly, as it does not add this factor for enemies newly rendered while in global space.
-// enemyBoxes.forEach((enemyBox) => enemyBox.addEventListener('click', (e) => {
-//   e.target.remove()
-//   destroyEnemy()
-// }))
-
 // BUTTON EVENT LISTENERS
 instBtn.addEventListener('mouseover', hoverButtonNoise)
 instBtn.addEventListener('click', instructions)
@@ -77,14 +70,21 @@ resumeBtn.addEventListener('click', pauseGame)
 
 // FUNCTION LIST!!!!!!!!
 
+// add on to handle keys
+
 // function findCollision(x, y) {
 //   // would we need to return a range? does it have to be exact within a single pixel? The boxes are 10 by 10, would this cause an issue if it's only slightly clipping the corner?
-//   const currentEnemy = enemies.find((enemy) => {
-//     return enemy.x === playerBox.style.left && enemy.y === playerBox.style.top
+//  if (enemies.includes())
+// const currentEnemy = enemies.find((enemy) => {
+//     return enemy.x === x && enemy.y === y
 //   })
 //   return currentEnemy
 // }
 // findCollision
+
+// enemies.splice(enemies.indexOf(currentEnemy), 1)
+// takeDamage()
+// must find a way to eliminate the selected box.
 
 // ENEMY COLLISION DETECTION BELOW. Currently must refactor for my script. THIS IS READY TO UPDATE .
 function enemyCollision(top, left, right, bottom, enemyBox) {
@@ -107,7 +107,7 @@ function enemyCollision(top, left, right, bottom, enemyBox) {
 // e.preventDefault()
 // let keydown = e.code
 // if (keydown === 'KeyD' || keydown === 'KeyA' || keydown === 'KeyS' || keydown === 'KeyW') {
-//   if (enemyCollision(0, 0, 0, 0)) {
+//   if (findCollision(playerBox.style.left, playerBox.style.top)) {
 //     takeDamage()
 //   }
 // }
@@ -118,7 +118,6 @@ function handleKeys(e) {
   let keydown = e.code
 
   if (keydown === 'KeyD') {
-    // console.log(wallCollision(0, 0, 10, 0))
     if (!wallCollision(0, 0, 10, 0)) {
       charLeftPosition += 10
       playerOne.XP += 10
@@ -137,7 +136,6 @@ function handleKeys(e) {
   }
 
   if (keydown === 'KeyA') {
-    // console.log(wallCollision(0, -10, 0, 0))
     if (!wallCollision(0, -10, 0, 0)) {
       charLeftPosition -= 10
       playerOne.XP += 10
@@ -156,7 +154,6 @@ function handleKeys(e) {
   }
 
   if (keydown === 'KeyS') {
-    // console.log(wallCollision(0, 0, 0, 10))
     if (!wallCollision(0, 0, 0, 10)) {
       charTopPosition += 10
       playerOne.XP += 10
@@ -175,15 +172,10 @@ function handleKeys(e) {
   }
 
   if (keydown === 'KeyW') {
-    // note to self and devs : in debugging I'd fixed my 'up' key not working by eliminating the wallCollision check. I have no idea why it works now but this has enabled my wall collision, potentially based off pixel count vs collision boundary.
-    // console.log(
-    //   wallCollision(-10, 0, 0, 0))
-    // if (!wallCollision(-10, 0, 0, 0)) {
     charTopPosition -= 10
     playerOne.XP += 10
     levelCheck()
     gaugeBarRender()
-    // }
     if (charTopPosition >= 0) {
       playerBox.style.top = charTopPosition + 'px'
     }
@@ -292,8 +284,8 @@ function generateEnemies(num) {
     const enemyBox = document.createElement('div')
     enemyBox.classList.add('enemy__box')
 
-    const maxX = gameBorder.clientWidth
-    const maxY = gameBorder.clientHeight
+    const maxX = gameBorder.clientWidth - 50
+    const maxY = gameBorder.clientHeight - 50
     enemyBox.style.left = Math.floor(Math.random() * (maxX - enemyBox.offsetWidth)) + 'px'
     enemyBox.style.top = Math.floor(Math.random() * (maxY - enemyBox.offsetHeight)) + 'px'
     const enemy = {name: `${playerOne.level}${i}`, x: `${enemyBox.style.left}`, y: `${enemyBox.style.top}`}
