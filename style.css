@@ -282,8 +282,8 @@
   padding: 1.5rem;
   width: 10px;
   height: 10px;
-  background-color: blueviolet;
-  border: solid .25rem greenyellow;
+  background-color: greenyellow;
+  border: solid .5rem blueviolet;
   object-fit: contain;
   z-index: 3;
 }

@@ -19,7 +19,6 @@ const gameScreen = document.getElementById('game')
 const gameBorder = document.getElementById('action-space')
 const gameBorderRect = gameBorder.getBoundingClientRect()
 const enemies = []
-const bombList = []
 // HP / MP / XP Bar Elements. 'Gauge Bars.'
 const playerHealth = document.getElementById('hp-bar')
 const playerMagic = document.getElementById('mp-bar')
@@ -466,30 +465,37 @@ class Player extends Character {
   }
 
   bombTrail() {
-    const playerBoxRect = playerBox.getBoundingClientRect()
     if (this.mpCurrent >= 30) {
       this.mpCurrent -= 30
       gaugeBarRender()
       const bomb = document.createElement('div')
       bomb.classList.add('bomb')
       bomb.setAttribute('id', `${playerBox.style.left},${playerBox.style.top}`)
-
-
       bomb.style.left = `${playerBox.style.left}`
       bomb.style.top = `${playerBox.style.top}`
-
       gameBorder.appendChild(bomb)
-      bombList.push(bomb)
-    }
-    let timeLimit = 5
+
+      let timeLimit = 3
     let timer = setInterval(() => {
       timeLimit--;
       if (timeLimit <= 0) {
         clearInterval(timer)
-        explode()
+        console.log("KABOOM!")
+        bomb.remove()
       }
     }, 1000)
     return true
+    }
+
+    function explode() {
+      // const bombRect = e.boundingClientRect()
+      // const blastRadiusX = bombRect.left
+      // const blastRadiusY = bombRect.top
+      // console.log("KABOOM")
+      //this isn't working right
+      console.log("KABOOM!")
+      e.target.remove()
+    }
     // Add additional measure for collision explosion power effects on enemy and player.
     // set timeout 5000 and then trigger playerBombCollision -> bomb collision is true --> player/enemy boom.
   }
@@ -548,16 +554,6 @@ annihilate() {
 
     //   // must code a means by which player movement and enemy kill determines level up.
   }
-}
-
-function explode() {
-  // const bombRect = e.boundingClientRect()
-  // const blastRadiusX = bombRect.left
-  // const blastRadiusY = bombRect.top
-  // console.log("KABOOM")
-  //this isn't working right
-  console.log("KABOOM!")
-  e.target.remove()
 }
 
 const playerOne = new Player('Hero', 100, 100, 100, 100, 0, 1)
