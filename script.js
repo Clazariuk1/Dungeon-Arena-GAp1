@@ -453,15 +453,19 @@ class Player extends Character {
   }
 
   bombTrail() {
+    const playerBoxRect = playerBox.getBoundingClientRect()
     if (this.mpCurrent >= 30) {
       this.mpCurrent -= 30
       gaugeBarRender()
       console.log('Kaboom!')
       const bomb = document.createElement('div')
       bomb.classList.add('bomb')
-      // bomb.setAttribute('id', `${playerBox.style.left},${playerBox.style.right}`)
-      bomb.style.left = `${playerBox.style.left}` + 'px'
-      bomb.style.top = `${playerBox.style.top}` + 'px'
+      bomb.setAttribute('id', `${playerBox.style.left},${playerBox.style.top}`)
+
+
+      bomb.style.left = `${playerBox.style.left}`
+      bomb.style.top = `${playerBox.style.top}`
+
       gameBorder.appendChild(bomb)
       bombList.push(bomb)
     }
