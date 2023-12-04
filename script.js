@@ -376,7 +376,18 @@ function takeDamage() {
     gameOver()
   }
   gaugeBarRender()
+
+  let timeLimit = 1
+    let timer = setInterval(() => {
+      timeLimit--;
+      if (timeLimit <= 0) {
+        clearInterval(timer)
+        playerBox.style.backgroundColor = 'red'
+      }
+    }, 250)
+    return true
 }
+
 function levelCheck() {
   if (playerOne.XP >= 100) {
     playerOne.levelUp()
@@ -457,7 +468,6 @@ class Player extends Character {
     if (this.mpCurrent >= 30) {
       this.mpCurrent -= 30
       gaugeBarRender()
-      console.log('Kaboom!')
       const bomb = document.createElement('div')
       bomb.classList.add('bomb')
       bomb.setAttribute('id', `${playerBox.style.left},${playerBox.style.top}`)
@@ -469,7 +479,15 @@ class Player extends Character {
       gameBorder.appendChild(bomb)
       bombList.push(bomb)
     }
-    console.log('Kaboom!')
+    let timeLimit = 5
+    let timer = setInterval(() => {
+      timeLimit--;
+      if (timeLimit <= 0) {
+        clearInterval(timer)
+        explode()
+      }
+    }, 1000)
+    return true
     // Add additional measure for collision explosion power effects on enemy and player.
     // set timeout 5000 and then trigger playerBombCollision -> bomb collision is true --> player/enemy boom.
   }
@@ -477,6 +495,7 @@ class Player extends Character {
 annihilate() {
   if  (this.mpCurrent === this.mpMax) {
     this.mpCurrent -= this.mpMax
+    gameBorder.style.backgroundColor = 'blue'
     gaugeBarRender()
     const enemyNodes = document.querySelectorAll('.enemy__box')
     const boxArray = [...enemyNodes]
@@ -484,6 +503,16 @@ annihilate() {
     const bombArray = [...bombNodes]
     boxArray.forEach((enemyBox) => enemyBox.remove())
     bombArray.forEach((bomb) => bomb.remove())
+
+    let timeLimit = 1
+    let timer = setInterval(() => {
+      timeLimit--;
+      if (timeLimit <= 0) {
+        clearInterval(timer)
+        gameBorder.style.backgroundColor = 'antiqueWhite'
+      }
+    }, 500)
+    return true
   }
 }
 
@@ -506,6 +535,17 @@ annihilate() {
     //   // must code a means by which player movement and enemy kill determines level up.
   }
 }
+
+function explode() {
+  // const bombRect = e.boundingClientRect()
+  // const blastRadiusX = bombRect.left
+  // const blastRadiusY = bombRect.top
+  // console.log("KABOOM")
+  //this isn't working right
+  console.log("KABOOM!")
+  e.target.remove()
+}
+
 const playerOne = new Player('Hero', 100, 100, 100, 100, 0, 1)
 
 // RELOCATE BELOW TO AUDIO.JS!!!!
