@@ -272,6 +272,20 @@
   z-index: 2;
 }
 
+.bomb {
+  display: block;
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem;
+  width: 10px;
+  height: 10px;
+  background-color: blueviolet;
+  border: solid .25rem greenyellow;
+  object-fit: contain;
+  z-index: 3;
+}
+
   /* #enemy-box {
     display: block;
     position: absolute;

@@ -11,6 +11,12 @@
 // BONUS 2: For some reason the code is breaking when I attempt to migrate my audio materials from script.js to audio.js. Cannot figure out why.
 // BONUS 3: Important bonus to prioritize. Make a flashing effect for playerBox to change color on damage, use set timeout/ set interval to make temporary change.
 
+// SUPER IMPORTANT . when enemy movement is figured out, not only must we add in data to update the enemies array coordinates, but we must also include an update on the enemy box id.
+// const enemyBox = document.getElementById(`${enemyBox.style.left},${enemyBox.style.top}`)
+// Stuff happens for enemy movement.
+// enemies[enemy].x = enemyBox.style.left
+// enemies[enemy].y = enemyBox.style.top
+// enemyBox.setAttribute('id', `${enemyBox.style.left},${enemyBox.style.top})
 
 
 // ElEMENTS.
@@ -20,7 +26,7 @@ const gameScreen = document.getElementById('game')
 const gameBorder = document.getElementById('action-space')
 const gameBorderRect = gameBorder.getBoundingClientRect()
 const enemies = []
-
+const bombList = []
 // HP / MP / XP Bar Elements. 'Gauge Bars.'
 const playerHealth = document.getElementById('hp-bar')
 const playerMagic = document.getElementById('mp-bar')
@@ -70,47 +76,65 @@ resumeBtn.addEventListener('click', pauseGame)
 
 // FUNCTION LIST!!!!!!!!
 
-// add on to handle keys
+// ENEMY COLLISION DETECTION BELOW. Currently must refactor for my script. THIS IS READY TO UPDATE . // potentially save this for a boss of some kind? Spawn unique enemy with ID-based stuff
+// function enemyCollision(top, left, right, bottom, enemyBox) {
+//   const playerBoxRect = playerBox.getBoundingClientRect()
+//   const enemyBoxRect = enemyBox.getBoundingClientRect()
+//   const scrollTop = document.documentElement.scrollLeft
+//   const scrollLeft = document.documentElement.scrollTop
+//   const playerBoxTop = playerBoxRect.top + scrollTop
+//   const playerBoxLeft = playerBoxRect.left + scrollLeft
+//   const enemyBoxTop = enemyBoxRect.top + scrollTop
+//   const enemyBoxLeft = enemyBoxRect.left + scrollLeft
+
+//   const overlapEnemyX = playerBoxLeft + left < enemyBoxRect.right && playerBoxLeft + playerBox.offsetWidth + right > enemyBoxLeft
+//   const overlapEnemyY = playerBoxTop + top < enemyBoxRect.bottom && playerBoxTop + playerBox.offsetHeight + bottom > enemyBoxTop
+//   return overlapEnemyX && overlapEnemyY
+// }
+
+// id based collision experimental check
+// function boxCollision(x,y, top, left, right, bottom) {
+//   const playerBoxRect = playerBox.getBoundingClientRect()
+//   const potentialBox = document.getElementById(x,y)
+//   const potentialBoxRect = potentialBox.getBoundingClientRect()
+//   const scrollTop = document.documentElement.scrollLeft
+//   const scrollLeft = document.documentElement.scrollTop
+//   const playerBoxTop = playerBoxRect.top + scrollTop
+//   const playerBoxLeft = playerBoxRect.left + scrollLeft
+//   const potentialBoxTop = potentialBoxRect.top + scrollTop
+//   const potentialBoxLeft = potentialBoxRect.left + scrollLeft
+
+//   const overlapEnemyX = playerBoxLeft + left < potentialBoxRect.right && playerBoxLeft + playerBox.offsetWidth + right > potentialBoxLeft
+//   const overlapEnemyY = playerBoxTop + top < potentialBoxRect.bottom && playerBoxTop + playerBox.offsetHeight + bottom > potentialBoxTop
+//   return overlapEnemyX && overlapEnemyY
+// }
+
+//add on to handle keys ARTHUR MEETING DRAFT WORK
 
 // function findCollision(x, y) {
-//   // would we need to return a range? does it have to be exact within a single pixel? The boxes are 10 by 10, would this cause an issue if it's only slightly clipping the corner?
-//  if (enemies.includes())
-// const currentEnemy = enemies.find((enemy) => {
+//   let collision = false
+// // would we need to return a range? does it have to be exact within a single pixel? The boxes are 10 by 10, would this cause an issue if it's only slightly clipping the corner?
+//   const currentEnemy = enemies.find((enemy) => {
 //     return enemy.x === x && enemy.y === y
-//   })
-//   return currentEnemy
-// }
-// findCollision
+//     })
+//     enemies.splice(enemies.indexOf(currentEnemy), 1)
+//     if(enemies.includes(currentEnemy)) {
+//       collision = true
+//     }
+//   }
 
-// enemies.splice(enemies.indexOf(currentEnemy), 1)
-// takeDamage()
-// must find a way to eliminate the selected box.
 
-// ENEMY COLLISION DETECTION BELOW. Currently must refactor for my script. THIS IS READY TO UPDATE .
-function enemyCollision(top, left, right, bottom, enemyBox) {
-  const playerBoxRect = playerBox.getBoundingClientRect()
-  const enemyBoxRect = enemyBox.getBoundingClientRect()
-  const scrollTop = document.documentElement.scrollLeft
-  const scrollLeft = document.documentElement.scrollTop
-  const playerBoxTop = playerBoxRect.top + scrollTop
-  const playerBoxLeft = playerBoxRect.left + scrollLeft
-  const enemyBoxTop = enemyBoxRect.top + scrollTop
-  const enemyBoxLeft = enemyBoxRect.left + scrollLeft
-
-  const overlapEnemyX = playerBoxLeft + left < enemyBoxRect.right && playerBoxLeft + playerBox.offsetWidth + right > enemyBoxLeft
-  const overlapEnemyY = playerBoxTop + top < enemyBoxRect.bottom && playerBoxTop + playerBox.offsetHeight + bottom > enemyBoxTop
-  return overlapEnemyX && overlapEnemyY
-}
-
-//below: scratch codee for potential generated enemy collision fix
-// document.addEventListener('keydown', () => {
+//below: scratch code for potential generated enemy collision fix
+// document.addEventListener('keydown', (e) => {
 // e.preventDefault()
 // let keydown = e.code
 // if (keydown === 'KeyD' || keydown === 'KeyA' || keydown === 'KeyS' || keydown === 'KeyW') {
-//   if (findCollision(playerBox.style.left, playerBox.style.top)) {
-//     takeDamage()
+//   if (boxCollision(playerBox.style.left, playerBox.style.top, 0, 0, 0, 0)) {
+//     console.log("COLLISION!")
+//       e.target.remove() // will this successfully delete the enemy box?? So far we're focusing on the enemies array but how do we kill the actual box???
+//       takeDamage()
+//     }
 //   }
-// }
 // })
 
 function handleKeys(e) {
@@ -130,9 +154,7 @@ function handleKeys(e) {
     else {
       charLeftPosition = gameBorder.offsetWidth - playerBox.offsetWidth
     }
-    if (enemyCollision(0, 0, 0, 0, enemyBox)) {
-      takeDamage()
-    }
+
   }
 
   if (keydown === 'KeyA') {
@@ -147,9 +169,6 @@ function handleKeys(e) {
     }
     else {
       charLeftPosition = 0
-    }
-    if (enemyCollision(0, 0, 0, 0, enemyBox)) {
-      takeDamage()
     }
   }
 
@@ -166,9 +185,6 @@ function handleKeys(e) {
     else {
       charTopPosition = gameBorder.offsetHeight - playerBox.offsetHeight
     }
-    if (enemyCollision(0, 0, 0, 0, enemyBox)) {
-      takeDamage()
-    }
   }
 
   if (keydown === 'KeyW') {
@@ -181,9 +197,6 @@ function handleKeys(e) {
     }
     else {
       charTopPosition = 0
-    }
-    if (enemyCollision(0, 0, 0, 0, enemyBox)) {
-      takeDamage()
     }
   }
 
@@ -227,6 +240,7 @@ function newGameRender() {
   playerBox.classList.remove('player__box')
   document.addEventListener('keydown', handleKeys)
   document.addEventListener('keyup', handleKeys)
+
   document.addEventListener('keydown', function(event) {
     if (event.key === 'e') {
       playerOne.heal()
@@ -247,6 +261,18 @@ function newGameRender() {
   })
   return gaugeBarRender()
 }
+
+document.addEventListener('keydown', function(event) {
+  if(event.key === 'b') {
+    playerOne.bombTrail()
+  }
+})
+
+document.addEventListener('keydown', function(event) {
+  if(event.key === 'q') {
+    playerOne.annihilate()
+  }
+})
 
 function gameOver() {
   enemies.splice(0, enemies.length) // remove all elements in existing array for game restart. Lingering issue: must delete all boxes to start fresh.
@@ -283,11 +309,11 @@ function generateEnemies(num) {
   for (let i = 1; i <= num; i++) {
     const enemyBox = document.createElement('div')
     enemyBox.classList.add('enemy__box')
-
     const maxX = gameBorder.clientWidth - 50
     const maxY = gameBorder.clientHeight - 50
     enemyBox.style.left = Math.floor(Math.random() * (maxX - enemyBox.offsetWidth)) + 'px'
     enemyBox.style.top = Math.floor(Math.random() * (maxY - enemyBox.offsetHeight)) + 'px'
+    enemyBox.setAttribute('id', `${enemyBox.style.left},${enemyBox.style.top}`)
     const enemy = {name: `${playerOne.level}${i}`, x: `${enemyBox.style.left}`, y: `${enemyBox.style.top}`}
 
     enemies.push(enemy)
@@ -341,6 +367,8 @@ function takeBorderDamage() {
 function takeDamage() {
   console.log('damage!')
   playerOne.hpCurrent -= 10
+  // WILL THIS BE A POTENTIAL FIX TO KILL THE ENEMY BOXES?!?!?!?! IT IS!!!!!!!! Now we just have to ensure the enemies array is taken care of, collision occurs, and the collision accounts for the FULL BODY OF THE OBJECTS. Must remember to add a continuously updating ID to the object. We must AGAIN call the set attribute element on the box for each instance of its moving so that the id will be updated and correctly affected.
+  const enemyBox = document.getElementById(`${playerBox.style.left},${playerBox.style.top}`)
   enemyBox.remove()
   enemyDeathSound.play()
   if (playerOne.hpCurrent <= 0) {
@@ -424,23 +452,36 @@ class Player extends Character {
     gaugeBarRender()
   }
 
-  //spacebar for evade. TBD.
-  // evade() {
-  //   alert(`current speed is ${playerOne.movementSpeed}`)
-  //   this.movementSpeed += 20
-  //   this.mpCurrent -= 20
-  //   return speedDash, gaugeBarRender()
-  // }
+  bombTrail() {
+    if (this.mpCurrent >= 30) {
+      this.mpCurrent -= 30
+      gaugeBarRender()
+      console.log('Kaboom!')
+      const bomb = document.createElement('div')
+      bomb.classList.add('bomb')
+      // bomb.setAttribute('id', `${playerBox.style.left},${playerBox.style.right}`)
+      bomb.style.left = `${playerBox.style.left}` + 'px'
+      bomb.style.top = `${playerBox.style.top}` + 'px'
+      gameBorder.appendChild(bomb)
+      bombList.push(bomb)
+    }
+    console.log('Kaboom!')
+    // Add additional measure for collision explosion power effects on enemy and player.
+    // set timeout 5000 and then trigger playerBombCollision -> bomb collision is true --> player/enemy boom.
+  }
 
-  //q key for slipstream. TBD.
-  //expend full MP bar to become translucent and prevent damage
-  // slipStream() {
-  //   if (this.mpCurrent === this.mpMax) {
-  //     alert('skill is working!')
-  //     this.mpCurrent = 0
-  //     return gaugeBarRender(), cooldown
-  //   } else return
-  // }
+annihilate() {
+  if  (this.mpCurrent === this.mpMax) {
+    this.mpCurrent -= this.mpMax
+    gaugeBarRender()
+    const enemyNodes = document.querySelectorAll('.enemy__box')
+    const boxArray = [...enemyNodes]
+    const bombNodes = document.querySelectorAll('.bomb')
+    const bombArray = [...bombNodes]
+    boxArray.forEach((enemyBox) => enemyBox.remove())
+    bombArray.forEach((bomb) => bomb.remove())
+  }
+}
 
   levelUp() {
     // Must make sure gauge bars correctly update player stats. currently having issues.
