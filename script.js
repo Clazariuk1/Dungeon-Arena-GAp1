@@ -8,7 +8,7 @@
 // 4. Must successfully reverse direction of enemy blocks upon border collision
 // 5. BONUS. Must successfully enable enemy on enemy collision prevention. Reverse direction effect.
 // BONUS 2: For some reason the code is breaking when I attempt to migrate my audio materials from script.js to audio.js. Cannot figure out why.
-
+// BONUS 3: Teleport is doing funky things and not normal. May need to cut for final draft.
 // SUPER IMPORTANT . when enemy movement is figured out, not only must we add in data to update the enemies array coordinates, but we must also include an update on the enemy box id.
 
 
@@ -233,46 +233,36 @@ function newGameRender() {
   document.addEventListener('keydown', handleKeys)
   document.addEventListener('keyup', handleKeys)
 
-//teleport function currently not working.
-  // document.addEventListener('contextmenu', (e) => {
-  //   playerBox.style.left = `$e.clientX}`
-  //   playerBox.style.right = `${e.clientY}`
-  //   console.log("Teleported??")
-  //   playerOne.teleport()
-  // })
-
   document.addEventListener('keydown', function(event) {
     if (event.key === 'e') {
       playerOne.heal()
-      // Below: Bonus skill. Not correctly done, difficult concept to approach.
-      // document.addEventListener('keydown', (e) => {
-      //   if (e.key === ' ') {
-      //     playerOne.evade()
-      //   }
-      // })
-
-      // Below: Bonus skill. Not correctly done, difficult concept to approach.
-      // document.addEventListener('keydown', function(event) {
-      //   if (event.key === 'q') {
-      //     playerOne.slipStream()
-      //   }
-      // })
     }
   })
-  return gaugeBarRender()
+  gaugeBarRender()
 }
 
+document.addEventListener('dblclick', (event) => {
+  if (playerOne.mpCurrent >= 50) {
+    console.log(`${event.clientX}`,`${event.clientY}`)
+    playerBox.style.left = `${event.clientX}` + 'px'
+    playerBox.style.top = `${event.clientY}` + 'px'
+    playerOne.teleport()
+  gaugeBarRender()
+  }
+})
 
 document.addEventListener('keydown', function(event) {
   if(event.key === 'b') {
     playerOne.bombTrail()
   }
+  gaugeBarRender()
 })
 
 document.addEventListener('keydown', function(event) {
   if(event.key === 'q') {
     playerOne.annihilate()
   }
+  gaugeBarRender()
 })
 
 function gameOver() {
@@ -524,17 +514,12 @@ annihilate() {
   }
 }
 
-// teleport() {
-//   document.addEventListener('keydown', (e) => {
-//     if (e.key === 'f') {
-//     console.log("REALLY TELEPORTED!!")
-//     playerBox.style.left = e.clientX + 'px'
-//     playerBox.style.top = e.clientY + 'px'
-//     this.mpCurrent -= 50
-//     gaugeBarRender()
-//     }
-//   })
-// }
+teleport() {
+  const playerBoxRect = playerBox.getBoundingClientRect()
+  playerBox.style.left = `${playerBoxRect.left}`
+  playerBox.style.top = `${playerBoxRect.top}`
+  this.mpCurrent -= 50
+}
 
   levelUp() {
     // Must make sure gauge bars correctly update player stats. currently having issues.
