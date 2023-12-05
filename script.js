@@ -54,6 +54,9 @@ let enemyBoxes
 let currentSong
 let currentSound
 let enemyBossHP
+let enemyCollision
+let bossCollision
+let bombCollision
 
 // EVENT LISTENERS
 
@@ -66,7 +69,6 @@ startBtn.addEventListener('click', pauseGame)
 restartBtn.addEventListener('click', restartNewGame)
 pauseBtn.addEventListener('click', pauseGame)
 resumeBtn.addEventListener('click', pauseGame)
-
 
 // FUNCTION LIST!!!!!!!!
 
@@ -106,22 +108,29 @@ resumeBtn.addEventListener('click', pauseGame)
 
 //add on to handle keys ARTHUR MEETING DRAFT WORK
 
-function findCollision(x, y) {
-  let collision = false
-// would we need to return a range? does it have to be exact within a single pixel? The boxes are 10 by 10, would this cause an issue if it's only slightly clipping the corner?
-  const currentEnemy = enemies.find((enemy) => {
-    return enemy.x === x && enemy.y === y
-    })
-    if(enemies.includes(currentEnemy)) {
-      collision = true
-      // how to target the specific enemy box??
-      //below : must re-place into a collision damage function.
-      currentEnemy.remove()
-      enemies.splice(enemies.indexOf(currentEnemy), 1)
-      takeDamage()
-    } collision = true
-  }
 
+function findCollision(x, y) {
+  const currentEnemy = enemies.find((enemy) => {
+    const playerX = parseInt(x.replace('p', '').replace('x', ''))
+    const playerY = parseInt(y.replace('p', '').replace('x', ''))
+    const enemyX = parseInt(enemy.x.replace('p', '').replace('x', ''))
+    const enemyY = parseInt(enemy.y.replace('p', '').replace('x', ''))
+    if (playerX <= enemyX + 3 && playerY >= enemyY - 3) {
+      return true
+    } else {
+      return false
+    }
+  })
+  if (currentEnemy) {
+  currentEnemy.element.remove()
+  enemies.splice(enemies.indexOf(currentEnemy), 1)
+  takeDamage()
+  }
+}
+
+  //to insert into movement player movement AND updateBoss AND uppdate enemy arrays.
+
+  // findCollision(`${playerBox.style.left}`, `${playerBox.style.top}`)
 
 //below: scratch code for potential generated enemy collision fix
 // document.addEventListener('keydown', (e) => {
@@ -153,6 +162,7 @@ function handleKeys(e) {
     else {
       charLeftPosition = gameBorder.offsetWidth - playerBox.offsetWidth
     }
+    findCollision(`${playerBox.style.left}`, `${playerBox.style.top}`)
   }
 
   if (keydown === 'KeyA') {
@@ -168,6 +178,7 @@ function handleKeys(e) {
     else {
       charLeftPosition = 0
     }
+
   }
 
   if (keydown === 'KeyS') {
@@ -183,6 +194,7 @@ function handleKeys(e) {
     else {
       charTopPosition = gameBorder.offsetHeight - playerBox.offsetHeight
     }
+    findCollision(`${playerBox.style.left}`, `${playerBox.style.top}`)
   }
 
   if (keydown === 'KeyW') {
@@ -237,6 +249,9 @@ function handleKeys(e) {
 }
 
 function newGameRender() {
+  enemyCollision = false
+  bossCollision = false
+  bombCollision = false
   enemies.splice(0, enemies.length)
   enemyBoxes = document.querySelectorAll('.enemy__box')
   const boxArray = [...enemyBoxes]
@@ -267,7 +282,7 @@ function newGameRender() {
 
 document.addEventListener('dblclick', (event) => {
   if (playerOne.mpCurrent >= 50) {
-    console.log(`${event.clientX}`, `${event.clientY}`)
+    // console.log(`${event.clientX}`, `${event.clientY}`)
     // charLeftPosition = `${event.clientX}`
     // charTopPosition = `${event.clientY}`
     // playerBox.style.left = charLeftPosition + 'px'
@@ -432,7 +447,7 @@ function generateEnemyBoss() {
     }
   })
   setInterval(updateBoss, 250)
-  setInterval(bossCollisionCheck, 250)
+  // setInterval(bossCollisionCheck, 250)
   // if (playerOne.freezeTime()) {
   //   clearInterval(updateBoss)
   //   clearInterval(updateEnemies)
@@ -441,13 +456,13 @@ function generateEnemyBoss() {
   // }
 }
 
-function bossCollisionCheck() {
-  const collision = enemyBossCollision()
-  if(collision) {
-    playerOne.hpCurrent = 0
-    gameOver()
-  }
-}
+// function bossCollisionCheck() {
+//   const collision = enemyBossCollision()
+//   if(collision) {
+//     playerOne.hpCurrent = 0
+//     gameOver()
+//   }
+// }
 
 function generateEnemies(num) {
   const gameBorder = document.getElementById('action-space')
@@ -460,7 +475,7 @@ function generateEnemies(num) {
     enemyBox.style.top = Math.floor(Math.random() * (maxY - enemyBox.offsetHeight)) + 'px'
 
     enemyBox.setAttribute('id', `${enemyBox.style.left},${enemyBox.style.top}`)
-    const enemy = { name: `${playerOne.level}${i}`, x: `${enemyBox.style.left}`, y: `${enemyBox.style.top}` }
+    const enemy = {element: enemyBox, name: `${playerOne.level}${i}`, x: `${enemyBox.style.left}`, y: `${enemyBox.style.top}` }
     enemies.push(enemy)
 
     gameBorder.appendChild(enemyBox)
@@ -490,7 +505,7 @@ function takeDamage() {
   playerOne.hpCurrent -= 10
   // WILL THIS BE A POTENTIAL FIX TO KILL THE ENEMY BOXES?!?!?!?! IT IS!!!!!!!! Now we just have to ensure the enemies array is taken care of, collision occurs, and the collision accounts for the FULL BODY OF THE OBJECTS. Must remember to add a continuously updating ID to the object. We must AGAIN call the set attribute element on the box for each instance of its moving so that the id will be updated and correctly affected.
   const enemyBox = document.getElementById(`${playerBox.style.left},${playerBox.style.top}`)
-  enemyBox.remove()
+  // enemyBox.remove()
   enemyDeathSound.play()
   if (playerOne.hpCurrent <= 0) {
     playerOne.hpCurrent = 0
@@ -535,7 +550,7 @@ function destroyEnemy() {
   enemies.shift()
   enemyBoxes = document.querySelectorAll('.enemy__box')
   playerOne.mpCurrent += 20
-  playerOne.XP += 60
+  playerOne.XP += 10
   playerScore += 20
   levelCheck()
   updateScore()
@@ -673,7 +688,7 @@ class Player extends Character {
     gaugeBarRender()
     generateEnemies(`${playerOne.level}`)
     if (this.level % 5 === 0) {
-      generateEnemyBoss()
+      // generateEnemyBoss()
     }
   }
 }
