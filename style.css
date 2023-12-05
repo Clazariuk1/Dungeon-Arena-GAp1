@@ -1,275 +1,286 @@
 * {
-    box-sizing: border-box;
-  }
+  box-sizing: border-box;
+}
 
-  html {
-    font-size: 10pt;
-    width: 100%;
-    font-family: 'Play', sans-serif;
-  }
+html {
+  font-size: 10pt;
+  width: 100%;
+  font-family: 'Play', sans-serif;
+}
 
-  body {
-    margin: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: -2;
-  }
+body {
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -2;
+}
 
 
-  .active#pause-menu {
-    opacity: 0;
-    display: none;
-  }
+.active#pause-menu {
+  opacity: 0;
+  display: none;
+}
 
-  #pause-menu {
-    height: fit-content;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    border-radius: 5%;
-    justify-content: center;
-    align-items: center;
-    background-color: gray;
-    color: black;
-    gap: 1rem;
-    padding: 1rem;
-    margin: 1rem;
-    border: solid 2px white;
-    z-index: 3;
-  }
+#pause-menu {
+  height: fit-content;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 5%;
+  justify-content: center;
+  align-items: center;
+  background-color: gray;
+  color: black;
+  gap: 1rem;
+  padding: 1rem;
+  margin: 1rem;
+  border: solid 2px white;
+  z-index: 3;
+}
 
-  #game {
-    width: 100%;
-    height: 100%;
-    background-color: gray;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: -1;
-    background-image:
+#game {
+  width: 100%;
+  height: 100%;
+  background-color: gray;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: -1;
+  background-image:
 
-  }
+}
 
-  #game-board {
-    display: flex;
-    flex-direction: column;
-    border: .5rem solid black;
-    width: 90%;
-    height: 90%;
-    justify-content: center;
-    align-items: center;
-    background-color: antiquewhite;
-    background-image: url('/Users/Chris/software_homework/Dungeon-Arena-GAp1/Images/dungeon-floor-background.jpeg');
-  }
+#game-board {
+  display: flex;
+  flex-direction: column;
+  border: .5rem solid black;
+  width: 90%;
+  height: 90%;
+  justify-content: center;
+  align-items: center;
+  background-color: antiquewhite;
+  background-image: url('/Users/Chris/software_homework/Dungeon-Arena-GAp1/Images/dungeon-floor-background.jpeg');
+}
 
-  #header {
-    position: relative;
-    display: flex;
-    width: 100%;
-    height: fit-content;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    padding: 1rem;
-    justify-content: space-between;
-  }
+#header {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: fit-content;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  justify-content: space-between;
+}
 
-  #pause-button {
-    border: solid .25rem black;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    background-color: gray;
-    border-radius: 5%;
-  }
+#pause-button {
+  border: solid .25rem black;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: gray;
+  border-radius: 5%;
+}
 
-  #player-status {
-    align-items: center;
-    text-align: left;
-    display: flex;
-    flex-direction: column;
-    border: solid .25rem black;
-    text-align: center;
-    background-color: gray;
-    padding: .5rem;
-  }
+#player-status {
+  align-items: center;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  border: solid .25rem black;
+  text-align: center;
+  background-color: gray;
+  padding: .5rem;
+}
 
-  #stat-display {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 2rem;
-    margin-top: 1rem;
-    border: solid .25rem black;
-  }
+#stat-display {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+  margin-top: 1rem;
+  border: solid .25rem black;
+}
 
-  #menu-buttons {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    justify-content: center;
-    gap: .5rem;
-    width: 50%;
-  }
+#menu-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  gap: .5rem;
+  width: 50%;
+}
 
-  .text {
-    text-align: center;
-    justify-content: center;
-    display: flex;
-    flex-direction: column;
-  }
+.text {
+  text-align: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+}
 
-  .stats {
-    border: solid .25rem black;
-    font-size: 18pt;
-    border-radius: 5%;
-    text-align: center;
-    padding: .5rem;
-    background-color: tan;
-    width: 70%;
-    margin-top: 2rem;
-  }
+.stats {
+  border: solid .25rem black;
+  font-size: 18pt;
+  border-radius: 5%;
+  text-align: center;
+  padding: .5rem;
+  background-color: tan;
+  width: 70%;
+  margin-top: 2rem;
+}
 
-  button {
-    font-family: 'Play', sans-serif;
-    color: black;
-    width: fit-content;
-    border-radius: 10%;
-    background-color: greenyellow;
-  }
+button {
+  font-family: 'Play', sans-serif;
+  color: black;
+  width: fit-content;
+  border-radius: 10%;
+  background-color: greenyellow;
+}
 
-  button:hover {
-    cursor: pointer;
-    transform: scale(1.5);
-    transition: .5s;
-  }
+button:hover {
+  cursor: pointer;
+  transform: scale(1.5);
+  transition: .5s;
+}
 
-  #instructions-box {
-    border: solid 1rem black;
-    background-color: whitesmoke;
-    text-align: center;
-    padding: .5rem;
-    border-radius: 5%;
-    opacity: 0;
-    display: none;
-  }
+#instructions-box {
+  border: solid 1rem black;
+  background-color: whitesmoke;
+  text-align: center;
+  padding: .5rem;
+  border-radius: 5%;
+  opacity: 0;
+  display: none;
+}
 
-  .activated#instructions-box {
-    opacity: 1;
-    display: flex;
-  }
+.activated#instructions-box {
+  opacity: 1;
+  display: flex;
+}
 
-  .gauge__bar {
-    height: 1rem;
-    border: solid .25px whitesmoke;
-    padding: .5rem;
-    color: black;
-  }
+.gauge__bar {
+  height: 1rem;
+  border: solid .25px whitesmoke;
+  padding: .5rem;
+  color: black;
+}
 
-  .gauge__bundle {
-    display: flex;
-    width: 80%;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: .25rem;
-    margin-top: .5rem;
-    text-align: center;
-  }
+.gauge__bundle {
+  display: flex;
+  width: 80%;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: .25rem;
+  margin-top: .5rem;
+  text-align: center;
+}
 
-  #xp-bar {
-    background-color: greenyellow
-  }
+#xp-bar {
+  background-color: greenyellow
+}
 
-  #exp-bar {
-    border: solid 1px whitesmoke;
-    background-color: greenyellow;
-    color: silver;
-    font-size: 16pt;
-    width: fit-content;
-    text-align: center;
-    border-radius: 5%;
-  }
+#exp-bar {
+  border: solid 1px whitesmoke;
+  background-color: greenyellow;
+  color: silver;
+  font-size: 16pt;
+  width: fit-content;
+  text-align: center;
+  border-radius: 5%;
+}
 
-  #hp-bar {
-    background-color: red;
-  }
+#hp-bar {
+  background-color: red;
+}
 
-  #health-bar {
-    border: solid 1px whitesmoke;
-    background-color: red;
-    color: silver;
-    font-size: 16pt;
-    width: fit-content;
-    text-align: center;
-    border-radius: 5%;
-  }
+#health-bar {
+  border: solid 1px whitesmoke;
+  background-color: red;
+  color: silver;
+  font-size: 16pt;
+  width: fit-content;
+  text-align: center;
+  border-radius: 5%;
+}
 
-  #mp-bar {
-    background-color: blueviolet
-  }
+#mp-bar {
+  background-color: blueviolet
+}
 
-  #magic-bar {
-    border: solid 1px whitesmoke;
-    background-color: blueviolet;
-    color: silver;
-    font-size: 16pt;
-    width: fit-content;
-    text-align: center;
-    border-radius: 5%;
-  }
+#magic-bar {
+  border: solid 1px whitesmoke;
+  background-color: blueviolet;
+  color: silver;
+  font-size: 16pt;
+  width: fit-content;
+  text-align: center;
+  border-radius: 5%;
+}
 
-  #game-over-screen {
-    position: relative;
-    display: none;
-    opacity: 0;
-    flex-direction: column;
-    border-radius: 5%;
-    justify-content: center;
-    text-align: center;
-    align-items: center;
-    height: fit-content;
-    background-color: gray;
-    color: black;
-    width: 40vw;
-    gap: 2rem;
-    padding: 1rem;
-    margin: 1rem;
-    border: solid 2px white;
-  }
+#game-over-screen {
+  position: relative;
+  display: none;
+  opacity: 0;
+  flex-direction: column;
+  border-radius: 5%;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  height: fit-content;
+  background-color: gray;
+  color: black;
+  width: 40vw;
+  gap: 2rem;
+  padding: 1rem;
+  margin: 1rem;
+  border: solid 2px white;
+}
 
-  .player__box {
-    display: none;
-    opacity: 0;
-  }
+.player__box {
+  display: none;
+  opacity: 0;
+}
 
-  #player-box {
-    position: absolute;
-    justify-content: center;
-    align-items: center;
-    padding: 1rem;
-    margin: .5rem;
-    width: 10px;
-    height: 10px;
-    background-color: black;
-    border: solid .25rem red;
-    object-fit: contain;
-    z-index: 2;
-  }
+#player-box {
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  margin: .5rem;
+  width: 30px;
+  height: 30px;
+  background-color: black;
+  border: solid .25rem red;
+  object-fit: contain;
+  z-index: 2;
+}
 
 .enemy__box {
   display: block;
   position: absolute;
   justify-content: center;
   align-items: center;
-  padding: 1rem;
-  width: 10px;
-  height: 10px;
+  width: 30px;
+  height: 30px;
   background-color: red;
   border: solid .25rem black;
+  object-fit: contain;
+  z-index: 2;
+}
+
+.enemy__boss {
+  display: block;
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  background-color: red;
+  border: solid .5rem blueviolet;
   object-fit: contain;
   z-index: 2;
 }
@@ -279,42 +290,25 @@
   position: absolute;
   justify-content: center;
   align-items: center;
-  padding: 1.5rem;
-  width: 10px;
-  height: 10px;
+  width: 40px;
+  height: 40px;
   background-color: greenyellow;
   border: solid .5rem blueviolet;
   object-fit: contain;
   z-index: 3;
 }
 
-  /* #enemy-box {
-    display: block;
-    position: absolute;
-    justify-content: center;
-    align-items: center;
-    padding: 1rem;
-    margin: 15rem;
-    width: 10px;
-    height: 10px;
-    background-color: red;
-    border: solid .25rem black;
-    object-fit: contain;
-    z-index: 2;
-  } */
+#action-space {
+  border: solid .5rem blue;
+  position: relative;
+  width: 1000px;
+  height: 800px;
+  margin: 2rem;
+  z-index: 1;
+  background-color: antiquewhite;
+}
 
-  #action-space {
-    border: solid .5rem blue;
-    position: relative;
-    width: 1000px;
-    height: 800px;
-    margin: 2rem;
-    z-index: 1;
-    background-color: antiquewhite;
-    /* background-image: url('/Users/Chris/software_homework/Dungeon-Arena-GAp1/Images/dungeon-floor-background.jpeg'); */
-  }
-
-  .activate#game-over-screen {
-    opacity: 1;
-    display: flex;
-  }
+.activate#game-over-screen {
+  opacity: 1;
+  display: flex;
+}
