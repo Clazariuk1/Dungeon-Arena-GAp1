@@ -193,6 +193,10 @@ function handleKeys(e) {
 }
 
 function newGameRender() {
+  if (currentSong) {
+    currentSong.pause()
+  }
+  gameBorder.style.display = 'block'
   enemies.splice(0, enemies.length)
   enemyBoxes = document.querySelectorAll('.enemy__box')
   const boxArray = [...enemyBoxes]
@@ -255,6 +259,7 @@ document.addEventListener('keydown', function(event) {
 })
 
 function gameOver() {
+  gameBorder.style.display = 'none'
   enemies.splice(0, enemies.length)
   enemyBosses.splice(0, enemyBosses.length)
   enemyBoxes = document.querySelectorAll('.enemy__box')
@@ -269,7 +274,8 @@ function gameOver() {
   currentSong.pause()
   currentSound = playerDeathSound
   playerDeathSound.play()
-  endMusic.play()
+  currentSong = endMusic
+  currentSong.play()
   playerBox.classList.add('player__box')
   gameOverScreen.classList.toggle('activate')
   updateScore()
@@ -277,7 +283,9 @@ function gameOver() {
 }
 
 function restartNewGame() {
+  gameBorder.style.display = 'block'
   gameOverScreen.classList.toggle('activate')
+  currentSong.pause()
   newGameRender()
 }
 

@@ -321,6 +321,7 @@ progress::-webkit-progress-bar {
 }
 
 #action-space {
+  display: none;
   border: solid .5rem blue;
   position: relative;
   width: 1000px;
