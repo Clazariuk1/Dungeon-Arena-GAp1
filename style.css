@@ -131,6 +131,11 @@ body {
   margin-top: 2rem;
 }
 
+#restart-button {
+  margin-left: 4rem;
+  text-align: center;
+}
+
 button {
   font-family: 'Play', sans-serif;
   color: black;
@@ -247,7 +252,6 @@ progress::-webkit-progress-bar {
   position: relative;
   display: none;
   opacity: 0;
-  flex-direction: column;
   border-radius: 5%;
   justify-content: center;
   text-align: center;
@@ -262,6 +266,12 @@ progress::-webkit-progress-bar {
   border: solid 2px white;
 }
 
+#game-over-stats {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 .player__box {
   display: none;
   opacity: 0;

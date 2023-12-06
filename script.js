@@ -1,17 +1,15 @@
 // Major lingering bugs:
 // NOTE : Music and SFX are OFF due to annoyance. turn them on for final program.
 // 1. Enable enemy block movement - player collision
-// 2. Enemy Boss kill on player contact.
 // 3. Must successfully enable border collision with player damage on enemy blocks
 // 4. Must successfully reverse direction of enemy blocks upon border collision
-// BONUS 1: Must successfully enable enemy on enemy collision prevention. Reverse direction effect.
-// BONUS 2: For some reason the code is breaking when I attempt to migrate my audio materials from script.js to audio.js. Cannot figure out why.
-// BONUS 3: Teleport is doing funky things and not normal. May need to cut for final draft.
+// BONUS: Bombs must destroy enemies / damage player and bosses on detonation
 // BONUS 5: Freeze Time isn't stopping enemy movement. need to examine
 // BONUS 6: Annihilate needs to effect bosses without killing them somehow.
-// BONUS 7: Bombs must destroy enemies / damage player and bosses on detonation
 // SUPER IMPORTANT . when enemy movement is figured out, not only must we add in data to update the enemies array coordinates, but we must also include an update on the enemy box id.
 
+// Work on find index method for update enemies and consol log to debug. examine max x and max y ranges, something wrong that needs to take into account current box position
+// range bar css play
 
 // ElEMENTS.
 
@@ -69,16 +67,31 @@ resumeBtn.addEventListener('click', pauseGame)
 // FUNCTION LIST!!!!!!!!
 
 // ENEMY COLLISION DETECTION BELOW.
-// (()=> {
-//   if (EnemyBoss.style.left <= playerBox.style.left + 20 && enemyBoss.style.top >= playerBox.style.top - 20) {
-//     playerOne.hpCurrent = 0
-//     gameOver()
-//   }
-// })
-// function findBossCollision(x, y) {
-//   const currentBoss = enemyBosses
+
+// enemyMovementCollision(`${enemyBox.style.left}`, `${enemyBox.style.top}`)
+// function enemyMovingCollision() {
+//   enemies.forEach((enemy) => {
+//     const gameBorderRect = gameBorder.getBoundingClientRect()
+//     const newEnemyLocation = enemy[0].getBoundingClientRect()
+//     const playerBoxRect = playerBox.getBoundingClientRect()
+//   })
 // }
-// function findBombCollision(x, y) {}
+
+// function enemyMovementCollision(x, y) {
+// const enemy = enemies.find((enemyBox) => {
+//   enemyBox
+// }
+//   const enemyX = parseInt(x.replace('p', '').replace('x', ''))
+//   const enemyY = parseInt(y.replace('p', '').replace('x', ''))
+//   const playerX = parseInt(playerBox.style.left.replace('p', '').replace('x', ''))
+//   const playerY = parseInt(playerBox.style.top.replace('p', '').replace('x', ''))
+//   if (enemyX <= playerX + 5 && enemyY >= playerY - 5) {
+//     return true
+//   } else {
+//     return false
+//   }
+// }
+
 function bossCollision(x, y) {
   const bossX = parseInt(x.replace('p', '').replace('x', ''))
   const bossY = parseInt(y.replace('p', '').replace('x', ''))
@@ -97,7 +110,7 @@ function findCollision(x, y) {
     const playerY = parseInt(y.replace('p', '').replace('x', ''))
     const enemyX = parseInt(enemy.x.replace('p', '').replace('x', ''))
     const enemyY = parseInt(enemy.y.replace('p', '').replace('x', ''))
-    if (playerX <= enemyX + 15 && playerY >= enemyY - 15) {
+    if (playerX <= enemyX + 5 && playerY >= enemyY - 5) {
       return true
     } else {
       return false
@@ -192,10 +205,7 @@ function handleKeys(e) {
   return false
 }
 
-function newGameRender() {
-  if (currentSong) {
-    currentSong.pause()
-  }
+function resetBoard() {
   gameBorder.style.display = 'block'
   enemies.splice(0, enemies.length)
   enemyBoxes = document.querySelectorAll('.enemy__box')
@@ -203,9 +213,9 @@ function newGameRender() {
   boxArray.forEach((enemyBox) => enemyBox.remove())
   charLeftPosition = 0
   charTopPosition = 0
-  generateEnemies(1)
-  currentSong = bossMusic
-  currentSong.play()
+}
+
+function resetPlayer() {
   playerScore = 0
   playerOne.hpCurrent = 100
   playerOne.hpMax = 100
@@ -214,51 +224,60 @@ function newGameRender() {
   playerOne.XP = 1
   playerOne.level = 1
   playerBox.classList.remove('player__box')
+}
+
+function resetMusic() {
+  if (currentSong) {
+    currentSong.pause()
+  }
+  currentSong = bossMusic
+  currentSong.play()
+}
+
+function listenerRender() {
   document.addEventListener('keydown', handleKeys)
   document.addEventListener('keyup', handleKeys)
-
   document.addEventListener('keydown', function(event) {
     if (event.key === 'e') {
       playerOne.heal()
     }
   })
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 't') {
+      if (playerOne.mpCurrent >= 50) {
+        playerOne.teleport()
+        gaugeBarRender()
+      }
+    }
+  })
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'r') {
+      if (playerOne.mpCurrent >= 75) {
+        playerOne.freezeTime()
+      }
+    }
+  })
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'b') {
+      playerOne.bombTrail()
+    }
+  })
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'q') {
+      playerOne.annihilate()
+    }
+  })
+}
+function newGameRender() {
+  listenerRender()
+  resetMusic()
+  resetPlayer()
+  resetBoard()
+  generateEnemies(2)
   gaugeBarRender()
 }
 
-document.addEventListener('dblclick', (event) => {
-  if (playerOne.mpCurrent >= 50) {
-    console.log(`${event.clientX}`, `${event.clientY}`)
-    // charLeftPosition = `${event.clientX}`
-    // charTopPosition = `${event.clientY}`
-    // playerBox.style.left = charLeftPosition + 'px'
-    // playerBox.style.top = charTopPosition + 'px'
-    playerOne.teleport()
-    gaugeBarRender()
-  }
-})
-
-document.addEventListener('keydown', function(event) {
-  if (event.key === 'r') {
-    if (playerOne.mpCurrent >= 75) {
-      playerOne.freezeTime()
-    }
-  }
-})
-
-document.addEventListener('keydown', function(event) {
-  if (event.key === 'b') {
-    playerOne.bombTrail()
-  }
-})
-
-document.addEventListener('keydown', function(event) {
-  if (event.key === 'q') {
-    playerOne.annihilate()
-  }
-  gaugeBarRender()
-})
-
-function gameOver() {
+function clearBoard() {
   gameBorder.style.display = 'none'
   enemies.splice(0, enemies.length)
   enemyBosses.splice(0, enemyBosses.length)
@@ -270,16 +289,23 @@ function gameOver() {
   bossArray.forEach((bossEnemy) => bossEnemy.remove())
   playerBox.style.left = 0 + 'px'
   playerBox.style.top = 0 + 'px'
-  // MUST ADD MUSIC BACK IN ON FINAL DRAFT
+}
+
+function gameOverMusic() {
   currentSong.pause()
   currentSound = playerDeathSound
   playerDeathSound.play()
   currentSong = endMusic
   currentSong.play()
-  playerBox.classList.add('player__box')
-  gameOverScreen.classList.toggle('activate')
+}
+
+function gameOver() {
+  clearBoard()
+  gameOverMusic()
   updateScore()
   gaugeBarRender()
+  playerBox.classList.add('player__box')
+  gameOverScreen.classList.toggle('activate')
 }
 
 function restartNewGame() {
@@ -343,10 +369,18 @@ function updateEnemies() {
       }
       enemyBox.style.left = newX + 'px'
       enemyBox.style.top = newY + 'px'
-      // enemyBox.getAttribute('id').setAttribute('id', `${enemyBox.style.left}`,`${enemyBox.style.top}`)
+// below: attempt to change the x and y of each enemy object based on the movement changes of the enemy boxes herein. Consult with Arthur. Why isn't the global space enemies array being recognized?
+// const enemy = enemies.findIndex(function(key) {
+//   return key.element == enemyBox
+// })
+// enemies[enemy].x = `${enemyBox.style.top}`
+// enemies[enemy].y = `${enemyBox.style.left}`
+// enemies[enemies.indexOf(enemy[enemyBox])].x = enemyBox.style.left
+//       enemies[enemies.indexOf(enemy[enemyBox])].y = enemyBox.style.top
 
       enemyBox.style.transition = 'all 5s linear'
       enemyBox.style.transform = `translate(${deltaX * newX}px, ${deltaY * newY}px)`
+
     })
   }
 }
@@ -390,7 +424,6 @@ function generateEnemyBoss() {
   enemyBoss.style.top = Math.floor(Math.random() * (maxY - enemyBoss.offsetHeight)) + 'px'
   enemyBoss.setAttribute('id', `boss${playerOne.level / 5}`)
   let enemyBossHP = 10
-  // const boss = {element: enemyBoss, name: `boss${playerOne.level / 5}`}
   gameBorder.appendChild(enemyBoss)
   enemyBosses.push(enemyBoss)
 
@@ -403,22 +436,7 @@ function generateEnemyBoss() {
     }
   })
   setInterval(updateBoss, 250)
-  // setInterval(bossCollisionCheck, 250)
-  // if (playerOne.freezeTime()) {
-  //   clearInterval(updateBoss)
-  //   clearInterval(updateEnemies)
-    // const restartEnemyTime = setInterval(updateEnemies, 5000)
-    // setTimeout(restartEnemyTime, 5000)
-  // }
 }
-
-// function bossCollisionCheck() {
-//   const collision = enemyBossCollision()
-//   if(collision) {
-//     playerOne.hpCurrent = 0
-//     gameOver()
-//   }
-// }
 
 function generateEnemies(num) {
   const gameBorder = document.getElementById('action-space')
@@ -442,18 +460,6 @@ function generateEnemies(num) {
   }
   enemyBoxes = document.querySelectorAll('.enemy__box')
   setInterval(updateEnemies, 5000)
-}
-
-// Below: Cut if the enemy box movement can't be figured out.
-function takeBorderDamage() {
-  console.log('BORDER damage!')
-  playerOne.hpCurrent -= 2
-  playerHitSound.play()
-  if (playerOne.hpCurrent <= 0) {
-    playerOne.hpCurrent = 0
-    gameOver()
-  }
-  gaugeBarRender()
 }
 
 function takeDamage() {
@@ -488,7 +494,6 @@ function levelCheck() {
 function destroyEnemyBoss() {
   currentSound = bossKillSound
   currentSound.play()
-  //need a better method than shift to specifically target the boss intended for kill
   enemyBosses.shift()
   playerOne.XP += 100
   playerScore += 250
@@ -499,29 +504,17 @@ function destroyEnemyBoss() {
 
 // Base destroy enemy function for any successful kill.
 function destroyEnemy() {
-  // enemies.shift() must be replaces with an enemies.splice that specifically targets the selected enemy.
+  // enemies.shift() must be replaces with an enemies.splice that specifically targets the selected enemy. This is a bug.
   enemies.shift()
   enemyBoxes = document.querySelectorAll('.enemy__box')
   playerOne.mpCurrent += 20
-  playerOne.XP += 10
+  playerOne.XP += 30
   playerScore += 20
   levelCheck()
   updateScore()
   gaugeBarRender()
 }
 
-// original gaugeBarRender() for backup.
-// function gaugeBarRender() {
-//   playerHealth.value = playerOne.hpCurrent
-//   playerMagic.value = playerOne.mpCurrent
-//   playerExp.value = playerOne.XP
-//   playerExpCount.innerHTML = playerOne.XP
-//   playerHealthCount.innerHTML = playerOne.hpCurrent
-//   playerMagicCount.innerHTML = playerOne.mpCurrent
-//   return
-// }
-// get attribute set attribute and has attribute.
-// create a stock gauge bar render to streamline the update process for interactive character bars
 function gaugeBarRender() {
   playerHealth.setAttribute('max', playerOne.hpMax)
   playerHealth.setAttribute('value', playerOne.hpCurrent)
@@ -541,8 +534,7 @@ function updateScore() {
 
 }
 
-// CHARACTER Classes. Movement speed currently irrelevant. Would like to examine later for additional potential powers, like freeze enemy movement and hasten player movement.
-
+// CHARACTER Classes.
 class Character {
   constructor(name, hpMax, hpCurrent) {
     this.name = name
@@ -631,11 +623,12 @@ class Player extends Character {
     currentSound = annihilationSound
     currentSound.play()
   }
-// pro tip: double click desired location to teleport
+// pro tip: t key to teleport
   teleport() {
-    const playerBoxRect = playerBox.getBoundingClientRect()
-    playerBox.style.left = `${playerBoxRect.left}`
-    playerBox.style.top = `${playerBoxRect.top}`
+    charLeftPosition = 0
+    charTopPosition = 0
+    playerBox.style.left = charLeftPosition + 'px'
+    playerBox.style.top = charTopPosition + 'px'
     this.mpCurrent -= 50
     currentSound = dashSound
     currentSound.play()
@@ -701,10 +694,16 @@ const playerHitSound = document.getElementById('player-get-hit')
 const musicVolume = document.getElementById('music-volume')
 const musicVolumeRange = document.getElementById('music-volume-range')
 musicVolume.innerHTML = musicVolumeRange.value
-
 const sfxVolume = document.getElementById('sfx-volume')
 const sfxVolumeRange = document.getElementById('sfx-volume-range')
 sfxVolume.innerHTML = sfxVolumeRange.value
+
+// SOUND EVENT LISTENERS BELOW
+muteMusicBtn.addEventListener('click', muteMusic)
+musicVolumeRange.addEventListener('change', adjustMusicVolume)
+muteSFXBtn.addEventListener('click', muteSFX)
+sfxVolumeRange.addEventListener('change', adjustSFXVolume)
+gameScreen.addEventListener('click', initializeSound)
 
 // MUSIC MUTE AND ADJUST VOLUME FUNCTIONS
 function muteMusic() {
@@ -718,14 +717,10 @@ function muteMusic() {
   }
 }
 
-muteMusicBtn.addEventListener('click', muteMusic)
-
 function adjustMusicVolume() {
   currentSong.volume = musicVolumeRange.value / 100
   musicVolume.innerHTML = this.value
 }
-
-musicVolumeRange.addEventListener('change', adjustMusicVolume)
 
 // SFX MUTE AND ADJUST VOLUME FUNCTIONS
 function muteSFX() {
@@ -737,16 +732,12 @@ function muteSFX() {
   }
 }
 
-muteSFXBtn.addEventListener('click', muteSFX)
+
 
 function adjustSFXVolume() {
   currentSound.volume = sfxVolumeRange.value / 100
   sfxVolume.innerHTML = this.value
 }
-
-sfxVolumeRange.addEventListener('change', adjustSFXVolume)
-
-gameScreen.addEventListener('click', initializeSound)
 
 function initializeSound() {
   currentSound = newSkillSound
