@@ -1,13 +1,12 @@
 // Major lingering bugs:
 // NOTE : Music and SFX are OFF due to annoyance. turn them on for final program.
-// Gauge progress bars not increasing / decreasing based on player stats. must examine further.
-// SFX volume mute not working, not silencing sound.
+// 1. Enable enemy block movement - player collision
+// 2. Enemy Boss kill on player contact.
 // 3. Must successfully enable border collision with player damage on enemy blocks
 // 4. Must successfully reverse direction of enemy blocks upon border collision
 // BONUS 1: Must successfully enable enemy on enemy collision prevention. Reverse direction effect.
 // BONUS 2: For some reason the code is breaking when I attempt to migrate my audio materials from script.js to audio.js. Cannot figure out why.
 // BONUS 3: Teleport is doing funky things and not normal. May need to cut for final draft.
-// BONUS 4: Make enemy bosses kill player on collision.
 // BONUS 5: Freeze Time isn't stopping enemy movement. need to examine
 // BONUS 6: Annihilate needs to effect bosses without killing them somehow.
 // BONUS 7: Bombs must destroy enemies / damage player and bosses on detonation
@@ -190,8 +189,8 @@ function newGameRender() {
   charLeftPosition = 0
   charTopPosition = 0
   generateEnemies(1)
-  // currentSong = bossMusic
-  // currentSong.play()
+  currentSong = bossMusic
+  currentSong.play()
   playerScore = 0
   playerOne.hpCurrent = 100
   playerOne.hpMax = 100
@@ -710,12 +709,6 @@ function muteSFX() {
     sfxVolume.value = 0
     sfxVolume.innerHTML = 0
     muteSFXBtn.innerHTML = 'unmute'
-  }
-  else {
-    sfxVolumeRange.value = 50
-    sfxVolume.value = 50
-    sfxVolume.innerHTML = 50
-    muteSFXBtn.innerHTML = 'mute'
   }
 }
 
