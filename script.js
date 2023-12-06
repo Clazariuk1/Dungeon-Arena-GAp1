@@ -79,6 +79,17 @@ resumeBtn.addEventListener('click', pauseGame)
 //   const currentBoss = enemyBosses
 // }
 // function findBombCollision(x, y) {}
+function bossCollision(x, y) {
+  const bossX = parseInt(x.replace('p', '').replace('x', ''))
+  const bossY = parseInt(y.replace('p', '').replace('x', ''))
+  const playerX = parseInt(playerBox.style.left.replace('p', '').replace('x', ''))
+  const playerY = parseInt(playerBox.style.top.replace('p', '').replace('x', ''))
+  if (bossX <= playerX + 5 && bossY >= playerY - 5) {
+    return true
+  } else {
+    return false
+  }
+}
 
 function findCollision(x, y) {
   const currentEnemy = enemies.find((enemy) => {
@@ -354,6 +365,12 @@ function updateBoss() {
       enemyBoss.style.top = newY + 'px'
     })
   }
+  enemyBosses.forEach((enemyBoss) => {
+    if (bossCollision(`${enemyBoss.style.left}`, `${enemyBoss.style.top}`)) {
+      playerOne.hpCurrent -= 0
+      gameOver()
+    }
+  })
 }
 
 function generateEnemyBoss() {
@@ -365,9 +382,9 @@ function generateEnemyBoss() {
   enemyBoss.style.top = Math.floor(Math.random() * (maxY - enemyBoss.offsetHeight)) + 'px'
   enemyBoss.setAttribute('id', `boss${playerOne.level / 5}`)
   let enemyBossHP = 10
-
-  enemyBosses.push(enemyBoss)
+  // const boss = {element: enemyBoss, name: `boss${playerOne.level / 5}`}
   gameBorder.appendChild(enemyBoss)
+  enemyBosses.push(enemyBoss)
 
   enemyBoss.addEventListener('click', (e) => {
     e.preventDefault()
@@ -628,7 +645,7 @@ class Player extends Character {
   }
 
   levelUp() {
-    this.XP = 0
+    this.XP -= 100
     this.level++
     this.hpMax += 10
     this.hpCurrent = this.hpMax
