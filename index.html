@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dungeon Arena</title>
 
-  <!-- <script src="audio.js" defer></script> -->
+  <script src="audio.js" defer></script>
   <script src="script.js" defer></script>
   <link href="style.css" rel="stylesheet" type="text/CSS" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,33 +19,34 @@
 <body>
   <div class="audio__elements">
     <audio id="boss-battle-music" loop="loop"
-      src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/BossBattleMusic.wav"></audio>
+      src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/BossBattleMusic.wav" volume="80"></audio>
     <audio id="button-hover" src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/button-hover.wav"
-      volume="70"></audio>
+      volume="100"></audio>
     <audio id="button-blip" src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/button-blip.wav"
-      volume="80"></audio>
-    <audio id="critical-hit" volume="80"
+      volume="100"></audio>
+    <audio id="critical-hit" volume="100"
       src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/critical-hit.wav"></audio>
-    <audio id="boss-kill" volume="80"
+    <audio id="boss-kill" volume="100"
       src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/boss-kill.wav"></audio>
-    <audio id="dash-small" volume="80"
+    <audio id="dash-small" volume="100"
       src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/dash-small.wav"></audio>
-    <audio id="end-music" volume="80"
+    <audio id="end-music" volume="100"
       src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/end-screen-music.wav"></audio>
     <audio id="enemy-kill" volume="80"
       src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/enemy-kill.wav"></audio>
-    <audio id="hard-slash" volume="80"
+    <audio id="hard-slash" volume="100"
       src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/hard-slash.wav"></audio>
     <audio id="heal" volume="80" src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/heal.wav"></audio>
-    <audio id="level-up-blast" volume="80"
+    <audio id="level-up-blast" volume="100"
       src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/levelupblast.wav"></audio>
     <audio id="new-skill-sound" volume="100"
       src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/new-skill-sound.wav"></audio>
-    <audio id="player-get-hit" volume="80"
+    <audio id="player-get-hit" volume="60"
       src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/player-get-hit..wav"></audio>
-    <audio id="player-death" volume="80"
+    <audio id="player-death" volume="100"
       src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/player-death-moan.wav"></audio>
-    <audio id="slash" volume="80" src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/Slash.wav"></audio>
+    <audio id="slash" volume="100" src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/Slash.wav"></audio>
+    <audio id="level-up-chime" volume="100" src="/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/levelupchime.wav"></audio>
 
   </div>
   <div class="game" id="game">
@@ -54,15 +55,15 @@
       <header class="header" id="header">
         <div class="player__status" id="player-status">
           <div class="gauge__bundle">
-            <progress class="gauge__bar" id="hp-bar" max="100" value="1"></progress>
+            <progress class="gauge__bar" id="hp-bar" min="0" max="100"></progress>
             <label id="health-bar"></label>
           </div>
           <div class="gauge__bundle">
-            <progress class="gauge__bar" id="mp-bar" max="100" value="1"></progress>
+            <progress class="gauge__bar" id="mp-bar" min="0" max="100"></progress>
             <label id="magic-bar"></label>
           </div>
           <div class="gauge__bundle">
-            <progress class="gauge__bar" id="xp-bar" max="101" value="1"></progress>
+            <progress class="gauge__bar" id="xp-bar" min="0" max="100"></progress>
             <label id="exp-bar"></label>
           </div>
           <div class="stats" id="current-score">Current Player Score: 0</div>
@@ -82,8 +83,6 @@
       <div class="action__space" id="action-space">
         <div class="player__box" id="player-box">
         </div>
-        <!-- <div class="enemy__box" id="enemy-box">
-        </div> -->
       </div>
       <div id="game-over-screen">
         <div class="text">

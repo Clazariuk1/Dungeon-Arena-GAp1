@@ -161,10 +161,13 @@ button:hover {
 }
 
 .gauge__bar {
-  height: 1rem;
   border: solid .25px whitesmoke;
-  padding: .5rem;
-  color: black;
+  background: black;
+  border-radius: 5%
+}
+
+progress::-webkit-progress-bar {
+  background-color: black;
 }
 
 .gauge__bundle {
@@ -178,8 +181,15 @@ button:hover {
   text-align: center;
 }
 
+#xp-bar::-webkit-progress-value {
+  background-color: greenyellow;
+}
+
 #xp-bar {
-  background-color: greenyellow
+  height: 1rem;
+  color: greenyellow;
+  width: 80%;
+  border-radius: 5%;
 }
 
 #exp-bar {
@@ -192,8 +202,14 @@ button:hover {
   border-radius: 5%;
 }
 
-#hp-bar {
+#hp-bar::-webkit-progress-value {
   background-color: red;
+}
+
+#hp-bar {
+  height: 1rem;
+  width: 80%;
+  border-radius: 5%;
 }
 
 #health-bar {
@@ -206,8 +222,15 @@ button:hover {
   border-radius: 5%;
 }
 
+#mp-bar::-webkit-progress-value {
+  background-color: blueviolet;
+}
+
 #mp-bar {
-  background-color: blueviolet
+  height: 1rem;
+  width: 80%;
+  background-color: black;
+  border-radius: 5%;
 }
 
 #magic-bar {
@@ -292,6 +315,7 @@ button:hover {
   height: 40px;
   background-color: greenyellow;
   border: solid .5rem blueviolet;
+  border-radius: 50%;
   object-fit: contain;
   z-index: 3;
 }
