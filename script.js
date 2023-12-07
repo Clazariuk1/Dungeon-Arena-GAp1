@@ -103,6 +103,8 @@ function bossBombCollision(x, y) {
     currentSound.play()
     bossBomb.element.remove()
     bombList.splice(bombList.indexOf(bossBomb), 1)
+    enemyBossHP -= 9
+    return true
   }
 }
 
@@ -351,6 +353,15 @@ function updateEnemies() {
     const gameBorder = document.getElementById('action-space')
     enemyBoxes = document.querySelectorAll('.enemy__box')
     enemyBoxes.forEach((enemyBox) => {
+      // we want to iterate through the global enemies array and compare the element property to our local enemy box variable. Console log on discovery.
+
+      const enemyObject = enemies.find((enemy) => {
+        if (enemy.element === enemyBox) {
+          return true
+        }
+      })
+
+
       const boxLeft = parseInt(enemyBox.style.left.replace('p', '').replace('x', ''))
       const boxTop = parseInt(enemyBox.style.top.replace('p', '').replace('x', ''))
       const gameBorderWidth = gameBorder.clientWidth
@@ -390,13 +401,16 @@ function updateEnemies() {
           takeBorderDamage()
           enemyBox.style.top = maxY + 'px'
         }
-        // enemyBox.setAttribute('id')
+        if (enemyObject) {
+          enemyObject.x = enemyBox.style.left
+          enemyObject.y = enemyBox.style.top
+        }
         const enemyX = parseInt(enemyBox.style.left.replace('p', '').replace('x', ''))
         const enemyY = parseInt(enemyBox.style.top.replace('p', '').replace('x', ''))
         const playerX = parseInt(playerBox.style.left.replace('p', '').replace('x', ''))
         const playerY = parseInt(playerBox.style.top.replace('p', '').replace('x', ''))
-        if (enemyX <= playerX + 5 && enemyY >= playerY - 5) {
-          // takeAttackDamage()
+        if (enemyX <= playerX + 1 && enemyY >= playerY - 1) {
+          takeAttackDamage()
         }
       })
      }
@@ -443,10 +457,17 @@ function updateBoss() {
       playerOne.hpCurrent -= 0
       gameOver()
     }
+  })
+  enemyBosses.forEach((enemyBoss) => {
+    if (bossCollision(`${enemyBoss.style.left}`, `${enemyBoss.style.top}`)) {
+      playerOne.hpCurrent -= 0
+      gameOver()
+    }
+  })
+  enemyBosses.forEach((enemyBoss) => {
     if (bossBombCollision(`${enemyBoss.style.left}`, `${enemyBoss.style.top}`)) {
-      enemyBoss.style.backgroundColor = 'red'
-      enemyBossHP -= 9
-      console.log("KABOOM")
+      enemyBoss.remove()
+      enemyBosses.splice(enemyBosses.indexOf(enemyBoss), 1)
     }
   })
 }
@@ -492,10 +513,17 @@ function generateEnemies(num) {
     //MUST DEBUG THE ATTACK!!!
     enemyBox.addEventListener('click', (e) => {
 
-      // const body = enemies.find((enemy) => enemy[0].target)
-      // console.log(enemies.indexOf(body))
+      const enemyNode = e.target
 
-      // enemies.splice(enemies.indexOf(body), 1)
+      const enemyObject = enemies.find((enemy) => {
+        if (enemy.element === enemyNode) {
+          return true
+        }
+      })
+
+      console.log(enemyObject)
+
+      enemies.splice(enemies.indexOf(enemyObject), 1)
       e.target.remove()
       destroyEnemy()
     })
@@ -574,8 +602,6 @@ function destroyEnemyBoss() {
 
 // Base destroy enemy function for any successful kill.
 function destroyEnemy() {
-  // enemies.shift() must be replaces with an enemies.splice that specifically targets the selected enemy. This is a bug.
-  enemies.shift()
   enemyBoxes = document.querySelectorAll('.enemy__box')
   playerOne.mpCurrent += 20
   playerOne.XP += 30
