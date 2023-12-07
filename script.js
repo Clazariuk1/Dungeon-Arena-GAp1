@@ -1,13 +1,8 @@
 // Major lingering bugs:
-// NOTE : Music and SFX are OFF due to annoyance. turn them on for final program.
-// 1. Enable enemy block movement - player collision
-// 3. Must successfully enable border collision with player damage on enemy blocks
-// 4. Must successfully reverse direction of enemy blocks upon border collision
 // BONUS: Bombs must destroy enemies / damage player and bosses on detonation
 // BONUS 5: Freeze Time isn't stopping enemy movement. need to examine
-// BONUS 6: Annihilate needs to effect bosses without killing them somehow.
 // SUPER IMPORTANT . when enemy movement is figured out, not only must we add in data to update the enemies array coordinates, but we must also include an update on the enemy box id.
-
+//MAJOR IMPORTANT : destroyenemy is not correctly destroying enemy!!! We need to target the specific enemy!
 // Work on find index method for update enemies and consol log to debug. examine max x and max y ranges, something wrong that needs to take into account current box position
 // range bar css play
 
@@ -242,6 +237,8 @@ function listenerRender() {
       playerOne.heal()
     }
   })
+
+
   document.addEventListener('keydown', function(event) {
     if (event.key === 't') {
       if (playerOne.mpCurrent >= 50) {
@@ -250,6 +247,7 @@ function listenerRender() {
       }
     }
   })
+
   document.addEventListener('keydown', function(event) {
     if (event.key === 'r') {
       if (playerOne.mpCurrent >= 75) {
@@ -323,52 +321,72 @@ function instructions() {
   instBox.classList.toggle('activated')
 }
 
+function random() {
+  let number = Math.floor(Math.random() * 4) + 1
+  return number
+}
+
 // UPDATE ENEMY MOVEMENT BELOW
-// It's almost there! Just need to successfully get enemy wall collision updated. Mute this when necessary
 function updateEnemies() {
   if (enemies.length > 0) {
     const gameBorder = document.getElementById('action-space')
     enemyBoxes = document.querySelectorAll('.enemy__box')
     enemyBoxes.forEach((enemyBox) => {
+      const boxLeft = parseInt(enemyBox.style.left.replace('p', '').replace('x', ''))
+      const boxTop = parseInt(enemyBox.style.top.replace('p', '').replace('x', ''))
       const gameBorderWidth = gameBorder.clientWidth
       const gameBorderHeight = gameBorder.clientHeight
 
       const enemyWidth = enemyBox.offsetWidth
       const enemyHeight = enemyBox.offsetHeight
-
       const maxX = gameBorderWidth - enemyWidth
       const maxY = gameBorderHeight - enemyHeight
 
-      const randomAngle = Math.random() * 2 * Math.PI
+      let randomNumber = random()
+      if (randomNumber === 1) {
+            enemyBox.style.left = (boxLeft - 20) + 'px'
+          }
+      else if (randomNumber === 2) {
+            enemyBox.style.left = (boxLeft + 20) + 'px'
+          }
+      else if (randomNumber === 3) {
+            enemyBox.style.top = (boxTop - 20) + 'px'
+          }
+      else if (randomNumber === 4) {
+            enemyBox.style.top = (boxTop + 20) + 'px'
+        }
+        if (parseInt(enemyBox.style.left.replace('p', '').replace('x', '')) <= 0) {
+          currentSound = hardSlashSound
+          currentSound.play()
+          damageLights()
+          playerOne.hpCurrent -= 1
+          enemyBox.style.left = 0 + 'px'
+        }
+        else if (parseInt(enemyBox.style.left.replace('p', '').replace('x', '')) >= maxX) {
+          currentSound = hardSlashSound
+          currentSound.play()
+          damageLights()
+          playerOne.hpCurrent -= 1
+          enemyBox.style.left = maxX + 'px'
+        }
+        else if (parseInt(enemyBox.style.top.replace('p', '').replace('x', '')) <= 0) {
+          currentSound = hardSlashSound
+          currentSound.play()
+          damageLights()
+          playerOne.hpCurrent -= 1
+          enemyBox.style.top = 0 + 'px'
+        }
+        else if (parseInt(enemyBox.style.top.replace('p', '').replace('x', '')) >= maxY) {
+          currentSound = hardSlashSound
+          currentSound.play()
+          damageLights()
+          playerOne.hpCurrent -= 1
+          enemyBox.style.top = maxY + 'px'
+        }
+      })
+     }
+  }
 
-      const deltaX = Math.cos(randomAngle)
-      const deltaY = Math.sin(randomAngle)
-
-      let newX = Math.random() * maxX
-      let newY = Math.random() * maxY
-
-      // the border detection is not currently working. examine.
-      // if(newX < 0) {
-      //   newX = 0
-      // } else if (newX > maxX) {
-      //   newX = maxX
-      // }
-      // if (newY < 0) {
-      //   newY = 0
-      // } else if (newY > maxY) {
-      //   newY = maxY
-      // }
-
-      if(newX < 0 || newX > maxX) {
-        enemyBox.remove()
-        playerOne.hpCurrent -= 1
-      }
-      if (newY < 0 || newY > maxY) {
-        enemyBox.remove()
-        playerOne.hpCurrent -= 1
-      }
-      enemyBox.style.left = newX + 'px'
-      enemyBox.style.top = newY + 'px'
 // below: attempt to change the x and y of each enemy object based on the movement changes of the enemy boxes herein. Consult with Arthur. Why isn't the global space enemies array being recognized?
 // const enemy = enemies.findIndex(function(key) {
 //   return key.element == enemyBox
@@ -378,12 +396,10 @@ function updateEnemies() {
 // enemies[enemies.indexOf(enemy[enemyBox])].x = enemyBox.style.left
 //       enemies[enemies.indexOf(enemy[enemyBox])].y = enemyBox.style.top
 
-      enemyBox.style.transition = 'all 5s linear'
-      enemyBox.style.transform = `translate(${deltaX * newX}px, ${deltaY * newY}px)`
+      // enemyBox.style.transition = 'all 5s linear'
+      // enemyBox.style.transform = `translate(${deltaX * newX}px, ${deltaY * newY}px)`
 
-    })
-  }
-}
+
 
 // ENABLE BOSS ADVANCE ON PLAYER POSITION BELOW
 function updateBoss() {
@@ -412,6 +428,9 @@ function updateBoss() {
       playerOne.hpCurrent -= 0
       gameOver()
     }
+    // if (bombBossCollision(`${enemyBoss.style.left}`, `${enemyBoss.style.top}`)) {
+    //   destroyEnemyBoss()
+    // }
   })
 }
 
@@ -453,36 +472,46 @@ function generateEnemies(num) {
     enemies.push(enemy)
 
     gameBorder.appendChild(enemyBox)
+    //MUST DEBUG THE ATTACK!!!
     enemyBox.addEventListener('click', (e) => {
+
+      // const body = enemies.find((enemy) => enemy[0].target)
+      // console.log(enemies.indexOf(body))
+
+      // enemies.splice(enemies.indexOf(body), 1)
       e.target.remove()
       destroyEnemy()
     })
   }
   enemyBoxes = document.querySelectorAll('.enemy__box')
-  setInterval(updateEnemies, 5000)
+  setInterval(updateEnemies, 500)
 }
 
 function takeDamage() {
   playerOne.hpCurrent -= 10
   enemyDeathSound.play()
-  playerBox.style.backgroundColor = 'red'
   if (playerOne.hpCurrent <= 0) {
     playerOne.hpCurrent = 0
     gameOver()
   }
   gaugeBarRender()
+  damageLights()
+}
 
+function damageLights() {
+  gameBorder.style.borderColor = 'black'
+  playerBox.style.backgroundColor = 'red'
   let timeLimit = 1
   let timer = setInterval(() => {
     timeLimit--
     if (timeLimit <= 0) {
       clearInterval(timer)
       playerBox.style.backgroundColor = 'black'
+      gameBorder.style.borderColor = 'blueViolet'
     }
   }, 250)
   return true
 }
-
 function levelCheck() {
   if (playerOne.XP >= 100) {
     playerOne.levelUp()
@@ -636,10 +665,6 @@ class Player extends Character {
 //pro tip: r key to freeze time
   freezeTime() {
     this.mpCurrent -= 75
-    // clearInterval(updateBoss)
-    // clearInterval(updateEnemies)
-    // setTimeout(updateBoss, 5000)
-    // setTimeout(updateEnemies, 5000)
     currentSound = hoverButtonSound
     currentSound.play()
     gaugeBarRender()
