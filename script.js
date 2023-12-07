@@ -1,10 +1,10 @@
 // Major lingering bugs:
-// BONUS: Bombs must destroy enemies / damage player and bosses on detonation
+// BONUS 1: Annihilate must damage enemy boss without killing
+// BONUS 2: teleport must work to any specific spot
+// BONUS 3: Must update enemy boss kills to specify which is killed, rather than shift. Like what we did with enemies update on destroy enemy.
+// BONUS 4: Check attack damage function for viability, may need to cut due to bugginess. No getting better with it after josh help.
 // BONUS 5: Freeze Time isn't stopping enemy movement. need to examine
-// SUPER IMPORTANT . when enemy movement is figured out, not only must we add in data to update the enemies array coordinates, but we must also include an update on the enemy box id.
-//MAJOR IMPORTANT : destroyenemy is not correctly destroying enemy!!! We need to target the specific enemy!
-// Work on find index method for update enemies and consol log to debug. examine max x and max y ranges, something wrong that needs to take into account current box position
-// range bar css play
+// ULTRA BONUS: range bar css play
 
 // ElEMENTS.
 
@@ -62,37 +62,13 @@ resumeBtn.addEventListener('click', pauseGame)
 
 // FUNCTION LIST!!!!!!!!
 
-// ENEMY COLLISION DETECTION BELOW.
-
-// enemyMovementCollision(`${enemyBox.style.left}`, `${enemyBox.style.top}`)
-// function enemyMovingCollision() {
-//   enemies.forEach((enemy) => {
-//     const gameBorderRect = gameBorder.getBoundingClientRect()
-//     const newEnemyLocation = enemy[0].getBoundingClientRect()
-//     const playerBoxRect = playerBox.getBoundingClientRect()
-//   })
-// }
-
-// function enemyMovementCollision(x, y) {
-// const enemy = enemies.find((enemyBox) => {
-//   enemyBox
-// }
-//   const enemyX = parseInt(enemyBox.style.left.replace('p', '').replace('x', ''))
-//   const enemyY = parseInt(enemyBox.style.top.replace('p', '').replace('x', ''))
-//   const playerX = parseInt(playerBox.style.left.replace('p', '').replace('x', ''))
-//   const playerY = parseInt(playerBox.style.top.replace('p', '').replace('x', ''))
-//   if (enemyX <= playerX + 5 && enemyY >= playerY - 5) {
-//     takeBorderDamage()
-//   }
-// }
-
 function bossBombCollision(x, y) {
   const bossBomb = bombList.find((playerBomb) => {
     const bossX = parseInt(x.replace('p', '').replace('x', ''))
     const bossY = parseInt(y.replace('p', '').replace('x', ''))
     const bombX = parseInt(playerBomb.x.replace('p', '').replace('x', ''))
     const bombY = parseInt(playerBomb.y.replace('p', '').replace('x', ''))
-    if (bossX <= bombX + 15 && bossY >= bombY - 15) {
+    if (bossX <= bombX + 10 && bossY >= bombY - 10) {
       return true
         } else {
       return false
@@ -103,7 +79,6 @@ function bossBombCollision(x, y) {
     currentSound.play()
     bossBomb.element.remove()
     bombList.splice(bombList.indexOf(bossBomb), 1)
-    enemyBossHP -= 9
     return true
   }
 }
@@ -126,7 +101,7 @@ function findCollision(x, y) {
     const playerY = parseInt(y.replace('p', '').replace('x', ''))
     const enemyX = parseInt(enemy.x.replace('p', '').replace('x', ''))
     const enemyY = parseInt(enemy.y.replace('p', '').replace('x', ''))
-    if (playerX <= enemyX + 5 && playerY >= enemyY - 5) {
+    if (playerX <= enemyX + 2 && playerY >= enemyY - 2) {
       return true
     } else {
       return false
@@ -353,14 +328,12 @@ function updateEnemies() {
     const gameBorder = document.getElementById('action-space')
     enemyBoxes = document.querySelectorAll('.enemy__box')
     enemyBoxes.forEach((enemyBox) => {
-      // we want to iterate through the global enemies array and compare the element property to our local enemy box variable. Console log on discovery.
 
       const enemyObject = enemies.find((enemy) => {
         if (enemy.element === enemyBox) {
           return true
         }
       })
-
 
       const boxLeft = parseInt(enemyBox.style.left.replace('p', '').replace('x', ''))
       const boxTop = parseInt(enemyBox.style.top.replace('p', '').replace('x', ''))
@@ -401,36 +374,16 @@ function updateEnemies() {
           takeBorderDamage()
           enemyBox.style.top = maxY + 'px'
         }
+        // Below updates the enemy object within the enemies array for more accurate collision detection
         if (enemyObject) {
           enemyObject.x = enemyBox.style.left
           enemyObject.y = enemyBox.style.top
-        }
-        const enemyX = parseInt(enemyBox.style.left.replace('p', '').replace('x', ''))
-        const enemyY = parseInt(enemyBox.style.top.replace('p', '').replace('x', ''))
-        const playerX = parseInt(playerBox.style.left.replace('p', '').replace('x', ''))
-        const playerY = parseInt(playerBox.style.top.replace('p', '').replace('x', ''))
-        if (enemyX <= playerX + 1 && enemyY >= playerY - 1) {
-          takeAttackDamage()
         }
       })
      }
   }
 
-// below: attempt to change the x and y of each enemy object based on the movement changes of the enemy boxes herein. Consult with Arthur. Why isn't the global space enemies array being recognized?
-// const enemy = enemies.findIndex(function(key) {
-//   return key.element == enemyBox
-// })
-// enemies[enemy].x = `${enemyBox.style.top}`
-// enemies[enemy].y = `${enemyBox.style.left}`
-// enemies[enemies.indexOf(enemy[enemyBox])].x = enemyBox.style.left
-//       enemies[enemies.indexOf(enemy[enemyBox])].y = enemyBox.style.top
-
-      // enemyBox.style.transition = 'all 5s linear'
-      // enemyBox.style.transform = `translate(${deltaX * newX}px, ${deltaY * newY}px)`
-
-
-
-// ENABLE BOSS ADVANCE ON PLAYER POSITION BELOW
+// BOSS ADVANCES ON PLAYER POSITION BELOW
 function updateBoss() {
   if (enemyBosses.length > 0) {
     const gameBorder = document.getElementById('action-space')
@@ -459,15 +412,10 @@ function updateBoss() {
     }
   })
   enemyBosses.forEach((enemyBoss) => {
-    if (bossCollision(`${enemyBoss.style.left}`, `${enemyBoss.style.top}`)) {
-      playerOne.hpCurrent -= 0
-      gameOver()
-    }
-  })
-  enemyBosses.forEach((enemyBoss) => {
     if (bossBombCollision(`${enemyBoss.style.left}`, `${enemyBoss.style.top}`)) {
       enemyBoss.remove()
       enemyBosses.splice(enemyBosses.indexOf(enemyBoss), 1)
+      destroyEnemyBoss()
     }
   })
 }
@@ -485,10 +433,16 @@ function generateEnemyBoss() {
   enemyBosses.push(enemyBoss)
 
   enemyBoss.addEventListener('click', (e) => {
-    e.preventDefault()
+    const bossNode = e.target
+    const bossObject = enemyBosses.find((boss) => {
+      if (boss.element === bossNode) {
+        return true
+      }
+    })
     enemyBossHP--
     if (enemyBossHP === 0) {
       e.target.remove()
+      enemyBosses.splice(enemyBosses.indexOf(bossObject), 1)
       destroyEnemyBoss()
     }
   })
@@ -508,21 +462,15 @@ function generateEnemies(num) {
     enemyBox.setAttribute('id', `${enemyBox.style.left},${enemyBox.style.top}`)
     const enemy = {element: enemyBox, name: `${playerOne.level}${i}`, x: `${enemyBox.style.left}`, y: `${enemyBox.style.top}` }
     enemies.push(enemy)
-
     gameBorder.appendChild(enemyBox)
-    //MUST DEBUG THE ATTACK!!!
+
     enemyBox.addEventListener('click', (e) => {
-
       const enemyNode = e.target
-
       const enemyObject = enemies.find((enemy) => {
         if (enemy.element === enemyNode) {
           return true
         }
       })
-
-      console.log(enemyObject)
-
       enemies.splice(enemies.indexOf(enemyObject), 1)
       e.target.remove()
       destroyEnemy()
@@ -544,20 +492,8 @@ function takeBorderDamage() {
   gaugeBarRender()
 }
 
-function takeAttackDamage() {
-  playerOne.hpCurrent -= 2
-  currentSound = playerHitSound
-  currentSound.play()
-  damageLights()
-  if (playerOne.hpCurrent <= 0) {
-    playerOne.hpCurrent = 0
-    gameOver()
-  }
-  gaugeBarRender()
-}
-
 function takeDamage() {
-  playerOne.hpCurrent -= 10
+  playerOne.hpCurrent -= 5
   enemyDeathSound.play()
   if (playerOne.hpCurrent <= 0) {
     playerOne.hpCurrent = 0
@@ -588,11 +524,9 @@ function levelCheck() {
   else return
 }
 
-//Base destroy enemyBoss function for successfull boss kill
 function destroyEnemyBoss() {
   currentSound = bossKillSound
   currentSound.play()
-  enemyBosses.shift()
   playerOne.XP += 100
   playerScore += 250
   levelCheck()
