@@ -14,6 +14,7 @@ const gameBorder = document.getElementById('action-space')
 const gameBorderRect = gameBorder.getBoundingClientRect()
 const enemies = []
 const enemyBosses = []
+const bombList = []
 
 // HP / MP / XP Bar Elements. 'Gauge Bars.'
 const playerHealth = document.getElementById('hp-bar')
@@ -76,23 +77,41 @@ resumeBtn.addEventListener('click', pauseGame)
 // const enemy = enemies.find((enemyBox) => {
 //   enemyBox
 // }
-//   const enemyX = parseInt(x.replace('p', '').replace('x', ''))
-//   const enemyY = parseInt(y.replace('p', '').replace('x', ''))
+//   const enemyX = parseInt(enemyBox.style.left.replace('p', '').replace('x', ''))
+//   const enemyY = parseInt(enemyBox.style.top.replace('p', '').replace('x', ''))
 //   const playerX = parseInt(playerBox.style.left.replace('p', '').replace('x', ''))
 //   const playerY = parseInt(playerBox.style.top.replace('p', '').replace('x', ''))
 //   if (enemyX <= playerX + 5 && enemyY >= playerY - 5) {
-//     return true
-//   } else {
-//     return false
+//     takeBorderDamage()
 //   }
 // }
+
+function bossBombCollision(x, y) {
+  const bossBomb = bombList.find((playerBomb) => {
+    const bossX = parseInt(x.replace('p', '').replace('x', ''))
+    const bossY = parseInt(y.replace('p', '').replace('x', ''))
+    const bombX = parseInt(playerBomb.x.replace('p', '').replace('x', ''))
+    const bombY = parseInt(playerBomb.y.replace('p', '').replace('x', ''))
+    if (bossX <= bombX + 15 && bossY >= bombY - 15) {
+      return true
+        } else {
+      return false
+    }
+  })
+  if (bossBomb) {
+    currentSound = bombBlast
+    currentSound.play()
+    bossBomb.element.remove()
+    bombList.splice(bombList.indexOf(bossBomb), 1)
+  }
+}
 
 function bossCollision(x, y) {
   const bossX = parseInt(x.replace('p', '').replace('x', ''))
   const bossY = parseInt(y.replace('p', '').replace('x', ''))
   const playerX = parseInt(playerBox.style.left.replace('p', '').replace('x', ''))
   const playerY = parseInt(playerBox.style.top.replace('p', '').replace('x', ''))
-  if (bossX <= playerX + 5 && bossY >= playerY - 5) {
+  if (bossX <= playerX + 1 && bossY >= playerY - 1) {
     return true
   } else {
     return false
@@ -344,44 +363,40 @@ function updateEnemies() {
 
       let randomNumber = random()
       if (randomNumber === 1) {
-            enemyBox.style.left = (boxLeft - 20) + 'px'
+            enemyBox.style.left = (boxLeft - 5) + 'px'
           }
       else if (randomNumber === 2) {
-            enemyBox.style.left = (boxLeft + 20) + 'px'
+            enemyBox.style.left = (boxLeft + 5) + 'px'
           }
       else if (randomNumber === 3) {
-            enemyBox.style.top = (boxTop - 20) + 'px'
+            enemyBox.style.top = (boxTop - 5) + 'px'
           }
       else if (randomNumber === 4) {
-            enemyBox.style.top = (boxTop + 20) + 'px'
+            enemyBox.style.top = (boxTop + 5) + 'px'
         }
         if (parseInt(enemyBox.style.left.replace('p', '').replace('x', '')) <= 0) {
-          currentSound = hardSlashSound
-          currentSound.play()
-          damageLights()
-          playerOne.hpCurrent -= 1
+          takeBorderDamage()
           enemyBox.style.left = 0 + 'px'
         }
         else if (parseInt(enemyBox.style.left.replace('p', '').replace('x', '')) >= maxX) {
-          currentSound = hardSlashSound
-          currentSound.play()
-          damageLights()
-          playerOne.hpCurrent -= 1
+          takeBorderDamage()
           enemyBox.style.left = maxX + 'px'
         }
         else if (parseInt(enemyBox.style.top.replace('p', '').replace('x', '')) <= 0) {
-          currentSound = hardSlashSound
-          currentSound.play()
-          damageLights()
-          playerOne.hpCurrent -= 1
+          takeBorderDamage()
           enemyBox.style.top = 0 + 'px'
         }
         else if (parseInt(enemyBox.style.top.replace('p', '').replace('x', '')) >= maxY) {
-          currentSound = hardSlashSound
-          currentSound.play()
-          damageLights()
-          playerOne.hpCurrent -= 1
+          takeBorderDamage()
           enemyBox.style.top = maxY + 'px'
+        }
+        // enemyBox.setAttribute('id')
+        const enemyX = parseInt(enemyBox.style.left.replace('p', '').replace('x', ''))
+        const enemyY = parseInt(enemyBox.style.top.replace('p', '').replace('x', ''))
+        const playerX = parseInt(playerBox.style.left.replace('p', '').replace('x', ''))
+        const playerY = parseInt(playerBox.style.top.replace('p', '').replace('x', ''))
+        if (enemyX <= playerX + 5 && enemyY >= playerY - 5) {
+          // takeAttackDamage()
         }
       })
      }
@@ -428,9 +443,11 @@ function updateBoss() {
       playerOne.hpCurrent -= 0
       gameOver()
     }
-    // if (bombBossCollision(`${enemyBoss.style.left}`, `${enemyBoss.style.top}`)) {
-    //   destroyEnemyBoss()
-    // }
+    if (bossBombCollision(`${enemyBoss.style.left}`, `${enemyBoss.style.top}`)) {
+      enemyBoss.style.backgroundColor = 'red'
+      enemyBossHP -= 9
+      console.log("KABOOM")
+    }
   })
 }
 
@@ -485,6 +502,30 @@ function generateEnemies(num) {
   }
   enemyBoxes = document.querySelectorAll('.enemy__box')
   setInterval(updateEnemies, 500)
+}
+
+function takeBorderDamage() {
+  currentSound = hardSlashSound
+  currentSound.play()
+  damageLights()
+  playerOne.hpCurrent -= 1
+  if (playerOne.hpCurrent <= 0) {
+    playerOne.hpCurrent = 0
+    gameOver()
+  }
+  gaugeBarRender()
+}
+
+function takeAttackDamage() {
+  playerOne.hpCurrent -= 2
+  currentSound = playerHitSound
+  currentSound.play()
+  damageLights()
+  if (playerOne.hpCurrent <= 0) {
+    playerOne.hpCurrent = 0
+    gameOver()
+  }
+  gaugeBarRender()
 }
 
 function takeDamage() {
@@ -607,21 +648,23 @@ class Player extends Character {
       gaugeBarRender()
       const bomb = document.createElement('div')
       bomb.classList.add('bomb')
-      bomb.setAttribute('id', `${playerBox.style.left},${playerBox.style.top}`)
+      bomb.setAttribute('id', `${playerBox.style.left}`, `${playerBox.style.top}`)
+      const playerBomb = {element: bomb, x: `${playerBox.style.left}`, y: `${playerBox.style.top}`}
+      bombList.push(playerBomb)
       bomb.style.left = `${playerBox.style.left}`
       bomb.style.top = `${playerBox.style.top}`
       gameBorder.appendChild(bomb)
 
-      let timeLimit = 3
-      let timer = setInterval(() => {
-        timeLimit--
-        if (timeLimit <= 0) {
-          clearInterval(timer)
-          // Add additional measure for collision explosion power effects on enemy and player.
-          bomb.remove()
-        }
-      }, 1000)
-      return true
+      // let timeLimit = 10
+      // let timer = setInterval(() => {
+      //   timeLimit--
+      //   if (timeLimit <= 0) {
+      //     clearInterval(timer)
+      //     // Add additional measure for collision explosion power effects on enemy and player.
+      //     bomb.remove()
+      //   }
+      // }, 1000)
+      // return true
     }
     currentSound = bombSound
     currentSound.play()
@@ -696,7 +739,7 @@ const playerOne = new Player('Hero', 100, 100, 100, 100, 0, 1)
 // SOUND ELEMENTS BELOW
 const muteMusicBtn = document.getElementById('mute-music')
 const muteSFXBtn = document.getElementById('mute-sfx')
-
+const bombBlast = document.getElementById('explosion')
 const bossMusic = document.getElementById('boss-battle-music')
 const hoverButtonSound = document.getElementById('button-hover')
 const bombSound = document.getElementById('button-blip')
