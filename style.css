@@ -62,7 +62,7 @@ body {
   justify-content: center;
   align-items: center;
   background-color: antiquewhite;
-  background-image: url('/Users/Chris/software_homework/Dungeon-Arena-GAp1/Images/dungeon-floor-background.jpeg');
+  background-image: url('Images/dungeon-floor-background.jpeg');
   padding: 1rem;
 }
 
