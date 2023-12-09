@@ -65,14 +65,7 @@ As it fleshes out: you move a box that is bound within the borders of a containe
 
 
 Base game instructions:
-
-
-
-~You're an adventurer trapped in a nightmarish dungeon from which there is no escape. Survive the continuous
-
-            onslaught of enemies. Be warned! Colliding with enemies will damage you, and enemies colliding with the
-
-            border walls will also damage you! Maintain momentum to recover your HP and MP. Survive 25 waves of foes and, with luck, you'll see the light of day again~
+    You're an adventurer trapped in a nightmarish dungeon from which there is no escape. Survive the continuous onslaught of enemies. Be warned! Colliding with enemies will damage you, and enemies colliding with the border walls will also damage you! Maintain momentum to recover your HP and MP. Survive 25 waves of foes and, with luck, you'll see the light of day again.
 
 -Move using the WASD keys.
 
