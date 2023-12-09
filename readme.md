@@ -28,7 +28,7 @@ Getting Started:
 
 
 
-Link to game:![Dungeon Arena Live Link] ()
+Link to game:![Dungeon Arena Live Link] (https://clazariuk1.github.io/Dungeon-Arena-GAp1/)
 
 
 
