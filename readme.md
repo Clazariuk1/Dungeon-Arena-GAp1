@@ -10,9 +10,15 @@ Link to Wireframe:
 
 
 
-Screenshots: Coming soon.
+Screenshots:
 
+![Game Menu](/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/Game Menu Momentun.png)
 
+![Boss Fight] (/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/Momentum Boss Shot.png)
+
+![Game Over Screen] (/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/Momentum Game Over Shot.png)
+
+![Game Screen] (/Users/Chris/software_homework/Dungeon-Arena-GAp1/audio/Momentum Game Shot.png)
 
 Technologies used: HTML, CSS, JS, Adobe Audition, Freesound.org
 
