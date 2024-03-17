@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const path = require('path')
 
-const PORT = 8003 || 7999
+const PORT = 8002 || 7999
 
 app.listen(PORT, () => {
 	console.log(`I am listening on ${PORT}. We in the Building`)
