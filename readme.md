@@ -1,12 +1,18 @@
 <h1>Momentum</h1>
 <h3>~A collision-detection based arena survival game~</h3>
 
-![GameImage](/public/images/Momentum_Game_Shot.png)
+![StartScreenImage](/public/images/MomentumEnemiesShot.png)
+
+<h4>Live Deployment Link Below:</h4>
+<a href="https://momentum.christopherlazariuk.me"><h2>Momentum</h2></a>
+<br>
+
+![GameImage](/public/images/MomentumEnemiesShot.png)
 
 <h2>Concept and Build</h2>
 <p>Created using HTML, CSS, and Javascript, this front-end browser game makes use of keyboard and mouse to control your lone adventurer, hellbent on surviving the endless onslaught of geometric foes! Avoid colliding with enemies while using a combination of your trusty mouse-click attacks and magic-based powers to stack up the highest score possible. But be warned! Your level increases not just from defeating a foe, but from the very act of movement, forcing players to think strategically about their path of play. As levels progress, enemies appear in greater and greater forces, and bosses are brewing around every corner. Survive to level 25!</p>
 
-![GameBossImage](/public/images/Momentum_Boss_Shot.png)
+![GameBossImage](/public/images/MomentumBossShot.png)
 
 <h4>Game Instructions</h4>
 <p>~You're an adventurer trapped in a nightmarish dungeon from which there is no escape. Survive the continuous
@@ -22,4 +28,4 @@ border walls will also damage you! Maintain momentum to recover your HP and MP. 
 <li>Teleport to your starting position with the 't' key, but don't box yourself into a corner! Costs 50 MP.</li>
 </ul>
 
-![GameImage](/public/images/Momentum_Game_Over_Shot.png)
+![GameImage](/public/images/MomentumGameOver.png)
