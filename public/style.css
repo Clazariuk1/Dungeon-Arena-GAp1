@@ -402,3 +402,16 @@ progress::-webkit-progress-bar {
   border-radius: 50%;
   padding: .2rem;
 }
+
+
+.portfolioLink {
+  text-decoration: none;
+  background: #1b476f;
+  padding: .5rem;
+  margin: .5rem;
+  border-radius: 2vmin;
+  text-align: center;
+  height: fit-content;
+  color: white;
+  border: 1px solid white;
+}
